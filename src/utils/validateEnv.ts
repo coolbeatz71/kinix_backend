@@ -1,15 +1,19 @@
 import { cleanEnv, port, str } from 'envalid';
 
-function validateEnv() {
-  cleanEnv(process.env, {
-    NODE_ENV: str(),
-    PORT: port(),
-    MYSQL_USER: str(),
-    MYSQL_PASSWORD: str(),
-    MYSQL_HOST: str(),
-    MYSQL_DATABASE: str(),
-    JWT_SECRET: str(),
-  });
-}
+const options = {
+  NODE_ENV: str(),
+  PGUSER: str(),
+  PGPASSWORD: str(),
+  PGHOST: str(),
+  PGDATABASE_DEV: str(),
+  PGDATABASE_TEST: str(),
+  PGDATABASE_PROD: str(),
+  JWT_SECRET: str(),
+  PORT: port(),
+};
+
+const validateEnv = () => {
+  cleanEnv(process.env, options);
+};
 
 export default validateEnv;

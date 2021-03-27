@@ -1,8 +1,8 @@
 {
   "name": "kinix_backend",
-  "version": "0.0.0",
-  "description": "TypeScript + Sequelize + MySQL + Express API Server",
-  "author": "",
+  "version": "1.0.0",
+  "description": "A RESTful API for a video container manager application",
+  "author": "Mutombo jean-vincent",
   "license": "ISC",
   "scripts": {
     "start": "npm run build && cross-env NODE_ENV=production node build/server.js",
@@ -29,6 +29,8 @@
     "jsonwebtoken": "^8.5.1",
     "morgan": "^1.10.0",
     "mysql2": "^2.2.5",
+    "pg": "^8.5.1",
+    "pg-hstore": "^2.3.3",
     "sequelize": "^6.6.2",
     "swagger-jsdoc": "^6.0.0",
     "swagger-ui-express": "^4.1.6",
