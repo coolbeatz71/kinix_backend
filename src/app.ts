@@ -4,7 +4,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import apiV1 from './api/';
-import * as errorHandler from './helpers/errorHandler';
+import * as errorHandler from './helpers/api';
 
 class App {
   public express = express();
