@@ -1,8 +1,8 @@
-import dotenv from 'dotenv';
+const dotenv = require('dotenv');
 
 dotenv.config();
 
-const dbConfig = {
+module.exports = {
   development: {
     username: process.env.PGUSER,
     password: process.env.PGPASSWORD,
@@ -28,5 +28,3 @@ const dbConfig = {
     logging: false,
   },
 };
-
-export default dbConfig;

@@ -11,9 +11,12 @@
     "build": "npm run lint && tsc",
     "test": "jest --detectOpenHandles --runInBand --forceExit --coverage",
     "lint": "eslint --ignore-path .gitignore --ext .ts src/",
-    "lint:fix": "npm run lint -- --fix"
+    "lint:fix": "npm run lint -- --fix",
+    "db:init:dev": "NODE_ENV=development npx sequelize db:create && NODE_ENV=development npx sequelize db:migrate",
+		"db:init:test": "NODE_ENV=test npx sequelize db:create && NODE_ENV=test npx sequelize db:migrate"
   },
   "dependencies": {
+    "babel-register": "^6.26.0",
     "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
