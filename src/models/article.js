@@ -65,6 +65,14 @@ export default (sequelize, DataTypes) => {
         type: DataTypes.ARRAY(DataTypes.STRING),
         allowNull: true,
       },
+      liked: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
+      likeCount: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+      },
     },
     {
       sequelize,

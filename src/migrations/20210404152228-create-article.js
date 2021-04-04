@@ -32,6 +32,12 @@ module.exports = {
       tags: {
         type: Sequelize.ARRAY(Sequelize.STRING),
       },
+      liked: {
+        type: Sequelize.BOOLEAN,
+      },
+      likeCount: {
+        type: Sequelize.INTEGER,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

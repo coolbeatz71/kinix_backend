@@ -1,4 +1,4 @@
-export enum EROLE {
+export enum ERole {
   VIEWER_CLIENT = 'VIEWER_CLIENT',
   ADS_CLIENT = 'ADS_CLIENT',
   VIDEO_CLIENT = 'VIDEO_CLIENT',

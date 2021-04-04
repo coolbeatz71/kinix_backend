@@ -17,6 +17,12 @@ module.exports = {
       tags: {
         type: Sequelize.ARRAY(Sequelize.STRING),
       },
+      shared: {
+        type: Sequelize.BOOLEAN,
+      },
+      shareCount: {
+        type: Sequelize.INTEGER,
+      },
       userId: {
         type: Sequelize.INTEGER,
       },

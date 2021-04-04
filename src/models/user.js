@@ -1,19 +1,11 @@
 'use strict';
 const { Model } = require('sequelize');
 const { EProvider } = require('../interfaces/provider');
-const { EROLE } = require('../interfaces/role');
+const { ERole } = require('../interfaces/role');
 
 export default (sequelize, DataTypes) => {
   class User extends Model {
     static associate(models) {
-      /**
-       * user role association
-       */
-      User.belongsTo(models.Role, {
-        foreignKey: 'roleId',
-        targetKey: 'id',
-      });
-
       /**
        * video association
        */
@@ -99,18 +91,18 @@ export default (sequelize, DataTypes) => {
         type: DataTypes.BOOLEAN,
         defaultValue: true,
       },
-      roleId: {
+      role: {
         type: DataTypes.INTEGER,
-        defaultValue: EROLE.VIEWER_CLIENT,
+        defaultValue: ERole.VIEWER_CLIENT,
         allowNull: false,
         validate: {
           isIn: [
             [
-              EROLE.VIEWER_CLIENT,
-              EROLE.VIDEO_CLIENT,
-              EROLE.ADS_CLIENT,
-              EROLE.ADMIN,
-              EROLE.SUPER_ADMIN,
+              ERole.VIEWER_CLIENT,
+              ERole.VIDEO_CLIENT,
+              ERole.ADS_CLIENT,
+              ERole.ADMIN,
+              ERole.SUPER_ADMIN,
             ],
           ],
         },

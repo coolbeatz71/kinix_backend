@@ -63,6 +63,14 @@ export default (sequelize, DataTypes) => {
         type: DataTypes.ARRAY(DataTypes.STRING),
         allowNull: true,
       },
+      shared: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
+      shareCount: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+      },
       userId: {
         type: DataTypes.INTEGER,
         allowNull: false,

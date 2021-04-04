@@ -35,8 +35,8 @@ module.exports = {
       allowEmailNotification: {
         type: Sequelize.BOOLEAN,
       },
-      roleId: {
-        type: Sequelize.INTEGER,
+      role: {
+        type: Sequelize.STRING,
       },
       createdAt: {
         allowNull: false,
