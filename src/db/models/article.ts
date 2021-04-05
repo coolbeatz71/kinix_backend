@@ -1,9 +1,36 @@
 'use strict';
-const { Model } = require('sequelize');
+import { Model, Sequelize, DataTypes } from 'sequelize';
+import { IUnknownObject } from '../../interfaces/UnknownObject';
 
-export default (sequelize, DataTypes) => {
-  class Article extends Model {
-    static associate(models) {
+interface IArticle {
+  readonly id: number;
+  slug: string;
+  title: string;
+  summary: string;
+  body: string;
+  images: string[] | null;
+  video: string[] | null;
+  reads: number;
+  tags: string[] | null;
+  liked: boolean;
+  likeCount: number;
+}
+
+module.exports = (sequelize: Sequelize) => {
+  class Article extends Model<IArticle> implements IArticle {
+    readonly id!: number;
+    slug!: string;
+    title!: string;
+    summary!: string;
+    body!: string;
+    images!: string[] | null;
+    video!: string[] | null;
+    reads!: number;
+    tags!: string[] | null;
+    liked!: boolean;
+    likeCount!: number;
+
+    static associate(models: IUnknownObject) {
       /**
        * bookmark association
        */
@@ -24,6 +51,12 @@ export default (sequelize, DataTypes) => {
 
   Article.init(
     {
+      id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        primaryKey: true,
+        autoIncrement: true,
+      },
       slug: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -76,6 +109,7 @@ export default (sequelize, DataTypes) => {
     },
     {
       sequelize,
+      timestamps: true,
       tableName: 'article',
       modelName: 'Article',
     },

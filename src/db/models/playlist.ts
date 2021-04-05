@@ -1,9 +1,24 @@
 'use strict';
-const { Model } = require('sequelize');
+import { Model, Sequelize, DataTypes } from 'sequelize';
+import { IUnknownObject } from '../../interfaces/UnknownObject';
 
-export default (sequelize, DataTypes) => {
-  class Playlist extends Model {
-    static associate(models) {
+interface IPlaylist {
+  readonly id: number;
+  slug: string;
+  title: string;
+  userId: number;
+  videoId: number;
+}
+
+module.exports = (sequelize: Sequelize) => {
+  class Playlist extends Model<IPlaylist> implements IPlaylist {
+    readonly id!: number;
+    slug!: string;
+    title!: string;
+    userId!: number;
+    videoId!: number;
+
+    static associate(models: IUnknownObject) {
       /**
        * user association
        */
@@ -24,6 +39,12 @@ export default (sequelize, DataTypes) => {
 
   Playlist.init(
     {
+      id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        primaryKey: true,
+        autoIncrement: true,
+      },
       slug: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -47,6 +68,7 @@ export default (sequelize, DataTypes) => {
     },
     {
       sequelize,
+      timestamps: true,
       tableName: 'playlist',
       modelName: 'Playlist',
     },

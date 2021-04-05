@@ -1,9 +1,20 @@
 'use strict';
-const { Model } = require('sequelize');
+import { Model, Sequelize, DataTypes } from 'sequelize';
+import { IUnknownObject } from '../../interfaces/UnknownObject';
 
-export default (sequelize, DataTypes) => {
-  class Like extends Model {
-    static associate(models) {
+interface ILike {
+  readonly id: number;
+  userId: number;
+  articleId: number;
+}
+
+module.exports = (sequelize: Sequelize) => {
+  class Like extends Model<ILike> implements ILike {
+    readonly id!: number;
+    userId!: number;
+    articleId!: number;
+
+    static associate(models: IUnknownObject) {
       /**
        * article association
        */
@@ -21,9 +32,14 @@ export default (sequelize, DataTypes) => {
       });
     }
   }
-
   Like.init(
     {
+      id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        primaryKey: true,
+        autoIncrement: true,
+      },
       userId: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -35,6 +51,7 @@ export default (sequelize, DataTypes) => {
     },
     {
       sequelize,
+      timestamps: true,
       tableName: 'like',
       modelName: 'Like',
     },

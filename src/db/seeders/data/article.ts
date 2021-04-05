@@ -8,7 +8,7 @@ const title2 = 'Just a sample title';
 const createdAt = dayjs().format();
 const updatedAt = createdAt;
 
-module.exports = [
+const ArticleData = [
   {
     slug: helpers.slugify(title1),
     title: title1,
@@ -38,3 +38,4 @@ module.exports = [
     updatedAt,
   },
 ];
+export default ArticleData;

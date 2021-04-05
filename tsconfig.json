@@ -1,21 +1,23 @@
 {
+  "extends": "./node_modules/poetic/config/typescript/tsconfig.json",
+  "include": ["src/**/*"],
   "compilerOptions": {
-    "target": "es2017",
-    "lib": ["es2017", "esnext.asynciterable"],
-    "typeRoots": ["./node_modules/@types"],
-    "allowSyntheticDefaultImports": true,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "forceConsistentCasingInFileNames": true,
+    "target": "es5",
+    "outDir": "dist",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "module": "esnext",
     "moduleResolution": "node",
-    "module": "commonjs",
-    "pretty": true,
-    "sourceMap": true,
-    "outDir": "./build",
+    "isolatedModules": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
     "allowJs": true,
-    "noEmit": false,
-    "esModuleInterop": true
-  },
-  "include": ["./src/**/*", ".env"],
-  "exclude": ["node_modules"]
+    "jsx": "react",
+    "noEmit": true
+  }
 }

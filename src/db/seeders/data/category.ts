@@ -1,11 +1,11 @@
 import dayjs from 'dayjs';
-import { ECategory } from '../../interfaces/category';
+import { ECategory } from '../../../interfaces/category';
 
 // generate createdDate and updateDate
 const createdAt = dayjs().format();
 const updatedAt = createdAt;
 
-module.exports = [
+const CategoryData = [
   {
     name: ECategory.MUSIC_VIDEO,
     createdAt,
@@ -32,3 +32,4 @@ module.exports = [
     updatedAt,
   },
 ];
+export default CategoryData;

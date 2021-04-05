@@ -1,11 +1,38 @@
 'use strict';
-const { Model } = require('sequelize');
-const { EProvider } = require('../interfaces/provider');
-const { ERole } = require('../interfaces/role');
+import { Model, Sequelize, DataTypes } from 'sequelize';
+import { EProvider } from '../../interfaces/provider';
+import { ERole } from '../../interfaces/role';
+import { IUnknownObject } from '../../interfaces/UnknownObject';
 
-export default (sequelize, DataTypes) => {
-  class User extends Model {
-    static associate(models) {
+interface IUser {
+  readonly id: number;
+  userName: string;
+  email: string | null;
+  phoneNumber: string | null;
+  password: string;
+  provider: EProvider;
+  isLoggedIn: boolean;
+  verified: boolean;
+  image: string | null;
+  allowEmailNotification: boolean;
+  role: ERole;
+}
+
+module.exports = (sequelize: Sequelize) => {
+  class User extends Model<IUser> implements IUser {
+    readonly id!: number;
+    userName!: string;
+    email!: string | null;
+    phoneNumber!: string | null;
+    password!: string;
+    provider: EProvider = EProvider.LOCAL;
+    isLoggedIn!: boolean;
+    verified!: boolean;
+    image!: string | null;
+    allowEmailNotification!: boolean;
+    role: ERole = ERole.VIEWER_CLIENT;
+
+    static associate(models: IUnknownObject) {
       /**
        * video association
        */
@@ -42,6 +69,12 @@ export default (sequelize, DataTypes) => {
 
   User.init(
     {
+      id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        primaryKey: true,
+        autoIncrement: true,
+      },
       userName: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -110,6 +143,7 @@ export default (sequelize, DataTypes) => {
     },
     {
       sequelize,
+      timestamps: true,
       tableName: 'user',
       modelName: 'User',
     },

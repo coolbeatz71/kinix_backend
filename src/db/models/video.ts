@@ -1,9 +1,30 @@
 'use strict';
-const { Model } = require('sequelize');
+import { Model, Sequelize, DataTypes } from 'sequelize';
+import { IUnknownObject } from '../../interfaces/UnknownObject';
 
-export default (sequelize, DataTypes) => {
-  class Video extends Model {
-    static associate(models) {
+interface IVideo {
+  readonly id: number;
+  link: string;
+  title: string;
+  tags: string[] | null;
+  shared: boolean;
+  shareCount: number;
+  userId: number;
+  categoryId: number;
+}
+
+module.exports = (sequelize: Sequelize) => {
+  class Video extends Model<IVideo> implements IVideo {
+    readonly id!: number;
+    link!: string;
+    title!: string;
+    tags!: string[] | null;
+    shared: boolean = false;
+    shareCount: number = 0;
+    userId!: number;
+    categoryId!: number;
+
+    static associate(models: IUnknownObject) {
       /**
        * user association
        */
@@ -48,6 +69,12 @@ export default (sequelize, DataTypes) => {
 
   Video.init(
     {
+      id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        primaryKey: true,
+        autoIncrement: true,
+      },
       link: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -82,6 +109,7 @@ export default (sequelize, DataTypes) => {
     },
     {
       sequelize,
+      timestamps: true,
       tableName: 'video',
       modelName: 'Video',
     },

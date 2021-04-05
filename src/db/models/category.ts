@@ -1,9 +1,20 @@
 'use strict';
-const { Model } = require('sequelize');
+import { Model, Sequelize, DataTypes } from 'sequelize';
+import { IUnknownObject } from '../../interfaces/UnknownObject';
 
-export default (sequelize, DataTypes) => {
-  class Category extends Model {
-    static associate(models) {
+interface ICategory {
+  readonly id: number;
+  userId: number;
+  articleId: number;
+}
+
+module.exports = (sequelize: Sequelize) => {
+  class Category extends Model<ICategory> implements ICategory {
+    readonly id!: number;
+    userId!: number;
+    articleId!: number;
+
+    static associate(models: IUnknownObject) {
       /**
        * user association
        */
@@ -24,6 +35,12 @@ export default (sequelize, DataTypes) => {
 
   Category.init(
     {
+      id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        primaryKey: true,
+        autoIncrement: true,
+      },
       userId: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -35,6 +52,7 @@ export default (sequelize, DataTypes) => {
     },
     {
       sequelize,
+      timestamps: true,
       tableName: 'category',
       modelName: 'Category',
     },

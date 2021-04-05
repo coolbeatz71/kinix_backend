@@ -3,7 +3,7 @@ import hpp from 'hpp';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import apiV1 from './api/';
+import apiV1 from "./api";
 import { notFoundError } from './helpers/api';
 
 class App {

@@ -2,8 +2,8 @@ import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 import dayjs from 'dayjs';
 import { name, internet, phone, image } from 'faker';
-import { ERole } from '../../interfaces/role';
-import { EProvider } from '../../interfaces/provider';
+import { ERole } from '../../../interfaces/role';
+import { EProvider } from '../../../interfaces/provider';
 
 dotenv.config();
 
@@ -15,7 +15,7 @@ const password = bcrypt.hashSync(plainPwd, bcrypt.genSaltSync(8));
 const createdAt = dayjs().format();
 const updatedAt = createdAt;
 
-module.exports = [
+const UserData = [
   {
     userName: name.firstName(),
     email: internet.email(),
@@ -82,3 +82,4 @@ module.exports = [
     updatedAt,
   },
 ];
+export default UserData;
