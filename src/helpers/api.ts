@@ -10,7 +10,9 @@ import { IUnknownObject } from '../interfaces/UnknownObject';
  * @param field
  * @return boolean
  */
-export const isFieldInBody = (req: Request, field: string) => req.body.hasOwnProperty(field);
+export const isFieldInBody = (req: Request, field: string) => {
+  return Object.prototype.hasOwnProperty.call(req.body, field);
+};
 
 /**
  * return the API http response
@@ -40,7 +42,7 @@ export const getValidationError = (res: Response, errors: any): Response | any =
  * @return IUnknownObject
  */
 export const getSanitizedBody = (obj: IUnknownObject): IUnknownObject => {
-  Object.keys(obj).forEach(key => {
+  Object.keys(obj).forEach((key) => {
     if (!obj[key]) delete obj[key];
   });
   return obj;

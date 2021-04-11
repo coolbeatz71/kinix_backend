@@ -3,8 +3,8 @@ import hpp from 'hpp';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import apiV1 from './api/';
-import * as errorHandler from './helpers/api';
+import apiV1 from "./api";
+import { notFoundError } from './helpers/api';
 
 class App {
   public express = express();
@@ -28,7 +28,7 @@ class App {
   }
 
   private catchErrors(): void {
-    this.express.use(errorHandler.notFound);
+    this.express.use(notFoundError);
   }
 }
 
