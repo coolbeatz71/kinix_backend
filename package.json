@@ -8,18 +8,18 @@
   "scripts": {
     "start": "npm run build && cross-env NODE_ENV=production node build/server.js",
     "dev": "cross-env NODE_ENV=development nodemon",
-    "build": "yarn code:lint && tsc",
+    "build": "npm run code:lint && tsc",
     "test": "jest --detectOpenHandles --runInBand --forceExit --coverage",
     "code:lint": "eslint --ext .js,.jsx,.ts,.tsx \"src/\"",
-    "code:clean": "yarn code:lint --fix",
+    "code:clean": "npm run code:lint --fix",
     "db:init:dev": "NODE_ENV=development npx sequelize db:create && NODE_ENV=development npx sequelize db:migrate",
     "db:seed:dev": "NODE_ENV=development npx sequelize db:seed:all",
     "db:drop:dev": "NODE_ENV=development npx sequelize db:drop",
-    "db:dev": "yarn build && yarn db:drop:dev && yarn db:init:dev && yarn db:seed:dev",
+    "db:dev": "npm run build && npm run db:drop:dev && npm run db:init:dev && npm run db:seed:dev",
     "db:init:test": "NODE_ENV=test npx sequelize db:create && NODE_ENV=test npx sequelize db:migrate",
     "db:seed:test": "NODE_ENV=test npx sequelize db:seed:all",
     "db:drop:test": "NODE_ENV=test npx sequelize db:drop",
-    "db:test": "yarn build && yarn db:drop:test && yarn db:init:test && yarn db:seed:test"
+    "db:test": "npm run build && npm run db:drop:test && npm run db:init:test && npm run db:seed:test"
   },
   "dependencies": {
     "@types/lodash": "^4.14.168",
