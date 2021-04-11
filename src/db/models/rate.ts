@@ -1,24 +1,24 @@
 import { Model, Sequelize, DataTypes } from 'sequelize';
 import { IRate, IModel } from '../../interfaces/model';
 
-module.exports = (sequelize: Sequelize) => {
-  class Rate extends Model<IRate> implements IRate {
-    readonly id!: number;
-    userId!: number | null;
-    videoId!: number;
-    count!: number;
+export default class Rate extends Model<IRate> implements IRate {
+  readonly id!: number;
+  userId!: number | null;
+  videoId!: number;
+  count!: number;
 
-    static associate(models: IModel) {
-      /**
-       * video association
-       */
-      Rate.belongsTo(models.Video, {
-        foreignKey: 'videoId',
-        targetKey: 'id',
-      });
-    }
+  static associate(models: IModel) {
+    /**
+     * video association
+     */
+    Rate.belongsTo(models.Video, {
+      foreignKey: 'videoId',
+      targetKey: 'id',
+    });
   }
+}
 
+module.exports = (sequelize: Sequelize) => {
   Rate.init(
     {
       id: {

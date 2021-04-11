@@ -1,48 +1,48 @@
 import { Model, Sequelize, DataTypes } from 'sequelize';
 import { IArticle, IModel } from '../../interfaces/model';
 
-module.exports = (sequelize: Sequelize) => {
-  class Article extends Model<IArticle> implements IArticle {
-    readonly id!: number;
-    slug!: string;
-    title!: string;
-    summary!: string;
-    body!: string;
-    images!: string[] | null;
-    video!: string[] | null;
-    reads!: number;
-    tags!: string[] | null;
-    liked!: boolean;
-    likeCount!: number;
-    userId!: number;
+export default class Article extends Model<IArticle> implements IArticle {
+  readonly id!: number;
+  slug!: string;
+  title!: string;
+  summary!: string;
+  body!: string;
+  images!: string[] | null;
+  video!: string[] | null;
+  reads!: number;
+  tags!: string[] | null;
+  liked!: boolean;
+  likeCount!: number;
+  userId!: number;
 
-    static associate(models: IModel) {
-      /**
-       * bookmark association
-       */
-      Article.hasMany(models.Bookmark, {
-        foreignKey: 'articleId',
-        sourceKey: 'id',
-      });
+  static associate(models: IModel) {
+    /**
+     * bookmark association
+     */
+    Article.hasMany(models.Bookmark, {
+      foreignKey: 'articleId',
+      sourceKey: 'id',
+    });
 
-      /**
-       * like association
-       */
-      Article.hasMany(models.Like, {
-        foreignKey: 'articleId',
-        sourceKey: 'id',
-      });
+    /**
+     * like association
+     */
+    Article.hasMany(models.Like, {
+      foreignKey: 'articleId',
+      sourceKey: 'id',
+    });
 
-      /**
-       * user association
-       */
-      Article.belongsTo(models.User, {
-        foreignKey: 'userId',
-        targetKey: 'id',
-      });
-    }
+    /**
+     * user association
+     */
+    Article.belongsTo(models.User, {
+      foreignKey: 'userId',
+      targetKey: 'id',
+    });
   }
+}
 
+module.exports = (sequelize: Sequelize) => {
   Article.init(
     {
       id: {

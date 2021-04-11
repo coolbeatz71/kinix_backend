@@ -1,23 +1,23 @@
 import { Model, Sequelize, DataTypes } from 'sequelize';
 import { IShare, IModel } from '../../interfaces/model';
 
-module.exports = (sequelize: Sequelize) => {
-  class Share extends Model<IShare> implements IShare {
-    readonly id!: number;
-    userId!: number | null;
-    videoId!: number;
+export default class Share extends Model<IShare> implements IShare {
+  readonly id!: number;
+  userId!: number | null;
+  videoId!: number;
 
-    static associate(models: IModel) {
-      /**
-       * video association
-       */
-      Share.belongsTo(models.Video, {
-        foreignKey: 'videoId',
-        targetKey: 'id',
-      });
-    }
+  static associate(models: IModel) {
+    /**
+     * video association
+     */
+    Share.belongsTo(models.Video, {
+      foreignKey: 'videoId',
+      targetKey: 'id',
+    });
   }
+}
 
+module.exports = (sequelize: Sequelize) => {
   Share.init(
     {
       id: {

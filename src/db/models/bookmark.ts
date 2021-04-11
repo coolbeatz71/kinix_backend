@@ -1,31 +1,31 @@
 import { Model, Sequelize, DataTypes } from 'sequelize';
-import { IBookmark, IModel } from '../../interfaces/model';
+import { IBookmark } from '../../interfaces/model';
+import { IUnknownObject } from '../../interfaces/unknownObject';
 
-module.exports = (sequelize: Sequelize) => {
-  class Bookmark extends Model<IBookmark> implements IBookmark {
-    readonly id!: number;
-    userId!: number;
-    articleId!: number;
+export default class Bookmark extends Model<IBookmark> implements IBookmark {
+  readonly id!: number;
+  userId!: number;
+  articleId!: number;
 
-    static associate(models: IModel) {
-      /**
-       * user association
-       */
-      Bookmark.belongsTo(models.User, {
-        foreignKey: 'userId',
-        targetKey: 'id',
-      });
+  static associate(models: IUnknownObject) {
+    /**
+     * user association
+     */
+    Bookmark.belongsTo(models.User, {
+      foreignKey: 'userId',
+      targetKey: 'id',
+    });
 
-      /**
-       * article association
-       */
-      Bookmark.belongsTo(models.Article, {
-        foreignKey: 'articleId',
-        targetKey: 'id',
-      });
-    }
+    /**
+     * article association
+     */
+    Bookmark.belongsTo(models.Article, {
+      foreignKey: 'articleId',
+      targetKey: 'id',
+    });
   }
-
+}
+module.exports = (sequelize: Sequelize) => {
   Bookmark.init(
     {
       id: {

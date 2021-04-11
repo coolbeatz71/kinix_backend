@@ -1,33 +1,32 @@
 import { Model, Sequelize, DataTypes } from 'sequelize';
 import { IPlaylist, IModel } from '../../interfaces/model';
 
-module.exports = (sequelize: Sequelize) => {
-  class Playlist extends Model<IPlaylist> implements IPlaylist {
-    readonly id!: number;
-    slug!: string;
-    title!: string;
-    userId!: number;
-    videoId!: number;
+export default class Playlist extends Model<IPlaylist> implements IPlaylist {
+  readonly id!: number;
+  slug!: string;
+  title!: string;
+  userId!: number;
+  videoId!: number;
 
-    static associate(models: IModel) {
-      /**
-       * user association
-       */
-      Playlist.belongsTo(models.User, {
-        foreignKey: 'userId',
-        targetKey: 'id',
-      });
+  static associate(models: IModel) {
+    /**
+     * user association
+     */
+    Playlist.belongsTo(models.User, {
+      foreignKey: 'userId',
+      targetKey: 'id',
+    });
 
-      /**
-       * video association
-       */
-      Playlist.belongsTo(models.Video, {
-        foreignKey: 'videoId',
-        targetKey: 'id',
-      });
-    }
+    /**
+     * video association
+     */
+    Playlist.belongsTo(models.Video, {
+      foreignKey: 'videoId',
+      targetKey: 'id',
+    });
   }
-
+}
+module.exports = (sequelize: Sequelize) => {
   Playlist.init(
     {
       id: {

@@ -1,7 +1,11 @@
-import { BAD_REQUEST, NOT_FOUND } from 'http-status';
+import bcrypt from 'bcrypt';
+import httpStatus, { BAD_REQUEST, NOT_FOUND } from 'http-status';
 import { NextFunction, Request, Response } from 'express';
-import { IResponseBody } from '../interfaces/Api';
-import { IUnknownObject } from '../interfaces/UnknownObject';
+import { config } from 'dotenv';
+import { IResponseBody } from '../interfaces/api';
+import { IUnknownObject } from '../interfaces/unknownObject';
+
+config();
 
 /**
  * check if the request body contains a given field
@@ -21,8 +25,9 @@ export const isFieldInBody = (req: Request, field: string) => {
  * @param body
  * @return Response
  */
-export const getResponse = (res: Response, status: number, body: IResponseBody): Response =>
-  res.status(status).json(body);
+export const getResponse = (res: Response, status: number, body: IResponseBody): Response => {
+  return res.status(status).json(body);
+};
 
 /**
  * display the validation errors
@@ -58,4 +63,26 @@ export const notFoundError = (_req: Request, res: Response, _next: NextFunction)
   return res.status(NOT_FOUND).json({
     message: 'Requested Resource Not Found',
   });
+};
+
+/**
+ * return internal server error
+ * @param res
+ * @param error
+ * @returns
+ */
+export const getServerError = (res: Response, error: any) => {
+  const status = httpStatus.INTERNAL_SERVER_ERROR;
+  return getResponse(res, status, {
+    message: error,
+  });
+};
+
+/**
+ * generate a hashed password
+ * @param password
+ * @returns string
+ */
+export const getHashedPassword = (password: string) => {
+  return bcrypt.hashSync(password, bcrypt.genSaltSync(8));
 };

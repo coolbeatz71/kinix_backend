@@ -1,30 +1,31 @@
 import { Model, Sequelize, DataTypes } from 'sequelize';
 import { ILike, IModel } from '../../interfaces/model';
 
-module.exports = (sequelize: Sequelize) => {
-  class Like extends Model<ILike> implements ILike {
-    readonly id!: number;
-    userId!: number;
-    articleId!: number;
+export default class Like extends Model<ILike> implements ILike {
+  readonly id!: number;
+  userId!: number;
+  articleId!: number;
 
-    static associate(models: IModel) {
-      /**
-       * article association
-       */
-      Like.belongsTo(models.Article, {
-        foreignKey: 'articleId',
-        targetKey: 'id',
-      });
+  static associate(models: IModel) {
+    /**
+     * article association
+     */
+    Like.belongsTo(models.Article, {
+      foreignKey: 'articleId',
+      targetKey: 'id',
+    });
 
-      /**
-       * user association
-       */
-      Like.belongsTo(models.User, {
-        foreignKey: 'articleId',
-        targetKey: 'id',
-      });
-    }
+    /**
+     * user association
+     */
+    Like.belongsTo(models.User, {
+      foreignKey: 'articleId',
+      targetKey: 'id',
+    });
   }
+}
+
+module.exports = (sequelize: Sequelize) => {
   Like.init(
     {
       id: {

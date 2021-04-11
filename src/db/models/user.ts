@@ -3,63 +3,63 @@ import { IUser, IModel } from '../../interfaces/model';
 import EProvider from '../../interfaces/provider';
 import ERole from '../../interfaces/role';
 
-module.exports = (sequelize: Sequelize) => {
-  class User extends Model<IUser> implements IUser {
-    readonly id!: number;
-    userName!: string;
-    email!: string | null;
-    phoneNumber!: string | null;
-    password!: string;
-    provider: EProvider = EProvider.LOCAL;
-    isLoggedIn!: boolean;
-    verified!: boolean;
-    image!: string | null;
-    allowEmailNotification!: boolean;
-    role: ERole = ERole.VIEWER_CLIENT;
+export default class User extends Model<IUser> implements IUser {
+  readonly id!: number;
+  userName!: string;
+  password!: string;
+  email?: string | null;
+  phoneNumber?: string | null;
+  provider?: EProvider = EProvider.LOCAL;
+  isLoggedIn?: boolean;
+  verified?: boolean;
+  image?: string | null;
+  allowEmailNotification?: boolean;
+  role?: ERole = ERole.VIEWER_CLIENT;
 
-    static associate(models: IModel) {
-      /**
-       * video association
-       */
-      User.hasMany(models.Video, {
-        foreignKey: 'userId',
-        sourceKey: 'id',
-      });
+  static associate(models: IModel) {
+    /**
+     * video association
+     */
+    User.hasMany(models.Video, {
+      foreignKey: 'userId',
+      sourceKey: 'id',
+    });
 
-      /**
-       * video-playlist association
-       */
-      User.hasMany(models.Playlist, {
-        foreignKey: 'userId',
-        sourceKey: 'id',
-      });
+    /**
+     * video-playlist association
+     */
+    User.hasMany(models.Playlist, {
+      foreignKey: 'userId',
+      sourceKey: 'id',
+    });
 
-      /**
-       * article-bookmark association
-       */
-      User.hasMany(models.Bookmark, {
-        foreignKey: 'userId',
-        sourceKey: 'id',
-      });
+    /**
+     * article-bookmark association
+     */
+    User.hasMany(models.Bookmark, {
+      foreignKey: 'userId',
+      sourceKey: 'id',
+    });
 
-      /**
-       * article-like association
-       */
-      User.hasMany(models.Like, {
-        foreignKey: 'userId',
-        sourceKey: 'id',
-      });
+    /**
+     * article-like association
+     */
+    User.hasMany(models.Like, {
+      foreignKey: 'userId',
+      sourceKey: 'id',
+    });
 
-      /**
-       * article association
-       */
-      User.hasMany(models.Article, {
-        foreignKey: 'userId',
-        sourceKey: 'id',
-      });
-    }
+    /**
+     * article association
+     */
+    User.hasMany(models.Article, {
+      foreignKey: 'userId',
+      sourceKey: 'id',
+    });
   }
+}
 
+module.exports = (sequelize: Sequelize) => {
   User.init(
     {
       id: {
