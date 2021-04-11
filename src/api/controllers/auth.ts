@@ -2,7 +2,6 @@
 import { Request, Response } from 'express';
 import httpStatus from 'http-status';
 import { getHashedPassword, getResponse, getServerError } from '../../helpers/api';
-import { EAuthChannel } from '../../interfaces/role';
 import SignupValidator from '../../validator/signup';
 import { generateToken } from '../../helpers/jwt';
 import { IUser } from '../../interfaces/model';
@@ -14,9 +13,9 @@ export class Auth {
    * @param req Request
    * @param res Response
    */
-  signupEmail = async (req: Request, res: Response): Promise<any> => {
+  signup = async (req: Request, res: Response): Promise<any> => {
     const { userName, email, password } = req.body;
-    await new SignupValidator(req, res).run(EAuthChannel.EMAIL);
+    await new SignupValidator(req, res).run();
 
     try {
       const isUserNameExist = await db.User.findOne({
@@ -33,7 +32,7 @@ export class Auth {
 
       if (isUserNameExist) {
         return getResponse(res, httpStatus.CONFLICT, {
-          message: `Account with that username already exists`,
+          message: `username already taken`,
         });
       }
 
