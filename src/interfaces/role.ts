@@ -6,4 +6,9 @@ enum ERole {
   SUPER_ADMIN = 'SUPER_ADMIN',
 }
 
+export enum EAuthChannel {
+  EMAIL = 'EMAIL',
+  TELEPHONE = 'TELEPHONE',
+}
+
 export default ERole;

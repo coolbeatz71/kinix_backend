@@ -18,15 +18,15 @@ export interface IModel {
 export interface IUser {
   readonly id?: number;
   userName: string;
-  email: string | null;
-  phoneNumber: string | null;
   password: string;
+  email?: string | null;
+  phoneNumber?: string | null;
   provider?: EProvider;
   isLoggedIn?: boolean;
   verified?: boolean;
-  image: string | null;
+  image?: string | null;
   allowEmailNotification?: boolean;
-  role: ERole;
+  role?: ERole;
   createdAt?: string;
   updatedAt?: string;
 }

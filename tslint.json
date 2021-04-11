@@ -1,5 +1,5 @@
 {
-  "max-line-length": [true, { "limit": 120 }],
+  "max-line-length": [true, { "limit": 100 }],
   "extends": ["tslint:latest", "tslint-config-airbnb", "tslint-config-prettier"],
   "jsRules": {
     "eofline": true
