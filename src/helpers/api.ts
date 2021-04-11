@@ -86,3 +86,12 @@ export const getServerError = (res: Response, error: any) => {
 export const getHashedPassword = (password: string) => {
   return bcrypt.hashSync(password, bcrypt.genSaltSync(8));
 };
+
+/**
+ * compare passwords
+ * @param password
+ * @returns string
+ */
+export const comparePassword = (password: string, hashedPassword: string) => {
+  return bcrypt.compareSync(password, hashedPassword);
+};

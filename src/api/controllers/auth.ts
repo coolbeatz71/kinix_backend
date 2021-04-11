@@ -1,8 +1,16 @@
 /* eslint-disable */
 import { Request, Response } from 'express';
-import httpStatus from 'http-status';
-import { getHashedPassword, getResponse, getServerError } from '../../helpers/api';
-import SignupValidator from '../../validator/signup';
+import { Op } from 'sequelize';
+import { BAD_REQUEST, CONFLICT, CREATED, FORBIDDEN, UNAUTHORIZED } from 'http-status';
+import { validationResult } from 'express-validator';
+import {
+  comparePassword,
+  getHashedPassword,
+  getResponse,
+  getServerError,
+  getValidationError,
+} from '../../helpers/api';
+import AuthValidator from '../../validator/auth';
 import { generateToken } from '../../helpers/jwt';
 import { IUser } from '../../interfaces/model';
 import db from '../../db/models';
@@ -15,7 +23,10 @@ export class Auth {
    */
   signup = async (req: Request, res: Response): Promise<any> => {
     const { userName, email, password } = req.body;
-    await new SignupValidator(req, res).run();
+
+    await new AuthValidator(req).signup();
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) return getValidationError(res, errors);
 
     try {
       const isUserNameExist = await db.User.findOne({
@@ -31,13 +42,13 @@ export class Auth {
       });
 
       if (isUserNameExist) {
-        return getResponse(res, httpStatus.CONFLICT, {
+        return getResponse(res, CONFLICT, {
           message: `username already taken`,
         });
       }
 
       if (isEmailExist) {
-        return getResponse(res, httpStatus.CONFLICT, {
+        return getResponse(res, CONFLICT, {
           message: `Account with that email already exists`,
         });
       }
@@ -60,8 +71,53 @@ export class Auth {
     }
   };
 
+  login = async (req: Request, res: Response): Promise<any> => {
+    const { credential, password } = req.body;
+
+    await new AuthValidator(req).login();
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) return getValidationError(res, errors);
+
+    try {
+      const user = await db.User.findOne({
+        where: {
+          [Op.or]: [{ userName: credential }, { email: credential }],
+        },
+      });
+
+      if (!user) {
+        return getResponse(res, UNAUTHORIZED, {
+          message: 'username or email are incorrects',
+        });
+      }
+
+      const isPasswordValid = comparePassword(password, user.get().password);
+
+      if (!isPasswordValid) {
+        return getResponse(res, FORBIDDEN, {
+          message: 'password is incorrect',
+        });
+      }
+
+      // handle non verified account
+      if (user.get().verified === false) {
+        // TODO should resend email confirmation here
+        return getResponse(res, BAD_REQUEST, {
+          message: 'check your email for account confirmation',
+        });
+      }
+
+      await db.User.update({ isLoggedIn: true }, { where: { id: user.id } });
+
+      const token = generateToken(user.get());
+      return this.userResponse(res, user.get(), token);
+    } catch (error) {
+      getServerError(res, error.message);
+    }
+  };
+
   userResponse = (res: Response, user: IUser, token: string) => {
-    return getResponse(res, httpStatus.CREATED, {
+    return getResponse(res, CREATED, {
       token,
       message: 'Account successfully created',
       data: {
