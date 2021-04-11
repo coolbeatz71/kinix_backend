@@ -1,33 +1,18 @@
-'use strict';
 import { Model, Sequelize, DataTypes } from 'sequelize';
-import { IUnknownObject } from '../../interfaces/UnknownObject';
-
-interface ICategory {
-  readonly id: number;
-  userId: number;
-  articleId: number;
-}
+import ECategory from '../../interfaces/category';
+import { ICategory, IModel } from '../../interfaces/model';
 
 module.exports = (sequelize: Sequelize) => {
   class Category extends Model<ICategory> implements ICategory {
     readonly id!: number;
-    userId!: number;
-    articleId!: number;
+    name!: string;
 
-    static associate(models: IUnknownObject) {
+    static associate(models: IModel) {
       /**
-       * user association
+       * video association
        */
-      Category.belongsTo(models.User, {
-        foreignKey: 'userId',
-        targetKey: 'id',
-      });
-
-      /**
-       * article association
-       */
-      Category.belongsTo(models.Article, {
-        foreignKey: 'articleId',
+      Category.belongsTo(models.Video, {
+        foreignKey: 'categoryId',
         targetKey: 'id',
       });
     }
@@ -41,13 +26,9 @@ module.exports = (sequelize: Sequelize) => {
         primaryKey: true,
         autoIncrement: true,
       },
-      userId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-      },
-      articleId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
+      name: {
+        type: DataTypes.STRING,
+        defaultValue: ECategory.MUSIC_VIDEO,
       },
     },
     {

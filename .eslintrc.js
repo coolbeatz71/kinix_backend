@@ -1,4 +1,9 @@
 module.exports = {
+  settings: {
+    react: {
+      version: 'latest',
+    },
+  },
   extends: ['./node_modules/poetic/config/eslint/eslint-config.js'],
   rules: {
     '@typescript-eslint/explicit-member-accessibility': 0,
@@ -12,6 +17,10 @@ module.exports = {
     {
       files: ['*.ts'],
       rules: {
+        'no-shadow': 'off',
+        'no-param-reassign': [2, { props: false }],
+        'lines-between-class-members': ['error', 'always', { exceptAfterSingleLine: true }],
+        '@typescript-eslint/no-shadow': ['error'],
         '@typescript-eslint/no-unused-vars': [2, { args: 'none' }],
       },
     },

@@ -1,14 +1,5 @@
-'use strict';
 import { Model, Sequelize, DataTypes } from 'sequelize';
-import { IUnknownObject } from '../../interfaces/UnknownObject';
-
-interface IPlaylist {
-  readonly id: number;
-  slug: string;
-  title: string;
-  userId: number;
-  videoId: number;
-}
+import { IPlaylist, IModel } from '../../interfaces/model';
 
 module.exports = (sequelize: Sequelize) => {
   class Playlist extends Model<IPlaylist> implements IPlaylist {
@@ -18,7 +9,7 @@ module.exports = (sequelize: Sequelize) => {
     userId!: number;
     videoId!: number;
 
-    static associate(models: IUnknownObject) {
+    static associate(models: IModel) {
       /**
        * user association
        */

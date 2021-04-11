@@ -1,17 +1,5 @@
-'use strict';
 import { Model, Sequelize, DataTypes } from 'sequelize';
-import { IUnknownObject } from '../../interfaces/UnknownObject';
-
-interface IVideo {
-  readonly id: number;
-  link: string;
-  title: string;
-  tags: string[] | null;
-  shared: boolean;
-  shareCount: number;
-  userId: number;
-  categoryId: number;
-}
+import { IModel, IVideo } from '../../interfaces/model';
 
 module.exports = (sequelize: Sequelize) => {
   class Video extends Model<IVideo> implements IVideo {
@@ -19,12 +7,12 @@ module.exports = (sequelize: Sequelize) => {
     link!: string;
     title!: string;
     tags!: string[] | null;
-    shared: boolean = false;
-    shareCount: number = 0;
+    shared = false;
+    shareCount = 0;
     userId!: number;
     categoryId!: number;
 
-    static associate(models: IUnknownObject) {
+    static associate(models: IModel) {
       /**
        * user association
        */
@@ -36,9 +24,9 @@ module.exports = (sequelize: Sequelize) => {
       /**
        * category association
        */
-      Video.belongsTo(models.Category, {
+      Video.hasOne(models.Category, {
         foreignKey: 'categoryId',
-        targetKey: 'id',
+        sourceKey: 'id',
       });
 
       /**

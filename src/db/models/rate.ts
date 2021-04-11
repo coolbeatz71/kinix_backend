@@ -1,13 +1,5 @@
-'use strict';
 import { Model, Sequelize, DataTypes } from 'sequelize';
-import { IUnknownObject } from '../../interfaces/UnknownObject';
-
-interface IRate {
-  readonly id: number;
-  userId: number | null;
-  videoId: number;
-  count: number;
-}
+import { IRate, IModel } from '../../interfaces/model';
 
 module.exports = (sequelize: Sequelize) => {
   class Rate extends Model<IRate> implements IRate {
@@ -16,7 +8,7 @@ module.exports = (sequelize: Sequelize) => {
     videoId!: number;
     count!: number;
 
-    static associate(models: IUnknownObject) {
+    static associate(models: IModel) {
       /**
        * video association
        */

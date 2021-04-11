@@ -1,4 +1,3 @@
-'use strict';
 import { QueryInterface, DataTypes } from 'sequelize';
 
 export const up = async (queryInterface: QueryInterface) => {
@@ -20,9 +19,11 @@ export const up = async (queryInterface: QueryInterface) => {
     },
     shared: {
       type: DataTypes.BOOLEAN,
+      defaultValue: false,
     },
     shareCount: {
       type: DataTypes.INTEGER,
+      defaultValue: 0,
     },
     userId: {
       type: DataTypes.INTEGER,

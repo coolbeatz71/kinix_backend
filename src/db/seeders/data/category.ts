@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { ECategory } from '../../../interfaces/category';
+import ECategory from '../../../interfaces/category';
 
 // generate createdDate and updateDate
 const createdAt = dayjs().format();

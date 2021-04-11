@@ -8,18 +8,21 @@
   "scripts": {
     "start": "npm run build && cross-env NODE_ENV=production node build/server.js",
     "dev": "cross-env NODE_ENV=development nodemon",
-    "build": "npm run lint && tsc",
+    "build": "yarn code:lint && tsc",
     "test": "jest --detectOpenHandles --runInBand --forceExit --coverage",
-    "lint": "eslint --ignore-path .gitignore --ext .ts src/",
-    "lint:fix": "npm run lint -- --fix",
-    "seed": "NODE_ENV=test npx sequelize db:seed:all",
-    "db:init:dev": "NODE_ENV=development npx sequelize db:create && NODE_ENV=development npx sequelize db:migrate",
-    "db:init:test": "NODE_ENV=test npx sequelize db:create && NODE_ENV=test npx sequelize db:migrate",
     "code:check": "yarn code:lint; yarn code:format --check",
     "code:clean": "yarn code:lint --fix; yarn code:format --write",
     "code:lint": "eslint --ext .js,.jsx,.ts,.tsx \"src/\"",
     "code:format": "prettier './src/**/**.{js,jsx,ts,tsx}'",
-    "code:check:rules": "eslint --print-config .eslintrc.js | eslint-config-prettier-check"
+    "code:check:rules": "eslint --print-config .eslintrc.js | eslint-config-prettier-check",
+    "db:init:dev": "NODE_ENV=development npx sequelize db:create && NODE_ENV=development npx sequelize db:migrate",
+    "db:seed:dev": "NODE_ENV=development npx sequelize db:seed:all",
+    "db:drop:dev": "NODE_ENV=development npx sequelize db:drop",
+    "db:dev": "yarn build && yarn db:drop:dev && yarn db:init:dev && yarn db:seed:dev",
+    "db:init:test": "NODE_ENV=test npx sequelize db:create && NODE_ENV=test npx sequelize db:migrate",
+    "db:seed:test": "NODE_ENV=test npx sequelize db:seed:all",
+    "db:drop:test": "NODE_ENV=test npx sequelize db:drop",
+    "db:test": "yarn build && yarn db:drop:test && yarn db:init:test && yarn db:seed:test"
   },
   "dependencies": {
     "babel-register": "^6.26.0",

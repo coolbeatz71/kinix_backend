@@ -1,11 +1,5 @@
 import { Model, Sequelize, DataTypes } from 'sequelize';
-import { IUnknownObject } from '../../interfaces/UnknownObject';
-
-interface IBookmark {
-  readonly id: number;
-  userId: number;
-  articleId: number;
-}
+import { IBookmark, IModel } from '../../interfaces/model';
 
 module.exports = (sequelize: Sequelize) => {
   class Bookmark extends Model<IBookmark> implements IBookmark {
@@ -13,7 +7,7 @@ module.exports = (sequelize: Sequelize) => {
     userId!: number;
     articleId!: number;
 
-    static associate(models: IUnknownObject) {
+    static associate(models: IModel) {
       /**
        * user association
        */

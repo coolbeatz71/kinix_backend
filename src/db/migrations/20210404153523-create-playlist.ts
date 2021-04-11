@@ -1,4 +1,3 @@
-'use strict';
 import { QueryInterface, DataTypes } from 'sequelize';
 
 export const up = async (queryInterface: QueryInterface) => {

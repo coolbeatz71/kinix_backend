@@ -1,22 +1,7 @@
-'use strict';
 import { Model, Sequelize, DataTypes } from 'sequelize';
-import { EProvider } from '../../interfaces/provider';
-import { ERole } from '../../interfaces/role';
-import { IUnknownObject } from '../../interfaces/UnknownObject';
-
-interface IUser {
-  readonly id: number;
-  userName: string;
-  email: string | null;
-  phoneNumber: string | null;
-  password: string;
-  provider: EProvider;
-  isLoggedIn: boolean;
-  verified: boolean;
-  image: string | null;
-  allowEmailNotification: boolean;
-  role: ERole;
-}
+import { IUser, IModel } from '../../interfaces/model';
+import EProvider from '../../interfaces/provider';
+import ERole from '../../interfaces/role';
 
 module.exports = (sequelize: Sequelize) => {
   class User extends Model<IUser> implements IUser {
@@ -32,7 +17,7 @@ module.exports = (sequelize: Sequelize) => {
     allowEmailNotification!: boolean;
     role: ERole = ERole.VIEWER_CLIENT;
 
-    static associate(models: IUnknownObject) {
+    static associate(models: IModel) {
       /**
        * video association
        */
@@ -61,6 +46,14 @@ module.exports = (sequelize: Sequelize) => {
        * article-like association
        */
       User.hasMany(models.Like, {
+        foreignKey: 'userId',
+        sourceKey: 'id',
+      });
+
+      /**
+       * article association
+       */
+      User.hasMany(models.Article, {
         foreignKey: 'userId',
         sourceKey: 'id',
       });

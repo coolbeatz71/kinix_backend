@@ -1,12 +1,5 @@
-'use strict';
 import { Model, Sequelize, DataTypes } from 'sequelize';
-import { IUnknownObject } from '../../interfaces/UnknownObject';
-
-interface ILike {
-  readonly id: number;
-  userId: number;
-  articleId: number;
-}
+import { ILike, IModel } from '../../interfaces/model';
 
 module.exports = (sequelize: Sequelize) => {
   class Like extends Model<ILike> implements ILike {
@@ -14,7 +7,7 @@ module.exports = (sequelize: Sequelize) => {
     userId!: number;
     articleId!: number;
 
-    static associate(models: IUnknownObject) {
+    static associate(models: IModel) {
       /**
        * article association
        */

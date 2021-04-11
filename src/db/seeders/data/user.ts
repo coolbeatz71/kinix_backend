@@ -2,8 +2,8 @@ import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 import dayjs from 'dayjs';
 import { name, internet, phone, image } from 'faker';
-import { ERole } from '../../../interfaces/role';
-import { EProvider } from '../../../interfaces/provider';
+import ERole from '../../../interfaces/role';
+import { IUser } from '../../../interfaces/model';
 
 dotenv.config();
 
@@ -15,15 +15,12 @@ const password = bcrypt.hashSync(plainPwd, bcrypt.genSaltSync(8));
 const createdAt = dayjs().format();
 const updatedAt = createdAt;
 
-const UserData = [
+const UserData: IUser[] = [
   {
     userName: name.firstName(),
     email: internet.email(),
     phoneNumber: phone.phoneNumber(),
     password,
-    provider: EProvider.LOCAL,
-    isLoggedIn: false,
-    verified: false,
     image: image.avatar(),
     role: ERole.VIDEO_CLIENT,
     createdAt,
@@ -34,9 +31,6 @@ const UserData = [
     email: internet.email(),
     phoneNumber: phone.phoneNumber(),
     password,
-    provider: EProvider.LOCAL,
-    isLoggedIn: false,
-    verified: false,
     image: image.avatar(),
     role: ERole.VIEWER_CLIENT,
     createdAt,
@@ -47,9 +41,6 @@ const UserData = [
     email: internet.email(),
     phoneNumber: phone.phoneNumber(),
     password,
-    provider: EProvider.LOCAL,
-    isLoggedIn: false,
-    verified: false,
     image: image.avatar(),
     role: ERole.ADS_CLIENT,
     createdAt,
@@ -60,9 +51,6 @@ const UserData = [
     email: internet.email(),
     phoneNumber: phone.phoneNumber(),
     password,
-    provider: EProvider.LOCAL,
-    isLoggedIn: false,
-    verified: false,
     image: image.avatar(),
     role: ERole.ADMIN,
     createdAt,
@@ -73,9 +61,6 @@ const UserData = [
     email: internet.email(),
     phoneNumber: phone.phoneNumber(),
     password,
-    provider: EProvider.LOCAL,
-    isLoggedIn: false,
-    verified: false,
     image: image.avatar(),
     role: ERole.SUPER_ADMIN,
     createdAt,

@@ -1,20 +1,5 @@
-'use strict';
 import { Model, Sequelize, DataTypes } from 'sequelize';
-import { IUnknownObject } from '../../interfaces/UnknownObject';
-
-interface IArticle {
-  readonly id: number;
-  slug: string;
-  title: string;
-  summary: string;
-  body: string;
-  images: string[] | null;
-  video: string[] | null;
-  reads: number;
-  tags: string[] | null;
-  liked: boolean;
-  likeCount: number;
-}
+import { IArticle, IModel } from '../../interfaces/model';
 
 module.exports = (sequelize: Sequelize) => {
   class Article extends Model<IArticle> implements IArticle {
@@ -29,8 +14,9 @@ module.exports = (sequelize: Sequelize) => {
     tags!: string[] | null;
     liked!: boolean;
     likeCount!: number;
+    userId!: number;
 
-    static associate(models: IUnknownObject) {
+    static associate(models: IModel) {
       /**
        * bookmark association
        */
@@ -45,6 +31,14 @@ module.exports = (sequelize: Sequelize) => {
       Article.hasMany(models.Like, {
         foreignKey: 'articleId',
         sourceKey: 'id',
+      });
+
+      /**
+       * user association
+       */
+      Article.belongsTo(models.User, {
+        foreignKey: 'userId',
+        targetKey: 'id',
       });
     }
   }
@@ -105,6 +99,9 @@ module.exports = (sequelize: Sequelize) => {
       likeCount: {
         type: DataTypes.INTEGER,
         defaultValue: 0,
+      },
+      userId: {
+        type: DataTypes.INTEGER,
       },
     },
     {

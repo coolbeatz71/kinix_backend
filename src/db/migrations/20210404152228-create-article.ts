@@ -1,5 +1,3 @@
-'use strict';
-
 import { QueryInterface, DataTypes } from 'sequelize';
 
 export const up = async (queryInterface: QueryInterface) => {
@@ -36,8 +34,13 @@ export const up = async (queryInterface: QueryInterface) => {
     },
     liked: {
       type: DataTypes.BOOLEAN,
+      defaultValue: false,
     },
     likeCount: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+    },
+    userId: {
       type: DataTypes.INTEGER,
     },
     createdAt: {

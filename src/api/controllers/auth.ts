@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Request, Response } from 'express';
 
 export class Auth {
@@ -6,7 +7,7 @@ export class Auth {
    * @param req Request
    * @param res Response
    */
-  public async signup(req: Request, res: Response): Promise<any> {}
+  public async signup(_req: Request, _res: Response): Promise<any> {}
 }
 
 const authCtrl = new Auth();

@@ -1,5 +1,6 @@
-'use strict';
 import { QueryInterface, DataTypes } from 'sequelize';
+import EProvider from '../../interfaces/provider';
+import ERole from '../../interfaces/role';
 
 export const up = async (queryInterface: QueryInterface) => {
   await queryInterface.createTable('user', {
@@ -23,21 +24,26 @@ export const up = async (queryInterface: QueryInterface) => {
     },
     provider: {
       type: DataTypes.STRING,
+      defaultValue: EProvider.LOCAL,
     },
     isLoggedIn: {
       type: DataTypes.BOOLEAN,
+      defaultValue: false,
     },
     verified: {
       type: DataTypes.BOOLEAN,
+      defaultValue: false,
     },
     image: {
       type: DataTypes.STRING,
     },
     allowEmailNotification: {
       type: DataTypes.BOOLEAN,
+      defaultValue: true,
     },
     role: {
       type: DataTypes.STRING,
+      defaultValue: ERole.VIEWER_CLIENT,
     },
     createdAt: {
       allowNull: false,
