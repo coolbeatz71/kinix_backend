@@ -1,0 +1,19 @@
+{
+  "extends": "./node_modules/poetic/config/typescript/tsconfig.json",
+  "compilerOptions": {
+    "target": "es5",
+    "outDir": "build",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "typeRoots": ["./node_modules/@types"],
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "isolatedModules": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "allowJs": true
+  },
+  "include": ["src/**/*", ".env"],
+  "exclude": ["node_modules"]
+}
