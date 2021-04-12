@@ -9,6 +9,7 @@
     "start": "npm run build && cross-env NODE_ENV=production node build/server.js",
     "dev": "cross-env NODE_ENV=development nodemon",
     "build": "npm run code:lint && tsc",
+    "type:check": "tsc --noEmit",
     "test": "jest --detectOpenHandles --runInBand --forceExit --coverage",
     "code:lint": "eslint --ext .js,.jsx,.ts,.tsx \"src/\"",
     "code:clean": "npm run code:lint --fix",
