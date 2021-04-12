@@ -1,7 +1,7 @@
 /* eslint-disable */
 import { Request, Response } from 'express';
 import { Op } from 'sequelize';
-import { BAD_REQUEST, CONFLICT, CREATED, FORBIDDEN, UNAUTHORIZED } from 'http-status';
+import { BAD_REQUEST, CONFLICT, CREATED, FORBIDDEN, OK, UNAUTHORIZED } from 'http-status';
 import { validationResult } from 'express-validator';
 import {
   comparePassword,
@@ -14,6 +14,16 @@ import AuthValidator from '../../validator/auth';
 import { generateToken } from '../../helpers/jwt';
 import { IUser } from '../../interfaces/model';
 import db from '../../db/models';
+import {
+  ACCOUNT_CREATED_SUCCESS,
+  ACCOUNT_EXIST,
+  CHECK_CONFIRM_EMAIL,
+  PASSWORD_INVALID,
+  SIGNOUT_SUCCESS,
+  USERNAME_EMAIL_INVALID,
+  USERNAME_TAKEN,
+} from '../constants/message';
+import { IJwtPayload } from '../../interfaces/api';
 
 export class Auth {
   /**
@@ -43,13 +53,13 @@ export class Auth {
 
       if (isUserNameExist) {
         return getResponse(res, CONFLICT, {
-          message: `username already taken`,
+          message: USERNAME_TAKEN,
         });
       }
 
       if (isEmailExist) {
         return getResponse(res, CONFLICT, {
-          message: `Account with that email already exists`,
+          message: ACCOUNT_EXIST,
         });
       }
 
@@ -70,7 +80,11 @@ export class Auth {
       getServerError(res, error.message);
     }
   };
-
+  /**
+   * controller to login the user
+   * @param req Request
+   * @param res Response
+   */
   login = async (req: Request, res: Response): Promise<any> => {
     const { credential, password } = req.body;
 
@@ -87,7 +101,7 @@ export class Auth {
 
       if (!user) {
         return getResponse(res, UNAUTHORIZED, {
-          message: 'username or email are incorrects',
+          message: USERNAME_EMAIL_INVALID,
         });
       }
 
@@ -95,7 +109,7 @@ export class Auth {
 
       if (!isPasswordValid) {
         return getResponse(res, FORBIDDEN, {
-          message: 'password is incorrect',
+          message: PASSWORD_INVALID,
         });
       }
 
@@ -103,7 +117,7 @@ export class Auth {
       if (user.get().verified === false) {
         // TODO should resend email confirmation here
         return getResponse(res, BAD_REQUEST, {
-          message: 'check your email for account confirmation',
+          message: CHECK_CONFIRM_EMAIL,
         });
       }
 
@@ -116,10 +130,17 @@ export class Auth {
     }
   };
 
+  /**
+   * helper to send user info after authentication
+   * @param res
+   * @param user
+   * @param token
+   * @returns
+   */
   userResponse = (res: Response, user: IUser, token: string) => {
     return getResponse(res, CREATED, {
       token,
-      message: 'Account successfully created',
+      message: ACCOUNT_CREATED_SUCCESS,
       data: {
         userName: user.userName,
         email: user.email,
@@ -132,6 +153,25 @@ export class Auth {
         provider: user.provider,
       },
     });
+  };
+
+  /**
+   * The controller for signing out
+   * @param {req} req the request
+   * @param {res} res the response
+   * @return {void}
+   */
+  signout = async (req: Request, res: Response): Promise<any> => {
+    try {
+      const { id } = req.user as IJwtPayload;
+      await db.User.update({ isLoggedIn: false }, { where: { id } });
+
+      return getResponse(res, OK, {
+        message: SIGNOUT_SUCCESS,
+      });
+    } catch (error) {
+      getServerError(res, error.message);
+    }
   };
 }
 
