@@ -41,6 +41,7 @@ export interface IArticle {
   video: string[] | null;
   reads: number;
   tags: string[] | null;
+  active: boolean;
   liked: boolean;
   likeCount: number;
   userId: number;
@@ -50,9 +51,11 @@ export interface IArticle {
 
 export interface IVideo {
   readonly id: number;
+  slug: string;
   link: string;
   title: string;
   tags: string[] | null;
+  active: boolean;
   shared: boolean;
   shareCount: number;
   userId: number;

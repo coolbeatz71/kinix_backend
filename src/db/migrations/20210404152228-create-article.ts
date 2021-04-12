@@ -32,6 +32,10 @@ export const up = async (queryInterface: QueryInterface) => {
     tags: {
       type: DataTypes.ARRAY(DataTypes.STRING),
     },
+    active: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+    },
     liked: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,

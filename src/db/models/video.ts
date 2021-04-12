@@ -3,9 +3,11 @@ import { IModel, IVideo } from '../../interfaces/model';
 
 export default class Video extends Model<IVideo> implements IVideo {
   readonly id!: number;
+  slug!: string;
   link!: string;
   title!: string;
   tags!: string[] | null;
+  active = true;
   shared = false;
   shareCount = 0;
   userId!: number;
@@ -63,6 +65,11 @@ module.exports = (sequelize: Sequelize) => {
         primaryKey: true,
         autoIncrement: true,
       },
+      slug: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+      },
       link: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -77,6 +84,10 @@ module.exports = (sequelize: Sequelize) => {
       tags: {
         type: DataTypes.ARRAY(DataTypes.STRING),
         allowNull: true,
+      },
+      active: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true,
       },
       shared: {
         type: DataTypes.BOOLEAN,

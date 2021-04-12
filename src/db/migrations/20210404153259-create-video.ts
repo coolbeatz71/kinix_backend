@@ -8,6 +8,9 @@ export const up = async (queryInterface: QueryInterface) => {
       primaryKey: true,
       type: DataTypes.INTEGER,
     },
+    slug: {
+      type: DataTypes.STRING,
+    },
     link: {
       type: DataTypes.STRING,
     },
@@ -16,6 +19,10 @@ export const up = async (queryInterface: QueryInterface) => {
     },
     tags: {
       type: DataTypes.ARRAY(DataTypes.STRING),
+    },
+    active: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
     },
     shared: {
       type: DataTypes.BOOLEAN,

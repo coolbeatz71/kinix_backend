@@ -11,6 +11,7 @@ export default class Article extends Model<IArticle> implements IArticle {
   video!: string[] | null;
   reads!: number;
   tags!: string[] | null;
+  active!: boolean;
   liked!: boolean;
   likeCount!: number;
   userId!: number;
@@ -91,6 +92,10 @@ module.exports = (sequelize: Sequelize) => {
       tags: {
         type: DataTypes.ARRAY(DataTypes.STRING),
         allowNull: true,
+      },
+      active: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true,
       },
       liked: {
         type: DataTypes.BOOLEAN,
