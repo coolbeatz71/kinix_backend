@@ -4,6 +4,7 @@ import { NextFunction, Request, Response } from 'express';
 import { config } from 'dotenv';
 import { IResponseBody } from '../interfaces/api';
 import { IUnknownObject } from '../interfaces/unknownObject';
+import { RESOURCE_NOT_FOUND } from '../api/constants/message';
 
 config();
 
@@ -61,7 +62,7 @@ export const getSanitizedBody = (obj: IUnknownObject): IUnknownObject => {
  */
 export const notFoundError = (_req: Request, res: Response, _next: NextFunction) => {
   return res.status(NOT_FOUND).json({
-    message: 'Requested Resource Not Found',
+    message: RESOURCE_NOT_FOUND,
   });
 };
 
