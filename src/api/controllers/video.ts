@@ -1,14 +1,14 @@
 /* eslint-disable consistent-return */
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
-import { CREATED } from 'http-status';
+import { CREATED, NOT_FOUND } from 'http-status';
 import db from '../../db/models';
 import { getResponse, getServerError, getValidationError } from '../../helpers/api';
 import { getUserById } from '../../helpers/user';
 import { generateSlug, getCategoryById, getVideoById } from '../../helpers/video';
 import VideoValidator from '../../validator/video';
 import { IVideo } from '../../interfaces/model';
-import { VIDEO_CREATED_SUCCESS } from '../constants/message';
+import { CATEGORY_NOT_FOUND, USER_NOT_FOUND, VIDEO_CREATED_SUCCESS } from '../constants/message';
 
 export class Video {
   /**
@@ -26,8 +26,20 @@ export class Video {
     try {
       const slug = await generateSlug(title);
 
-      await getCategoryById(res, categoryId);
-      await getUserById(res, userId);
+      const category = await getCategoryById(res, categoryId);
+      const user = await getUserById(res, userId);
+
+      if (!category) {
+        return getResponse(res, NOT_FOUND, {
+          message: CATEGORY_NOT_FOUND,
+        });
+      }
+
+      if (!user) {
+        return getResponse(res, NOT_FOUND, {
+          message: USER_NOT_FOUND,
+        });
+      }
 
       const newVideo = await db.Video.create({
         title,
@@ -43,7 +55,7 @@ export class Video {
       // TODO: should send email/notification to the video owner
       // TODO: send email/notification to all user in the app
 
-      return this.videoResponse(res, getVideo, CREATED, VIDEO_CREATED_SUCCESS);
+      return this.videoResponse(res, getVideo.get(), CREATED, VIDEO_CREATED_SUCCESS);
     } catch (error) {
       getServerError(res, error.message);
     }

@@ -9,18 +9,19 @@ export default class User extends Model<IUser> implements IUser {
   password!: string;
   email?: string | null;
   phoneNumber?: string | null;
-  provider?: EProvider = EProvider.LOCAL;
+  provider?: EProvider;
   isLoggedIn?: boolean;
   verified?: boolean;
   image?: string | null;
   allowEmailNotification?: boolean;
-  role?: ERole = ERole.VIEWER_CLIENT;
+  role?: ERole;
 
   static associate(models: IModel) {
     /**
      * video association
      */
     User.hasMany(models.Video, {
+      as: 'video',
       foreignKey: 'userId',
       sourceKey: 'id',
     });
@@ -29,6 +30,7 @@ export default class User extends Model<IUser> implements IUser {
      * video-playlist association
      */
     User.hasMany(models.Playlist, {
+      as: 'playlist',
       foreignKey: 'userId',
       sourceKey: 'id',
     });
@@ -37,6 +39,7 @@ export default class User extends Model<IUser> implements IUser {
      * article-bookmark association
      */
     User.hasMany(models.Bookmark, {
+      as: 'bookmark',
       foreignKey: 'userId',
       sourceKey: 'id',
     });
@@ -45,6 +48,7 @@ export default class User extends Model<IUser> implements IUser {
      * article-like association
      */
     User.hasMany(models.Like, {
+      as: 'like',
       foreignKey: 'userId',
       sourceKey: 'id',
     });
@@ -53,6 +57,7 @@ export default class User extends Model<IUser> implements IUser {
      * article association
      */
     User.hasMany(models.Article, {
+      as: 'article',
       foreignKey: 'userId',
       sourceKey: 'id',
     });

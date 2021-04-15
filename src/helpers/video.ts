@@ -1,10 +1,8 @@
 /* eslint-disable consistent-return */
 import { Response } from 'express';
-import { NOT_FOUND } from 'http-status';
 import slugify from '@sindresorhus/slugify';
-import { getResponse, getServerError } from './api';
+import { getServerError } from './api';
 import db from '../db/models';
-import { CATEGORY_NOT_FOUND, VIDEO_NOT_FOUND } from '../api/constants/message';
 
 export const generateSlug = async (title: string) => {
   return `${await slugify(title, { lowercase: true })}-${
@@ -15,15 +13,10 @@ export const generateSlug = async (title: string) => {
 const category = async (res: Response, field: string, value: any): Promise<any> => {
   try {
     const result = await db.Category.findOne({
-      where: { [field]: value },
+      where: { [field]: `${value}` },
     });
 
-    return (
-      result &&
-      getResponse(res, NOT_FOUND, {
-        message: CATEGORY_NOT_FOUND,
-      })
-    );
+    return result;
   } catch (err) {
     getServerError(res, err.message);
   }
@@ -41,24 +34,22 @@ export const getVideoById = async (res: Response, id: number): Promise<any> => {
   try {
     const result = await db.Video.findOne({
       where: { id },
+      attributes: { exclude: ['userId', 'categoryId'] },
       include: [
         {
+          as: 'category',
           model: db.Category,
           attributes: ['id', 'name'],
         },
         {
+          as: 'user',
           model: db.User,
           attributes: ['id', 'userName', 'email', 'phoneNumber', 'image', 'role'],
         },
       ],
     });
 
-    return (
-      result &&
-      getResponse(res, NOT_FOUND, {
-        message: VIDEO_NOT_FOUND,
-      })
-    );
+    return result;
   } catch (err) {
     getServerError(res, err.message);
   }

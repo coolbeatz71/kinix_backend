@@ -25,7 +25,11 @@ config();
  * @param {object} next
  * @returns boolean
  */
-export const verifyToken = (req: Request, res: Response, next: NextFunction): any => {
+export const verifyToken = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<any> => {
   const { authorization } = req.headers;
   if (!authorization) {
     return getResponse(res, httpStatus.UNAUTHORIZED, {
@@ -39,7 +43,7 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction): an
     const secret = process.env.JWT_SECRET as string;
     const jwtPayload: any = jwt.verify(token, secret);
 
-    const user = db.User.findOne({
+    const user = await db.User.findOne({
       where: { id: jwtPayload.id },
     });
 

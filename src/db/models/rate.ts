@@ -12,6 +12,7 @@ export default class Rate extends Model<IRate> implements IRate {
      * video association
      */
     Rate.belongsTo(models.Video, {
+      as: 'video',
       foreignKey: 'videoId',
       targetKey: 'id',
     });
