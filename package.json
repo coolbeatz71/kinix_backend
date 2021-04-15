@@ -23,6 +23,7 @@
     "db:test": "npm run build && npm run db:drop:test && npm run db:init:test && npm run db:seed:test"
   },
   "dependencies": {
+    "@sindresorhus/slugify": "^1.1.0",
     "@types/lodash": "^4.14.168",
     "babel-register": "^6.26.0",
     "bcrypt": "^5.0.1",

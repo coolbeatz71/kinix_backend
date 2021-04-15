@@ -64,24 +64,6 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction): an
 };
 
 /**
- * Middleware to verify admin access
- * @param {object} req
- * @param {object} res
- * @param {object} next
- * @returns {void}
- */
-export const adminCheck = (req: Request, res: Response, next: NextFunction): void => {
-  verifyToken(req, res, () => {
-    const { role }: IJwtPayload = req.user as IJwtPayload;
-
-    if (role === ERole.ADMIN) return next();
-    return getResponse(res, httpStatus.FORBIDDEN, {
-      message: ADMIN_FORBIDDEN,
-    });
-  });
-};
-
-/**
  * Middleware to verify super-admin access
  * @param {object} req
  * @param {object} res
@@ -95,6 +77,24 @@ export const superAdminCheck = (req: Request, res: Response, next: NextFunction)
     if (role === ERole.SUPER_ADMIN) return next();
     return getResponse(res, httpStatus.FORBIDDEN, {
       message: SUPER_ADMIN_FORBIDDEN,
+    });
+  });
+};
+
+/**
+ * Middleware to verify admin OR super-admin access
+ * @param {object} req
+ * @param {object} res
+ * @param {object} next
+ * @returns {void}
+ */
+export const adminsCheck = (req: Request, res: Response, next: NextFunction): void => {
+  verifyToken(req, res, () => {
+    const { role }: IJwtPayload = req.user as IJwtPayload;
+
+    if ([ERole.ADMIN, ERole.SUPER_ADMIN].includes(role)) return next();
+    return getResponse(res, httpStatus.FORBIDDEN, {
+      message: ADMIN_FORBIDDEN,
     });
   });
 };

@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { lorem } from 'faker';
+import { helpers, lorem } from 'faker';
 
 const title1 = 'Just a sample title 1';
 const title2 = 'Just a sample title 2';
@@ -10,6 +10,7 @@ const updatedAt = createdAt;
 
 const VideoData = [
   {
+    slug: helpers.slugify(title1),
     link: 'https://www.youtube.com/watch?v=t7PmzdINGZk',
     title: title1,
     tags: [lorem.words(1), lorem.words(1), lorem.words(1)],
@@ -21,6 +22,7 @@ const VideoData = [
     updatedAt,
   },
   {
+    slug: helpers.slugify(title2),
     link: 'https://www.youtube.com/watch?v=ojJupoAyT58',
     title: title2,
     tags: [lorem.words(1), lorem.words(1), lorem.words(1)],

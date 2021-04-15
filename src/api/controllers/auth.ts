@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable consistent-return */
 import { Request, Response } from 'express';
 import { Op } from 'sequelize';
 import { BAD_REQUEST, CONFLICT, CREATED, FORBIDDEN, OK, UNAUTHORIZED } from 'http-status';
@@ -22,6 +22,7 @@ import {
   SIGNOUT_SUCCESS,
   USERNAME_EMAIL_INVALID,
   USERNAME_TAKEN,
+  USER_LOGIN_SUCCESS,
 } from '../constants/message';
 import { IJwtPayload } from '../../interfaces/api';
 
@@ -75,11 +76,12 @@ export class Auth {
 
       // TODO: should send email here for email confirmation
 
-      return this.userResponse(res, newUser.get(), token);
+      return this.userResponse(res, newUser.get(), token, CREATED, ACCOUNT_CREATED_SUCCESS);
     } catch (error) {
       getServerError(res, error.message);
     }
   };
+
   /**
    * controller to login the user
    * @param req Request
@@ -124,7 +126,7 @@ export class Auth {
       await db.User.update({ isLoggedIn: true }, { where: { id: user.id } });
 
       const token = generateToken(user.get());
-      return this.userResponse(res, user.get(), token);
+      return this.userResponse(res, user.get(), token, OK, USER_LOGIN_SUCCESS);
     } catch (error) {
       getServerError(res, error.message);
     }
@@ -132,15 +134,17 @@ export class Auth {
 
   /**
    * helper to send user info after authentication
-   * @param res
-   * @param user
-   * @param token
+   * @param res Response
+   * @param user Object
+   * @param token string
+   * @param status number
+   * @param message string
    * @returns
    */
-  userResponse = (res: Response, user: IUser, token: string) => {
-    return getResponse(res, CREATED, {
+  userResponse = (res: Response, user: IUser, token: string, status: number, message: string) => {
+    return getResponse(res, status, {
       token,
-      message: ACCOUNT_CREATED_SUCCESS,
+      message,
       data: {
         userName: user.userName,
         email: user.email,
