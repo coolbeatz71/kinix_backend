@@ -13,7 +13,40 @@ export const generateSlug = async (title: string) => {
 const category = async (res: Response, field: string, value: any): Promise<any> => {
   try {
     const result = await db.Category.findOne({
-      where: { [field]: `${value}` },
+      where: { [field]: value },
+    });
+
+    return result;
+  } catch (err) {
+    getServerError(res, err.message);
+  }
+};
+
+const video = async (res: Response, field: string, value: any): Promise<any> => {
+  try {
+    const result = await db.Video.findOne({
+      where: { [field]: value },
+      attributes: { exclude: ['userId', 'categoryId'] },
+      include: [
+        {
+          as: 'category',
+          model: db.Category,
+          attributes: ['id', 'name'],
+        },
+        {
+          as: 'user',
+          model: db.User,
+          attributes: ['id', 'userName', 'email', 'phoneNumber', 'image', 'role'],
+        },
+        {
+          as: 'rate',
+          model: db.Rate,
+        },
+        {
+          as: 'share',
+          model: db.Share,
+        },
+      ],
     });
 
     return result;
@@ -31,26 +64,9 @@ export const getCategoryById = async (res: Response, id: number): Promise<any> =
 };
 
 export const getVideoById = async (res: Response, id: number): Promise<any> => {
-  try {
-    const result = await db.Video.findOne({
-      where: { id },
-      attributes: { exclude: ['userId', 'categoryId'] },
-      include: [
-        {
-          as: 'category',
-          model: db.Category,
-          attributes: ['id', 'name'],
-        },
-        {
-          as: 'user',
-          model: db.User,
-          attributes: ['id', 'userName', 'email', 'phoneNumber', 'image', 'role'],
-        },
-      ],
-    });
+  return video(res, 'id', id);
+};
 
-    return result;
-  } catch (err) {
-    getServerError(res, err.message);
-  }
+export const getVideoBySlug = async (res: Response, slug: string): Promise<any> => {
+  return video(res, 'slug', slug);
 };

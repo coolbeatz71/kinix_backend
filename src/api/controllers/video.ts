@@ -1,14 +1,20 @@
 /* eslint-disable consistent-return */
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
-import { CREATED, NOT_FOUND } from 'http-status';
+import { CREATED, NOT_FOUND, OK } from 'http-status';
 import db from '../../db/models';
-import { getResponse, getServerError, getValidationError } from '../../helpers/api';
-import { getUserById } from '../../helpers/user';
-import { generateSlug, getCategoryById, getVideoById } from '../../helpers/video';
-import VideoValidator from '../../validator/video';
 import { IVideo } from '../../interfaces/model';
-import { CATEGORY_NOT_FOUND, USER_NOT_FOUND, VIDEO_CREATED_SUCCESS } from '../constants/message';
+import { getUserById } from '../../helpers/user';
+import VideoValidator from '../../validator/video';
+import { getResponse, getServerError, getValidationError } from '../../helpers/api';
+import {
+  CATEGORY_NOT_FOUND,
+  USER_NOT_FOUND,
+  VIDEO_CREATED_SUCCESS,
+  VIDEO_NOT_FOUND,
+  VIDEO_UPDATED_SUCCESS,
+} from '../constants/message';
+import { generateSlug, getCategoryById, getVideoById, getVideoBySlug } from '../../helpers/video';
 
 export class Video {
   /**
@@ -62,11 +68,12 @@ export class Video {
   };
 
   /**
-   * controller to a video a video
+   * controller to update a video
    * @param req Request
    * @param res Response
    */
   update = async (req: Request, res: Response): Promise<any> => {
+    const { slug } = req.params;
     const { title, link, tags, categoryId, userId } = req.body;
 
     await new VideoValidator(req).create();
@@ -74,24 +81,47 @@ export class Video {
     if (!errors.isEmpty()) return getValidationError(res, errors);
 
     try {
-      const slug = await generateSlug(title);
+      const user = await getUserById(res, userId);
+      const video = await getVideoBySlug(res, slug);
+      const category = await getCategoryById(res, categoryId);
 
-      await getCategoryById(res, categoryId);
-      await getUserById(res, userId);
+      if (!video) {
+        return getResponse(res, NOT_FOUND, {
+          message: VIDEO_NOT_FOUND,
+        });
+      }
 
-      const newVideo = await db.Video.create({
-        title,
-        link,
-        slug,
-        tags,
-        categoryId,
-        userId,
-      });
+      if (!category) {
+        return getResponse(res, NOT_FOUND, {
+          message: CATEGORY_NOT_FOUND,
+        });
+      }
 
-      // TODO: should send email/notification the user
-      // TODO: send email/notification to all user in the app
+      if (!user) {
+        return getResponse(res, NOT_FOUND, {
+          message: USER_NOT_FOUND,
+        });
+      }
 
-      return this.videoResponse(res, newVideo.get(), CREATED, VIDEO_CREATED_SUCCESS);
+      const newSlug = await generateSlug(title);
+
+      await db.Video.update(
+        {
+          title,
+          link,
+          slug: newSlug,
+          tags,
+          categoryId,
+          userId,
+        },
+        { where: { id: video.get().id } },
+      );
+
+      const getVideo = await getVideoBySlug(res, newSlug);
+
+      // TODO: should send email/notification to the video owner
+
+      return this.videoResponse(res, getVideo.get(), OK, VIDEO_UPDATED_SUCCESS);
     } catch (error) {
       getServerError(res, error.message);
     }
@@ -105,10 +135,10 @@ export class Video {
    * @param message string
    * @returns
    */
-  videoResponse = (res: Response, video: IVideo, status: number, message: string) => {
+  videoResponse = (res: Response, data: IVideo, status: number, message: string) => {
     return getResponse(res, status, {
       message,
-      data: video,
+      data,
     });
   };
 }
