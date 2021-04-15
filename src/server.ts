@@ -4,5 +4,5 @@ const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
   /* eslint-disable no-console */
-  console.log(`Example app listening ${port}`);
+  console.log(`[server] 🚀✨ Application listening to ${port}`);
 });

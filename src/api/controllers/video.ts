@@ -5,7 +5,7 @@ import { CREATED } from 'http-status';
 import db from '../../db/models';
 import { getResponse, getServerError, getValidationError } from '../../helpers/api';
 import { getUserById } from '../../helpers/user';
-import { generateSlug, getCategoryById } from '../../helpers/video';
+import { generateSlug, getCategoryById, getVideoById } from '../../helpers/video';
 import VideoValidator from '../../validator/video';
 import { IVideo } from '../../interfaces/model';
 import { VIDEO_CREATED_SUCCESS } from '../constants/message';
@@ -17,6 +17,44 @@ export class Video {
    * @param res Response
    */
   create = async (req: Request, res: Response): Promise<any> => {
+    const { title, link, tags, categoryId, userId } = req.body;
+
+    await new VideoValidator(req).create();
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) return getValidationError(res, errors);
+
+    try {
+      const slug = await generateSlug(title);
+
+      await getCategoryById(res, categoryId);
+      await getUserById(res, userId);
+
+      const newVideo = await db.Video.create({
+        title,
+        link,
+        slug,
+        tags,
+        categoryId,
+        userId,
+      });
+
+      const getVideo = await getVideoById(res, newVideo.get().id);
+
+      // TODO: should send email/notification to the video owner
+      // TODO: send email/notification to all user in the app
+
+      return this.videoResponse(res, getVideo, CREATED, VIDEO_CREATED_SUCCESS);
+    } catch (error) {
+      getServerError(res, error.message);
+    }
+  };
+
+  /**
+   * controller to a video a video
+   * @param req Request
+   * @param res Response
+   */
+  update = async (req: Request, res: Response): Promise<any> => {
     const { title, link, tags, categoryId, userId } = req.body;
 
     await new VideoValidator(req).create();
@@ -58,20 +96,7 @@ export class Video {
   videoResponse = (res: Response, video: IVideo, status: number, message: string) => {
     return getResponse(res, status, {
       message,
-      data: {
-        id: video.id,
-        slug: video.slug,
-        title: video.title,
-        link: video.link,
-        tags: video.tags,
-        active: video.active,
-        shared: video.shared,
-        shareCount: video.shareCount,
-        userId: video.userId,
-        categoryId: video.categoryId,
-        createdAt: video.createdAt,
-        updatedAt: video.updatedAt,
-      },
+      data: video,
     });
   };
 }
