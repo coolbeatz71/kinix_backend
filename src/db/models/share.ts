@@ -18,7 +18,7 @@ export default class Share extends Model<IShare> implements IShare {
   }
 }
 
-module.exports = (sequelize: Sequelize) => {
+export const initShare = (sequelize: Sequelize) => {
   Share.init(
     {
       id: {

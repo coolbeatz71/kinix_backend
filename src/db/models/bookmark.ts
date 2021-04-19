@@ -27,7 +27,8 @@ export default class Bookmark extends Model<IBookmark> implements IBookmark {
     });
   }
 }
-module.exports = (sequelize: Sequelize) => {
+
+export const initBookmark = (sequelize: Sequelize) => {
   Bookmark.init(
     {
       id: {

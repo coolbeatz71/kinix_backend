@@ -22,11 +22,52 @@ const category = async (res: Response, field: string, value: any): Promise<any> 
   }
 };
 
-const video = async (res: Response, field: string, value: any): Promise<any> => {
+const video = async (res: Response, field: string, value: any, active = true): Promise<any> => {
   try {
     const result = await db.Video.findOne({
-      where: { [field]: value },
+      where: { [field]: value, active },
       attributes: { exclude: ['userId', 'categoryId'] },
+      include: [
+        {
+          as: 'category',
+          model: db.Category,
+          attributes: ['id', 'name'],
+        },
+        {
+          as: 'user',
+          model: db.User,
+          attributes: ['id', 'userName', 'email', 'phoneNumber', 'image', 'role'],
+        },
+        {
+          as: 'rate',
+          model: db.Rate,
+        },
+        {
+          as: 'share',
+          model: db.Share,
+        },
+      ],
+    });
+
+    return result;
+  } catch (err) {
+    getServerError(res, err.message);
+  }
+};
+
+export const getAllVideo = async (
+  res: Response,
+  limit: number,
+  offset: number,
+  active = true,
+): Promise<any> => {
+  try {
+    const result = await db.Video.findAndCountAll({
+      limit,
+      offset,
+      distinct: true,
+      where: { active },
+      order: [['createdAt', 'DESC']],
       include: [
         {
           as: 'category',

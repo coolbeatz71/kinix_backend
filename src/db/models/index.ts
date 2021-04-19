@@ -1,36 +1,42 @@
 /* tslint:disable no-var-requires */
 /* tslint:disable prefer-template */
 /* eslint-disable */
-
-import fs from 'fs';
-import path from 'path';
-
 const Sequelize = require('sequelize');
-
-const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || 'development';
-
 const config = require(`${__dirname}/../config.ts`)[env];
-const db: any = {};
 
-const sequelize: any = config.use_env_variable
+import { initArticle } from './article';
+import { initCategory } from './category';
+import { initLike } from './like';
+import { initPlaylist } from './playlist';
+import { initRate } from './rate';
+import { initShare } from './share';
+import { initUser } from './user';
+import { initVideo } from './video';
+import { initBookmark } from './bookmark';
+
+const sequelize = config.use_env_variable
   ? new Sequelize(process.env[config.use_env_variable], config)
   : new Sequelize(config.database, config.username, config.password, config);
 
-fs.readdirSync(__dirname)
-  .filter((file: string) => {
-    return file.indexOf('.') !== 0 && file !== basename && file.slice(-3) === '.ts';
-  })
-  .forEach((file: any) => {
-    const model = require(path.join(__dirname, file))(sequelize, Sequelize.DataTypes);
-    db[model.name] = model;
-  });
+const db = {
+  sequelize,
+  Sequelize,
+  User: initUser(sequelize),
+  Article: initArticle(sequelize),
+  Video: initVideo(sequelize),
+  Category: initCategory(sequelize),
+  Like: initLike(sequelize),
+  Playlist: initPlaylist(sequelize),
+  Rate: initRate(sequelize),
+  Share: initShare(sequelize),
+  Bookmark: initBookmark(sequelize),
+};
 
-Object.keys(db).forEach((modelName) => {
-  if (db[modelName].associate) db[modelName].associate(db);
+Object.values(db).forEach((model: any) => {
+  if (model.associate) {
+    model.associate(db);
+  }
 });
-
-db.sequelize = sequelize;
-db.Sequelize = Sequelize;
 
 export default db;

@@ -19,7 +19,7 @@ export default class Rate extends Model<IRate> implements IRate {
   }
 }
 
-module.exports = (sequelize: Sequelize) => {
+export const initRate = (sequelize: Sequelize) => {
   Rate.init(
     {
       id: {

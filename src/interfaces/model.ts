@@ -32,7 +32,7 @@ export interface IUser {
 }
 
 export interface IArticle {
-  readonly id: number;
+  readonly id?: number;
   slug: string;
   title: string;
   summary: string;
@@ -41,23 +41,21 @@ export interface IArticle {
   video: string[] | null;
   reads: number;
   tags: string[] | null;
-  active: boolean;
-  liked: boolean;
-  likeCount: number;
+  active?: boolean;
+  liked?: boolean;
   userId: number;
   createdAt?: string;
   updatedAt?: string;
 }
 
 export interface IVideo {
-  readonly id: number;
+  readonly id?: number;
   slug: string;
   link: string;
   title: string;
   tags: string[] | null;
-  active: boolean;
-  shared: boolean;
-  shareCount: number;
+  active?: boolean;
+  shared?: boolean;
   userId: number;
   categoryId: number;
   createdAt?: string;

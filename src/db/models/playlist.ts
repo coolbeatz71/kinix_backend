@@ -28,7 +28,7 @@ export default class Playlist extends Model<IPlaylist> implements IPlaylist {
     });
   }
 }
-module.exports = (sequelize: Sequelize) => {
+export const initPlaylist = (sequelize: Sequelize) => {
   Playlist.init(
     {
       id: {

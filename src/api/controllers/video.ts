@@ -14,7 +14,13 @@ import {
   VIDEO_NOT_FOUND,
   VIDEO_UPDATED_SUCCESS,
 } from '../constants/message';
-import { generateSlug, getCategoryById, getVideoById, getVideoBySlug } from '../../helpers/video';
+import {
+  generateSlug,
+  getAllVideo,
+  getCategoryById,
+  getVideoById,
+  getVideoBySlug,
+} from '../../helpers/video';
 
 export class Video {
   /**
@@ -56,7 +62,7 @@ export class Video {
         userId,
       });
 
-      const getVideo = await getVideoById(res, newVideo.get().id);
+      const getVideo = await getVideoById(res, newVideo.get().id as number);
 
       // TODO: should send email/notification to the video owner
       // TODO: send email/notification to all user in the app
@@ -128,6 +134,47 @@ export class Video {
   };
 
   /**
+   * controller to get all video
+   * @param req Request
+   * @param res Response
+   */
+  getAll = async (req: Request, res: Response): Promise<any> => {
+    const { limit = 20, offset = 0 } = req.query;
+
+    try {
+      const result = await getAllVideo(res, limit as number, offset as number);
+      return getResponse(res, OK, {
+        data: { ...result },
+      });
+    } catch (error) {
+      getServerError(res, error.message);
+    }
+  };
+
+  /**
+   * controller to get a single video using slug
+   * @param req Request
+   * @param res Response
+   */
+  get = async (req: Request, res: Response): Promise<any> => {
+    const { slug } = req.params;
+
+    try {
+      const video = await getVideoBySlug(res, slug as string);
+
+      if (!video) {
+        return getResponse(res, NOT_FOUND, {
+          message: VIDEO_NOT_FOUND,
+        });
+      }
+
+      return this.videoResponse(res, video, OK);
+    } catch (error) {
+      getServerError(res, error.message);
+    }
+  };
+
+  /**
    * helper to send video info
    * @param res Response
    * @param article Object
@@ -135,7 +182,7 @@ export class Video {
    * @param message string
    * @returns
    */
-  videoResponse = (res: Response, data: IVideo, status: number, message: string) => {
+  videoResponse = (res: Response, data: IVideo, status: number, message?: string) => {
     return getResponse(res, status, {
       message,
       data,

@@ -40,10 +40,6 @@ export const up = async (queryInterface: QueryInterface) => {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
-    likeCount: {
-      type: DataTypes.INTEGER,
-      defaultValue: 0,
-    },
     userId: {
       type: DataTypes.INTEGER,
     },
