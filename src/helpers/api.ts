@@ -5,6 +5,7 @@ import { config } from 'dotenv';
 import { IResponseBody } from '../interfaces/api';
 import { IUnknownObject } from '../interfaces/unknownObject';
 import { RESOURCE_NOT_FOUND } from '../api/constants/message';
+import Video from '../db/models/video';
 
 config();
 
@@ -17,6 +18,43 @@ config();
  */
 export const isFieldInBody = (req: Request, field: string) => {
   return Object.prototype.hasOwnProperty.call(req.body, field);
+};
+
+/**
+ * get pagination utils for dashboard tables
+ *
+ * @param page number
+ * @param size number
+ * @returns IUnknownObject
+ */
+export const getPagination = (page: number, size: number): IUnknownObject => {
+  const limit = size;
+  const offset = page * limit;
+
+  return { limit, offset };
+};
+
+/**
+ * get paging data for dashboard tables
+ *
+ * @param page number
+ * @param limit number
+ * @param data Object
+ * @returns IUnknownObject
+ */
+export const getPagingData = (
+  page: number,
+  limit: number,
+  data: {
+    rows: Video[];
+    count: number;
+  },
+): IUnknownObject => {
+  const { count: total, rows: videos } = data;
+  const currentPage = Number(page);
+  const pages = Math.ceil(total / limit);
+
+  return { total, videos, pages, currentPage };
 };
 
 /**

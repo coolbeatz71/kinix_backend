@@ -67,7 +67,7 @@ export const getAllVideo = async (
       offset,
       distinct: true,
       where: { active },
-      order: [['createdAt', 'DESC']],
+      order: [['updatedAt', 'DESC']],
       include: [
         {
           as: 'category',

@@ -1,6 +1,6 @@
 import express from 'express';
 import authCtrl from '../controllers/auth';
-import videoCtrl from '../controllers/video';
+import adminVideoCtrl from '../controllers/admin-video';
 import { adminsCheck, superAdminCheck } from '../middlewares/authorization';
 
 const router = express.Router();
@@ -13,8 +13,9 @@ const router = express.Router();
   | Content all video endpoints for the admin or super admin
   |
 */
-router.post('/videos', adminsCheck, videoCtrl.create);
-router.put('/videos/:slug', adminsCheck, videoCtrl.update);
+router.post('/videos', adminsCheck, adminVideoCtrl.create);
+router.get('/videos', adminsCheck, adminVideoCtrl.getAll);
+router.put('/videos/:slug', adminsCheck, adminVideoCtrl.update);
 
 // super admin
 router.put('/videos/approve/:slug', superAdminCheck, authCtrl.login);
