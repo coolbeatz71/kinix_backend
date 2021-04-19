@@ -27,7 +27,7 @@ export default class Like extends Model<ILike> implements ILike {
   }
 }
 
-module.exports = (sequelize: Sequelize) => {
+export const initLike = (sequelize: Sequelize) => {
   Like.init(
     {
       id: {

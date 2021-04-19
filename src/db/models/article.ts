@@ -45,7 +45,7 @@ export default class Article extends Model<IArticle> implements IArticle {
   }
 }
 
-module.exports = (sequelize: Sequelize) => {
+export const initArticle = (sequelize: Sequelize) => {
   Article.init(
     {
       id: {

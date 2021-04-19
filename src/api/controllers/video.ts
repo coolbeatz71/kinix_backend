@@ -56,7 +56,7 @@ export class Video {
         userId,
       });
 
-      const getVideo = await getVideoById(res, newVideo.get().id);
+      const getVideo = await getVideoById(res, newVideo.get().id as number);
 
       // TODO: should send email/notification to the video owner
       // TODO: send email/notification to all user in the app

@@ -3,7 +3,7 @@ import { Response } from 'express';
 import db from '../db/models';
 import { getServerError } from './api';
 
-const user = async (res: Response, field: string, value: any) => {
+const user = async (res: Response, field: string, value: any): Promise<any> => {
   try {
     const result = await db.User.findOne({
       where: { [field]: value },

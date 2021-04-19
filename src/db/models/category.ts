@@ -18,7 +18,7 @@ export default class Category extends Model<ICategory> implements ICategory {
   }
 }
 
-module.exports = (sequelize: Sequelize) => {
+export const initCategory = (sequelize: Sequelize) => {
   Category.init(
     {
       id: {

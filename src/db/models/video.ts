@@ -60,7 +60,7 @@ export default class Video extends Model<IVideo> implements IVideo {
   }
 }
 
-module.exports = (sequelize: Sequelize) => {
+export const initVideo = (sequelize: Sequelize) => {
   Video.init(
     {
       id: {

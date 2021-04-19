@@ -64,7 +64,7 @@ export default class User extends Model<IUser> implements IUser {
   }
 }
 
-module.exports = (sequelize: Sequelize) => {
+export const initUser = (sequelize: Sequelize) => {
   User.init(
     {
       id: {
