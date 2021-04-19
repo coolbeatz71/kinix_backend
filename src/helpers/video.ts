@@ -22,10 +22,10 @@ const category = async (res: Response, field: string, value: any): Promise<any> 
   }
 };
 
-const video = async (res: Response, field: string, value: any): Promise<any> => {
+const video = async (res: Response, field: string, value: any, active = true): Promise<any> => {
   try {
     const result = await db.Video.findOne({
-      where: { [field]: value },
+      where: { [field]: value, active },
       attributes: { exclude: ['userId', 'categoryId'] },
       include: [
         {
@@ -55,12 +55,18 @@ const video = async (res: Response, field: string, value: any): Promise<any> => 
   }
 };
 
-export const allVideo = async (res: Response, limit: number, offset: number): Promise<any> => {
+export const getAllVideo = async (
+  res: Response,
+  limit: number,
+  offset: number,
+  active = true,
+): Promise<any> => {
   try {
-    const result = await db.Video.findAll({
+    const result = await db.Video.findAndCountAll({
       limit,
       offset,
-      where: { active: true },
+      distinct: true,
+      where: { active },
       order: [['createdAt', 'DESC']],
       include: [
         {
