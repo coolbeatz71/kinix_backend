@@ -7,9 +7,9 @@ export default class Video extends Model<IVideo> implements IVideo {
   link!: string;
   title!: string;
   tags!: string[] | null;
-  active = true;
-  shared = false;
-  shareCount = 0;
+  active!: boolean;
+  shared!: boolean;
+  shareCount!: number;
   userId!: number;
   categoryId!: number;
 
@@ -18,6 +18,7 @@ export default class Video extends Model<IVideo> implements IVideo {
      * user association
      */
     Video.belongsTo(models.User, {
+      as: 'user',
       foreignKey: 'userId',
       targetKey: 'id',
     });
@@ -25,15 +26,17 @@ export default class Video extends Model<IVideo> implements IVideo {
     /**
      * category association
      */
-    Video.hasOne(models.Category, {
+    Video.belongsTo(models.Category, {
+      as: 'category',
       foreignKey: 'categoryId',
-      sourceKey: 'id',
+      targetKey: 'id',
     });
 
     /**
      * rate association
      */
     Video.hasMany(models.Rate, {
+      as: 'rate',
       foreignKey: 'videoId',
       sourceKey: 'id',
     });
@@ -42,6 +45,7 @@ export default class Video extends Model<IVideo> implements IVideo {
      * share association
      */
     Video.hasMany(models.Share, {
+      as: 'share',
       foreignKey: 'videoId',
       sourceKey: 'id',
     });
@@ -50,6 +54,7 @@ export default class Video extends Model<IVideo> implements IVideo {
      * playlist association
      */
     Video.hasMany(models.Playlist, {
+      as: 'playlist',
       foreignKey: 'videoId',
       sourceKey: 'id',
     });

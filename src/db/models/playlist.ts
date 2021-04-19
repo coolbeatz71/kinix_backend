@@ -13,6 +13,7 @@ export default class Playlist extends Model<IPlaylist> implements IPlaylist {
      * user association
      */
     Playlist.belongsTo(models.User, {
+      as: 'user',
       foreignKey: 'userId',
       targetKey: 'id',
     });
@@ -21,6 +22,7 @@ export default class Playlist extends Model<IPlaylist> implements IPlaylist {
      * video association
      */
     Playlist.belongsTo(models.Video, {
+      as: 'video',
       foreignKey: 'videoId',
       targetKey: 'id',
     });

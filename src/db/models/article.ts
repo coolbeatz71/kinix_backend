@@ -21,6 +21,7 @@ export default class Article extends Model<IArticle> implements IArticle {
      * bookmark association
      */
     Article.hasMany(models.Bookmark, {
+      as: 'bookmark',
       foreignKey: 'articleId',
       sourceKey: 'id',
     });
@@ -29,6 +30,7 @@ export default class Article extends Model<IArticle> implements IArticle {
      * like association
      */
     Article.hasMany(models.Like, {
+      as: 'like',
       foreignKey: 'articleId',
       sourceKey: 'id',
     });
@@ -37,6 +39,7 @@ export default class Article extends Model<IArticle> implements IArticle {
      * user association
      */
     Article.belongsTo(models.User, {
+      as: 'user',
       foreignKey: 'userId',
       targetKey: 'id',
     });

@@ -11,6 +11,7 @@ export default class Share extends Model<IShare> implements IShare {
      * video association
      */
     Share.belongsTo(models.Video, {
+      as: 'video',
       foreignKey: 'videoId',
       targetKey: 'id',
     });

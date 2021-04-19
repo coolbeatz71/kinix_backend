@@ -123,10 +123,13 @@ export class Auth {
         });
       }
 
-      await db.User.update({ isLoggedIn: true }, { where: { id: user.id } });
+      const update = await db.User.update(
+        { isLoggedIn: true },
+        { where: { id: user.id }, returning: true },
+      );
 
       const token = generateToken(user.get());
-      return this.userResponse(res, user.get(), token, OK, USER_LOGIN_SUCCESS);
+      return this.userResponse(res, update[1][0], token, OK, USER_LOGIN_SUCCESS);
     } catch (error) {
       getServerError(res, error.message);
     }

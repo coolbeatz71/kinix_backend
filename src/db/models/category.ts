@@ -10,9 +10,10 @@ export default class Category extends Model<ICategory> implements ICategory {
     /**
      * video association
      */
-    Category.belongsTo(models.Video, {
+    Category.hasMany(models.Video, {
+      as: 'video',
       foreignKey: 'categoryId',
-      targetKey: 'id',
+      sourceKey: 'id',
     });
   }
 }

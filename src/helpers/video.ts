@@ -1,10 +1,8 @@
 /* eslint-disable consistent-return */
 import { Response } from 'express';
-import { NOT_FOUND } from 'http-status';
 import slugify from '@sindresorhus/slugify';
-import { getResponse, getServerError } from './api';
+import { getServerError } from './api';
 import db from '../db/models';
-import { CATEGORY_NOT_FOUND } from '../api/constants/message';
 
 export const generateSlug = async (title: string) => {
   return `${await slugify(title, { lowercase: true })}-${
@@ -18,12 +16,40 @@ const category = async (res: Response, field: string, value: any): Promise<any> 
       where: { [field]: value },
     });
 
-    return (
-      result &&
-      getResponse(res, NOT_FOUND, {
-        message: CATEGORY_NOT_FOUND,
-      })
-    );
+    return result;
+  } catch (err) {
+    getServerError(res, err.message);
+  }
+};
+
+const video = async (res: Response, field: string, value: any): Promise<any> => {
+  try {
+    const result = await db.Video.findOne({
+      where: { [field]: value },
+      attributes: { exclude: ['userId', 'categoryId'] },
+      include: [
+        {
+          as: 'category',
+          model: db.Category,
+          attributes: ['id', 'name'],
+        },
+        {
+          as: 'user',
+          model: db.User,
+          attributes: ['id', 'userName', 'email', 'phoneNumber', 'image', 'role'],
+        },
+        {
+          as: 'rate',
+          model: db.Rate,
+        },
+        {
+          as: 'share',
+          model: db.Share,
+        },
+      ],
+    });
+
+    return result;
   } catch (err) {
     getServerError(res, err.message);
   }
@@ -35,4 +61,12 @@ export const getCategoryByName = async (res: Response, name: string): Promise<an
 
 export const getCategoryById = async (res: Response, id: number): Promise<any> => {
   return category(res, 'id', id);
+};
+
+export const getVideoById = async (res: Response, id: number): Promise<any> => {
+  return video(res, 'id', id);
+};
+
+export const getVideoBySlug = async (res: Response, slug: string): Promise<any> => {
+  return video(res, 'slug', slug);
 };

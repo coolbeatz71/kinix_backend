@@ -12,6 +12,7 @@ export default class Bookmark extends Model<IBookmark> implements IBookmark {
      * user association
      */
     Bookmark.belongsTo(models.User, {
+      as: 'user',
       foreignKey: 'userId',
       targetKey: 'id',
     });
@@ -20,6 +21,7 @@ export default class Bookmark extends Model<IBookmark> implements IBookmark {
      * article association
      */
     Bookmark.belongsTo(models.Article, {
+      as: 'article',
       foreignKey: 'articleId',
       targetKey: 'id',
     });

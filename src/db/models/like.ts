@@ -11,6 +11,7 @@ export default class Like extends Model<ILike> implements ILike {
      * article association
      */
     Like.belongsTo(models.Article, {
+      as: 'article',
       foreignKey: 'articleId',
       targetKey: 'id',
     });
@@ -19,6 +20,7 @@ export default class Like extends Model<ILike> implements ILike {
      * user association
      */
     Like.belongsTo(models.User, {
+      as: 'user',
       foreignKey: 'articleId',
       targetKey: 'id',
     });

@@ -14,8 +14,7 @@ const router = express.Router();
   |
 */
 router.post('/videos', adminsCheck, videoCtrl.create);
-router.put('/videos', adminsCheck, videoCtrl.create);
-router.put('/videos/:slug', adminsCheck, authCtrl.login);
+router.put('/videos/:slug', adminsCheck, videoCtrl.update);
 
 // super admin
 router.put('/videos/approve/:slug', superAdminCheck, authCtrl.login);

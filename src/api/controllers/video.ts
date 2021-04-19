@@ -1,14 +1,20 @@
 /* eslint-disable consistent-return */
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
-import { CREATED } from 'http-status';
+import { CREATED, NOT_FOUND, OK } from 'http-status';
 import db from '../../db/models';
-import { getResponse, getServerError, getValidationError } from '../../helpers/api';
-import { getUserById } from '../../helpers/user';
-import { generateSlug, getCategoryById } from '../../helpers/video';
-import VideoValidator from '../../validator/video';
 import { IVideo } from '../../interfaces/model';
-import { VIDEO_CREATED_SUCCESS } from '../constants/message';
+import { getUserById } from '../../helpers/user';
+import VideoValidator from '../../validator/video';
+import { getResponse, getServerError, getValidationError } from '../../helpers/api';
+import {
+  CATEGORY_NOT_FOUND,
+  USER_NOT_FOUND,
+  VIDEO_CREATED_SUCCESS,
+  VIDEO_NOT_FOUND,
+  VIDEO_UPDATED_SUCCESS,
+} from '../constants/message';
+import { generateSlug, getCategoryById, getVideoById, getVideoBySlug } from '../../helpers/video';
 
 export class Video {
   /**
@@ -26,8 +32,20 @@ export class Video {
     try {
       const slug = await generateSlug(title);
 
-      await getCategoryById(res, categoryId);
-      await getUserById(res, userId);
+      const category = await getCategoryById(res, categoryId);
+      const user = await getUserById(res, userId);
+
+      if (!category) {
+        return getResponse(res, NOT_FOUND, {
+          message: CATEGORY_NOT_FOUND,
+        });
+      }
+
+      if (!user) {
+        return getResponse(res, NOT_FOUND, {
+          message: USER_NOT_FOUND,
+        });
+      }
 
       const newVideo = await db.Video.create({
         title,
@@ -38,10 +56,72 @@ export class Video {
         userId,
       });
 
-      // TODO: should send email/notification the user
+      const getVideo = await getVideoById(res, newVideo.get().id);
+
+      // TODO: should send email/notification to the video owner
       // TODO: send email/notification to all user in the app
 
-      return this.videoResponse(res, newVideo.get(), CREATED, VIDEO_CREATED_SUCCESS);
+      return this.videoResponse(res, getVideo.get(), CREATED, VIDEO_CREATED_SUCCESS);
+    } catch (error) {
+      getServerError(res, error.message);
+    }
+  };
+
+  /**
+   * controller to update a video
+   * @param req Request
+   * @param res Response
+   */
+  update = async (req: Request, res: Response): Promise<any> => {
+    const { slug } = req.params;
+    const { title, link, tags, categoryId, userId } = req.body;
+
+    await new VideoValidator(req).create();
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) return getValidationError(res, errors);
+
+    try {
+      const user = await getUserById(res, userId);
+      const video = await getVideoBySlug(res, slug);
+      const category = await getCategoryById(res, categoryId);
+
+      if (!video) {
+        return getResponse(res, NOT_FOUND, {
+          message: VIDEO_NOT_FOUND,
+        });
+      }
+
+      if (!category) {
+        return getResponse(res, NOT_FOUND, {
+          message: CATEGORY_NOT_FOUND,
+        });
+      }
+
+      if (!user) {
+        return getResponse(res, NOT_FOUND, {
+          message: USER_NOT_FOUND,
+        });
+      }
+
+      const newSlug = await generateSlug(title);
+
+      await db.Video.update(
+        {
+          title,
+          link,
+          slug: newSlug,
+          tags,
+          categoryId,
+          userId,
+        },
+        { where: { id: video.get().id } },
+      );
+
+      const getVideo = await getVideoBySlug(res, newSlug);
+
+      // TODO: should send email/notification to the video owner
+
+      return this.videoResponse(res, getVideo.get(), OK, VIDEO_UPDATED_SUCCESS);
     } catch (error) {
       getServerError(res, error.message);
     }
@@ -55,23 +135,10 @@ export class Video {
    * @param message string
    * @returns
    */
-  videoResponse = (res: Response, video: IVideo, status: number, message: string) => {
+  videoResponse = (res: Response, data: IVideo, status: number, message: string) => {
     return getResponse(res, status, {
       message,
-      data: {
-        id: video.id,
-        slug: video.slug,
-        title: video.title,
-        link: video.link,
-        tags: video.tags,
-        active: video.active,
-        shared: video.shared,
-        shareCount: video.shareCount,
-        userId: video.userId,
-        categoryId: video.categoryId,
-        createdAt: video.createdAt,
-        updatedAt: video.updatedAt,
-      },
+      data,
     });
   };
 }
