@@ -28,10 +28,6 @@ export const up = async (queryInterface: QueryInterface) => {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
-    shareCount: {
-      type: DataTypes.INTEGER,
-      defaultValue: 0,
-    },
     userId: {
       type: DataTypes.INTEGER,
     },

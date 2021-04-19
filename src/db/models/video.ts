@@ -9,7 +9,6 @@ export default class Video extends Model<IVideo> implements IVideo {
   tags!: string[] | null;
   active!: boolean;
   shared!: boolean;
-  shareCount!: number;
   userId!: number;
   categoryId!: number;
 
@@ -97,10 +96,6 @@ module.exports = (sequelize: Sequelize) => {
       shared: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
-      },
-      shareCount: {
-        type: DataTypes.INTEGER,
-        defaultValue: 0,
       },
       userId: {
         type: DataTypes.INTEGER,

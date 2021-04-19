@@ -10,7 +10,7 @@ const getOptions = (env: string, options?: Partial<Options>): Options => {
     database: process.env[`PGDATABASE_${env}`],
     host: process.env.PGHOST,
     dialect: 'postgres',
-    logging: env === 'TEST',
+    logging: env === 'DEV',
     ...options,
   };
 };

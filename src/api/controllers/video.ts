@@ -127,6 +127,16 @@ export class Video {
     }
   };
 
+  // /**
+  //  * controller to get all video video
+  //  * @param req Request
+  //  * @param res Response
+  //  */
+  // getAll = async (req: Request, res: Response): Promise<any> => {
+  //   const { limit = 20, offset = 0 } = req.query;
+
+  // }
+
   /**
    * helper to send video info
    * @param res Response

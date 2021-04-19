@@ -13,7 +13,6 @@ export default class Article extends Model<IArticle> implements IArticle {
   tags!: string[] | null;
   active!: boolean;
   liked!: boolean;
-  likeCount!: number;
   userId!: number;
 
   static associate(models: IModel) {
@@ -103,10 +102,6 @@ module.exports = (sequelize: Sequelize) => {
       liked: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
-      },
-      likeCount: {
-        type: DataTypes.INTEGER,
-        defaultValue: 0,
       },
       userId: {
         type: DataTypes.INTEGER,

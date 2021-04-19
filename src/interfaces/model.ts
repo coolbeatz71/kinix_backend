@@ -43,7 +43,6 @@ export interface IArticle {
   tags: string[] | null;
   active: boolean;
   liked: boolean;
-  likeCount: number;
   userId: number;
   createdAt?: string;
   updatedAt?: string;
@@ -57,7 +56,6 @@ export interface IVideo {
   tags: string[] | null;
   active: boolean;
   shared: boolean;
-  shareCount: number;
   userId: number;
   categoryId: number;
   createdAt?: string;
