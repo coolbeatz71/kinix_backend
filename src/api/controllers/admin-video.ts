@@ -4,7 +4,6 @@ import { validationResult } from 'express-validator';
 import { CREATED, NOT_FOUND, OK } from 'http-status';
 import { Op } from 'sequelize';
 import db from '../../db/models';
-import { IVideo } from '../../interfaces/model';
 import { getUserById } from '../../helpers/user';
 import VideoValidator from '../../validator/video';
 import {
@@ -21,7 +20,13 @@ import {
   VIDEO_NOT_FOUND,
   VIDEO_UPDATED_SUCCESS,
 } from '../constants/message';
-import { generateSlug, getCategoryById, getVideoById, getVideoBySlug } from '../../helpers/video';
+import {
+  contentResponse,
+  generateSlug,
+  getCategoryById,
+  getVideoById,
+  getVideoBySlug,
+} from '../../helpers/video';
 
 export class AdminVideo {
   /**
@@ -68,7 +73,7 @@ export class AdminVideo {
       // TODO: should send email/notification to the video owner
       // TODO: send email/notification to all user in the app
 
-      return this.videoResponse(res, getVideo.get(), CREATED, VIDEO_CREATED_SUCCESS);
+      return contentResponse(res, getVideo.get(), CREATED, VIDEO_CREATED_SUCCESS);
     } catch (error) {
       getServerError(res, error.message);
     }
@@ -128,7 +133,7 @@ export class AdminVideo {
 
       // TODO: should send email/notification to the video owner
 
-      return this.videoResponse(res, getVideo.get(), OK, VIDEO_UPDATED_SUCCESS);
+      return contentResponse(res, getVideo.get(), OK, VIDEO_UPDATED_SUCCESS);
     } catch (error) {
       getServerError(res, error.message);
     }
@@ -159,21 +164,6 @@ export class AdminVideo {
     } catch (error) {
       getServerError(res, error.message);
     }
-  };
-
-  /**
-   * helper to send video info
-   * @param res Response
-   * @param data Object
-   * @param status number
-   * @param message string
-   * @returns
-   */
-  videoResponse = (res: Response, data: IVideo, status: number, message?: string) => {
-    return getResponse(res, status, {
-      message,
-      data,
-    });
   };
 }
 

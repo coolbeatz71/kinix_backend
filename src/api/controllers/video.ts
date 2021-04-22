@@ -1,10 +1,9 @@
 /* eslint-disable consistent-return */
 import { Request, Response } from 'express';
 import { NOT_FOUND, OK } from 'http-status';
-import { IVideo } from '../../interfaces/model';
 import { getResponse, getServerError } from '../../helpers/api';
 import { VIDEO_NOT_FOUND } from '../constants/message';
-import { getAllVideo, getVideoBySlug } from '../../helpers/video';
+import { contentResponse, getAllVideo, getVideoBySlug } from '../../helpers/video';
 
 export class Video {
   /**
@@ -27,6 +26,7 @@ export class Video {
 
   /**
    * controller to get a single video using slug
+   * @description only returns active videos
    * @param req Request
    * @param res Response
    */
@@ -42,25 +42,10 @@ export class Video {
         });
       }
 
-      return this.videoResponse(res, video, OK);
+      return contentResponse(res, video, OK);
     } catch (error) {
       getServerError(res, error.message);
     }
-  };
-
-  /**
-   * helper to send video info
-   * @param res Response
-   * @param data Object
-   * @param status number
-   * @param message string
-   * @returns
-   */
-  videoResponse = (res: Response, data: IVideo, status: number, message?: string) => {
-    return getResponse(res, status, {
-      message,
-      data,
-    });
   };
 }
 
