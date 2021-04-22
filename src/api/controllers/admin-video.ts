@@ -165,6 +165,30 @@ export class AdminVideo {
       getServerError(res, error.message);
     }
   };
+
+  /**
+   * controller to get a single video using slug
+   * @description also returns inactive videos
+   * @param req Request
+   * @param res Response
+   */
+  get = async (req: Request, res: Response): Promise<any> => {
+    const { slug } = req.params;
+
+    try {
+      const video = await getVideoBySlug(res, slug as string, true);
+
+      if (!video) {
+        return getResponse(res, NOT_FOUND, {
+          message: VIDEO_NOT_FOUND,
+        });
+      }
+
+      return contentResponse(res, video, OK);
+    } catch (error) {
+      getServerError(res, error.message);
+    }
+  };
 }
 
 const adminVideoCtrl = new AdminVideo();
