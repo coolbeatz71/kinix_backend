@@ -1,5 +1,4 @@
 import express from 'express';
-import authCtrl from '../controllers/auth';
 import adminVideoCtrl from '../controllers/admin-video';
 import { adminsCheck, superAdminCheck } from '../middlewares/authorization';
 
@@ -19,7 +18,7 @@ router.get('/videos/:slug', adminsCheck, adminVideoCtrl.get);
 router.put('/videos/:slug', adminsCheck, adminVideoCtrl.update);
 
 // super admin
-router.put('/videos/approve/:slug', superAdminCheck, authCtrl.login);
-router.delete('/videos/:slug', superAdminCheck, authCtrl.login);
+router.put('/videos/approve/:slug', superAdminCheck, adminVideoCtrl.approve);
+router.delete('/videos/:slug', superAdminCheck, adminVideoCtrl.delete);
 
 export default router;

@@ -23,7 +23,7 @@ import {
   USERNAME_EMAIL_INVALID,
   USERNAME_TAKEN,
   USER_LOGIN_SUCCESS,
-} from '../constants/message';
+} from '../../constants/message';
 import { IJwtPayload } from '../../interfaces/api';
 
 export class Auth {
