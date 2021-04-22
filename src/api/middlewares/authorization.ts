@@ -12,7 +12,7 @@ import {
   SUPER_ADMIN_FORBIDDEN,
   TOKEN_INVALID_EXPIRED,
   USER_FORBIDDEN,
-} from '../constants/message';
+} from '../../constants/message';
 import ERole from '../../interfaces/role';
 import { IJwtPayload } from '../../interfaces/api';
 

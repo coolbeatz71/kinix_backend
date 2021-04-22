@@ -2,7 +2,7 @@
 import { Request, Response } from 'express';
 import { NOT_FOUND, OK } from 'http-status';
 import { getResponse, getServerError } from '../../helpers/api';
-import { VIDEO_NOT_FOUND } from '../constants/message';
+import { VIDEO_NOT_FOUND } from '../../constants/message';
 import { contentResponse, getAllVideo, getVideoBySlug } from '../../helpers/video';
 
 export class Video {

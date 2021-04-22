@@ -1,7 +1,7 @@
 /* eslint-disable consistent-return */
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
-import { CREATED, NOT_FOUND, OK } from 'http-status';
+import { CONFLICT, CREATED, NOT_FOUND, OK } from 'http-status';
 import { Op } from 'sequelize';
 import db from '../../db/models';
 import { getUserById } from '../../helpers/user';
@@ -16,10 +16,14 @@ import {
 import {
   CATEGORY_NOT_FOUND,
   USER_NOT_FOUND,
+  VIDEO_ALREADY_ACTIVE,
+  VIDEO_ALREADY_INACTIVE,
+  VIDEO_APPROVED_SUCCESS,
   VIDEO_CREATED_SUCCESS,
+  VIDEO_DELETED_SUCCESS,
   VIDEO_NOT_FOUND,
   VIDEO_UPDATED_SUCCESS,
-} from '../constants/message';
+} from '../../constants/message';
 import {
   contentResponse,
   generateSlug,
@@ -134,6 +138,82 @@ export class AdminVideo {
       // TODO: should send email/notification to the video owner
 
       return contentResponse(res, getVideo.get(), OK, VIDEO_UPDATED_SUCCESS);
+    } catch (error) {
+      getServerError(res, error.message);
+    }
+  };
+
+  /**
+   * controller to approve a video
+   * @param req Request
+   * @param res Response
+   */
+  approve = async (req: Request, res: Response): Promise<any> => {
+    const { slug } = req.params;
+
+    try {
+      const video = await getVideoBySlug(res, slug);
+
+      if (!video) {
+        return getResponse(res, NOT_FOUND, {
+          message: VIDEO_NOT_FOUND,
+        });
+      }
+
+      if (video.get().active) {
+        return getResponse(res, CONFLICT, {
+          message: VIDEO_ALREADY_ACTIVE,
+        });
+      }
+
+      const update = await db.Video.update(
+        {
+          active: true,
+        },
+        { where: { id: video.get().id }, returning: true },
+      );
+
+      // TODO: should send email/notification to the video owner
+
+      return contentResponse(res, update[1][0], OK, VIDEO_APPROVED_SUCCESS);
+    } catch (error) {
+      getServerError(res, error.message);
+    }
+  };
+
+  /**
+   * controller to delete a video
+   * @param req Request
+   * @param res Response
+   */
+  delete = async (req: Request, res: Response): Promise<any> => {
+    const { slug } = req.params;
+
+    try {
+      const video = await getVideoBySlug(res, slug);
+
+      if (!video) {
+        return getResponse(res, NOT_FOUND, {
+          message: VIDEO_NOT_FOUND,
+        });
+      }
+
+      if (!video.get().active) {
+        return getResponse(res, CONFLICT, {
+          message: VIDEO_ALREADY_INACTIVE,
+        });
+      }
+
+      const update = await db.Video.update(
+        {
+          active: false,
+        },
+        { where: { id: video.get().id }, returning: true },
+      );
+
+      // TODO: should send email/notification to the video owner
+
+      return contentResponse(res, update[1][0], OK, VIDEO_DELETED_SUCCESS);
     } catch (error) {
       getServerError(res, error.message);
     }
