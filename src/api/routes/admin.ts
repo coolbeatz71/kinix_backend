@@ -15,6 +15,7 @@ const router = express.Router();
 */
 router.post('/videos', adminsCheck, adminVideoCtrl.create);
 router.get('/videos', adminsCheck, adminVideoCtrl.getAll);
+router.get('/videos/:slug', adminsCheck, adminVideoCtrl.get);
 router.put('/videos/:slug', adminsCheck, adminVideoCtrl.update);
 
 // super admin

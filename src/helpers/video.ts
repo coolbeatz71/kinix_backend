@@ -23,10 +23,12 @@ const category = async (res: Response, field: string, value: any): Promise<any> 
   }
 };
 
-const video = async (res: Response, field: string, value: any, active = true): Promise<any> => {
+const video = async (res: Response, field: string, value: any, isAdmin = false): Promise<any> => {
+  const where = isAdmin ? { [field]: value } : { [field]: value, active: true };
+
   try {
     const result = await db.Video.findOne({
-      where: { [field]: value, active },
+      where,
       attributes: { exclude: ['userId', 'categoryId'] },
       include: [
         {
@@ -109,8 +111,12 @@ export const getVideoById = async (res: Response, id: number): Promise<any> => {
   return video(res, 'id', id);
 };
 
-export const getVideoBySlug = async (res: Response, slug: string): Promise<any> => {
-  return video(res, 'slug', slug);
+export const getVideoBySlug = async (
+  res: Response,
+  slug: string,
+  isAdmin = false,
+): Promise<any> => {
+  return video(res, 'slug', slug, isAdmin);
 };
 
 export const contentResponse = (
