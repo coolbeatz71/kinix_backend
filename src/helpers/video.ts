@@ -1,8 +1,9 @@
 /* eslint-disable consistent-return */
 import { Response } from 'express';
 import slugify from '@sindresorhus/slugify';
-import { getServerError } from './api';
+import { getResponse, getServerError } from './api';
 import db from '../db/models';
+import { IVideo, IArticle } from '../interfaces/model';
 
 export const generateSlug = async (title: string) => {
   return `${await slugify(title, { lowercase: true })}-${
@@ -67,7 +68,7 @@ export const getAllVideo = async (
       offset,
       distinct: true,
       where: { active },
-      order: [['createdAt', 'DESC']],
+      order: [['updatedAt', 'DESC']],
       include: [
         {
           as: 'category',
@@ -110,4 +111,16 @@ export const getVideoById = async (res: Response, id: number): Promise<any> => {
 
 export const getVideoBySlug = async (res: Response, slug: string): Promise<any> => {
   return video(res, 'slug', slug);
+};
+
+export const contentResponse = (
+  res: Response,
+  data: IVideo | IArticle,
+  status: number,
+  message?: string,
+) => {
+  return getResponse(res, status, {
+    message,
+    data,
+  });
 };
