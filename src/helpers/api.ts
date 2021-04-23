@@ -1,13 +1,22 @@
 import bcrypt from 'bcrypt';
 import httpStatus, { BAD_REQUEST, NOT_FOUND } from 'http-status';
 import { NextFunction, Request, Response } from 'express';
+import slugify from '@sindresorhus/slugify';
 import { config } from 'dotenv';
 import { IResponseBody } from '../interfaces/api';
+import { IVideo, IArticle } from '../interfaces/model';
 import { IUnknownObject } from '../interfaces/unknownObject';
 import { RESOURCE_NOT_FOUND } from '../constants/message';
 import Video from '../db/models/video';
+import Article from '../db/models/article';
 
 config();
+
+export const generateSlug = async (title: string) => {
+  return `${await slugify(title, { lowercase: true })}-${
+    Math.floor(Math.random() * 999999999) + 100000000
+  }`;
+};
 
 /**
  * check if the request body contains a given field
@@ -46,7 +55,7 @@ export const getPagingData = (
   page: number,
   limit: number,
   data: {
-    rows: Video[];
+    rows: Video[] | Article[];
     count: number;
   },
 ): IUnknownObject => {
@@ -67,6 +76,26 @@ export const getPagingData = (
 export const getResponse = (res: Response, status: number, body: IResponseBody): Response => {
   return res.status(status).json(body);
 };
+
+/**
+ * return the content response to the user
+ *
+ * @param res
+ * @param data article|video
+ * @param status
+ * @param message
+ * @returns Response
+ */
+export const contentResponse = (
+  res: Response,
+  data: IVideo | IArticle,
+  status: number,
+  message?: string,
+) =>
+  getResponse(res, status, {
+    message,
+    data,
+  });
 
 /**
  * display the validation errors
