@@ -5,7 +5,6 @@ import { CONFLICT, CREATED, NOT_FOUND, OK } from 'http-status';
 import { Op } from 'sequelize';
 import db from '../../db/models';
 import { getUserById } from '../../helpers/user';
-import VideoValidator from '../../validator/video';
 import {
   contentResponse,
   generateSlug,
@@ -16,42 +15,42 @@ import {
   getValidationError,
 } from '../../helpers/api';
 import {
-  CATEGORY_NOT_FOUND,
+  ARTICLE_ALREADY_ACTIVE,
+  ARTICLE_ALREADY_INACTIVE,
+  ARTICLE_APPROVED_SUCCESS,
+  ARTICLE_CREATED_SUCCESS,
+  ARTICLE_DELETED_SUCCESS,
+  ARTICLE_EXIST,
+  ARTICLE_NOT_FOUND,
+  ARTICLE_UPDATED_SUCCESS,
   USER_NOT_FOUND,
-  VIDEO_ALREADY_ACTIVE,
-  VIDEO_ALREADY_INACTIVE,
-  VIDEO_APPROVED_SUCCESS,
-  VIDEO_CREATED_SUCCESS,
-  VIDEO_DELETED_SUCCESS,
-  VIDEO_NOT_FOUND,
-  VIDEO_UPDATED_SUCCESS,
 } from '../../constants/message';
-import { getCategoryById, getVideoById, getVideoBySlug } from '../../helpers/video';
+import {
+  getArticleById,
+  getArticleBySlug,
+  getArticleByTitle,
+  getReadTime,
+} from '../../helpers/article';
+import ArticleValidator from '../../validator/article';
 
-export class AdminVideo {
+export class AdminArticle {
   /**
-   * controller to create a video
+   * controller to create an article
    * @param req Request
    * @param res Response
    */
   create = async (req: Request, res: Response): Promise<any> => {
-    const { title, link, tags, categoryId, userId } = req.body;
+    const { title, summary, body, userId, images, video, tags } = req.body;
 
-    await new VideoValidator(req).create();
+    await new ArticleValidator(req).create();
     const errors = validationResult(req);
     if (!errors.isEmpty()) return getValidationError(res, errors);
 
     try {
       const slug = await generateSlug(title);
-
-      const category = await getCategoryById(res, categoryId);
+      const reads = getReadTime(title, summary, body);
       const user = await getUserById(res, userId);
-
-      if (!category) {
-        return getResponse(res, NOT_FOUND, {
-          message: CATEGORY_NOT_FOUND,
-        });
-      }
+      const article = await getArticleByTitle(res, title, true);
 
       if (!user) {
         return getResponse(res, NOT_FOUND, {
@@ -59,53 +58,54 @@ export class AdminVideo {
         });
       }
 
-      const newVideo = await db.Video.create({
-        title,
-        link,
+      if (article) {
+        return getResponse(res, CONFLICT, {
+          message: ARTICLE_EXIST,
+        });
+      }
+
+      const newArticle = await db.Article.create({
         slug,
+        title,
+        summary,
+        body,
+        images,
+        video,
         tags,
-        categoryId,
         userId,
+        reads,
       });
 
-      const getVideo = await getVideoById(res, newVideo.get().id as number, true);
+      const getArticle = await getArticleById(res, newArticle.get().id as number, true);
 
-      // TODO: should send email/notification to the video owner
       // TODO: send email/notification to all user in the app
 
-      return contentResponse(res, getVideo.get(), CREATED, VIDEO_CREATED_SUCCESS);
+      return contentResponse(res, getArticle.get(), CREATED, ARTICLE_CREATED_SUCCESS);
     } catch (error) {
       getServerError(res, error.message);
     }
   };
 
   /**
-   * controller to update a video
+   * controller to update an article
    * @param req Request
    * @param res Response
    */
   update = async (req: Request, res: Response): Promise<any> => {
     const { slug } = req.params;
-    const { title, link, tags, categoryId, userId } = req.body;
+    const { title, summary, body, userId, images, video, tags } = req.body;
 
-    await new VideoValidator(req).create();
+    await new ArticleValidator(req).create();
     const errors = validationResult(req);
     if (!errors.isEmpty()) return getValidationError(res, errors);
 
     try {
       const user = await getUserById(res, userId);
-      const video = await getVideoBySlug(res, slug, true);
-      const category = await getCategoryById(res, categoryId);
+      const article = await getArticleBySlug(res, slug, true);
 
-      if (!video) {
+      if (!article) {
         return getResponse(res, NOT_FOUND, {
-          message: VIDEO_NOT_FOUND,
-        });
-      }
-
-      if (!category) {
-        return getResponse(res, NOT_FOUND, {
-          message: CATEGORY_NOT_FOUND,
+          message: ARTICLE_NOT_FOUND,
         });
       }
 
@@ -116,31 +116,33 @@ export class AdminVideo {
       }
 
       const newSlug = await generateSlug(title);
+      const reads = getReadTime(title, summary, body);
 
-      await db.Video.update(
+      await db.Article.update(
         {
+          slug,
           title,
-          link,
-          slug: newSlug,
+          summary,
+          body,
+          images,
+          video,
           tags,
-          categoryId,
           userId,
+          reads,
         },
-        { where: { id: video.get().id } },
+        { where: { id: article.get().id } },
       );
 
-      const getVideo = await getVideoBySlug(res, newSlug);
+      const getArticle = await getArticleBySlug(res, newSlug, true);
 
-      // TODO: should send email/notification to the video owner
-
-      return contentResponse(res, getVideo.get(), OK, VIDEO_UPDATED_SUCCESS);
+      return contentResponse(res, getArticle.get(), OK, ARTICLE_UPDATED_SUCCESS);
     } catch (error) {
       getServerError(res, error.message);
     }
   };
 
   /**
-   * controller to approve a video
+   * controller to approve an article
    * @param req Request
    * @param res Response
    */
@@ -148,37 +150,35 @@ export class AdminVideo {
     const { slug } = req.params;
 
     try {
-      const video = await getVideoBySlug(res, slug, true);
+      const article = await getArticleBySlug(res, slug, true);
 
-      if (!video) {
+      if (!article) {
         return getResponse(res, NOT_FOUND, {
-          message: VIDEO_NOT_FOUND,
+          message: ARTICLE_NOT_FOUND,
         });
       }
 
-      if (video.get().active) {
+      if (article.get().active) {
         return getResponse(res, CONFLICT, {
-          message: VIDEO_ALREADY_ACTIVE,
+          message: ARTICLE_ALREADY_ACTIVE,
         });
       }
 
-      const update = await db.Video.update(
+      const update = await db.Article.update(
         {
           active: true,
         },
-        { where: { id: video.get().id }, returning: true },
+        { where: { id: article.get().id }, returning: true },
       );
 
-      // TODO: should send email/notification to the video owner
-
-      return contentResponse(res, update[1][0], OK, VIDEO_APPROVED_SUCCESS);
+      return contentResponse(res, update[1][0], OK, ARTICLE_APPROVED_SUCCESS);
     } catch (error) {
       getServerError(res, error.message);
     }
   };
 
   /**
-   * controller to delete a video
+   * controller to delete an article
    * @param req Request
    * @param res Response
    */
@@ -186,37 +186,35 @@ export class AdminVideo {
     const { slug } = req.params;
 
     try {
-      const video = await getVideoBySlug(res, slug, true);
+      const article = await getArticleBySlug(res, slug, true);
 
-      if (!video) {
+      if (!article) {
         return getResponse(res, NOT_FOUND, {
-          message: VIDEO_NOT_FOUND,
+          message: ARTICLE_NOT_FOUND,
         });
       }
 
-      if (!video.get().active) {
+      if (!article.get().active) {
         return getResponse(res, CONFLICT, {
-          message: VIDEO_ALREADY_INACTIVE,
+          message: ARTICLE_ALREADY_INACTIVE,
         });
       }
 
-      const update = await db.Video.update(
+      const update = await db.Article.update(
         {
           active: false,
         },
-        { where: { id: video.get().id }, returning: true },
+        { where: { id: article.get().id }, returning: true },
       );
 
-      // TODO: should send email/notification to the video owner
-
-      return contentResponse(res, update[1][0], OK, VIDEO_DELETED_SUCCESS);
+      return contentResponse(res, update[1][0], OK, ARTICLE_DELETED_SUCCESS);
     } catch (error) {
       getServerError(res, error.message);
     }
   };
 
   /**
-   * controller to get all video or search video by title
+   * controller to get all article or search article by title
    * @param req Request
    * @param res Response
    */
@@ -226,7 +224,7 @@ export class AdminVideo {
     const { limit, offset } = getPagination(Number(page), Number(size));
 
     try {
-      const data = await db.Video.findAndCountAll({
+      const data = await db.Article.findAndCountAll({
         where: condition,
         limit,
         offset,
@@ -243,8 +241,8 @@ export class AdminVideo {
   };
 
   /**
-   * controller to get a single video using slug
-   * @description also returns inactive videos
+   * controller to get a single article using slug
+   * @description also returns inactive articles
    * @param req Request
    * @param res Response
    */
@@ -252,20 +250,20 @@ export class AdminVideo {
     const { slug } = req.params;
 
     try {
-      const video = await getVideoBySlug(res, slug, true);
+      const article = await getArticleBySlug(res, slug, true);
 
-      if (!video) {
+      if (!article) {
         return getResponse(res, NOT_FOUND, {
-          message: VIDEO_NOT_FOUND,
+          message: ARTICLE_NOT_FOUND,
         });
       }
 
-      return contentResponse(res, video, OK);
+      return contentResponse(res, article, OK);
     } catch (error) {
       getServerError(res, error.message);
     }
   };
 }
 
-const adminVideoCtrl = new AdminVideo();
-export default adminVideoCtrl;
+const adminArticleCtrl = new AdminArticle();
+export default adminArticleCtrl;
