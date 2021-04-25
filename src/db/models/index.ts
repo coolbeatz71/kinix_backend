@@ -14,6 +14,7 @@ import { initShare } from './share';
 import { initUser } from './user';
 import { initVideo } from './video';
 import { initBookmark } from './bookmark';
+import { initComment } from './comment';
 
 const sequelize = config.use_env_variable
   ? new Sequelize(process.env[config.use_env_variable], config)
@@ -31,12 +32,11 @@ const db = {
   Rate: initRate(sequelize),
   Share: initShare(sequelize),
   Bookmark: initBookmark(sequelize),
+  Comment: initComment(sequelize),
 };
 
 Object.values(db).forEach((model: any) => {
-  if (model.associate) {
-    model.associate(db);
-  }
+  if (model.associate) model.associate(db);
 });
 
 export default db;
