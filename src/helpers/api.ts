@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import httpStatus, { BAD_REQUEST, NOT_FOUND } from 'http-status';
+import { BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND } from 'http-status';
 import { NextFunction, Request, Response } from 'express';
 import slugify from '@sindresorhus/slugify';
 import { config } from 'dotenv';
@@ -140,8 +140,7 @@ export const notFoundError = (_req: Request, res: Response, _next: NextFunction)
  * @returns
  */
 export const getServerError = (res: Response, error: any) => {
-  const status = httpStatus.INTERNAL_SERVER_ERROR;
-  return getResponse(res, status, {
+  return getResponse(res, INTERNAL_SERVER_ERROR, {
     message: error,
   });
 };

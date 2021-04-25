@@ -1,7 +1,13 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
-import { NOT_FOUND, CREATED } from 'http-status';
-import { ARTICLE_NOT_FOUND, COMMENT_CREATED_SUCCESS } from '../../constants/message';
+import { NOT_FOUND, CREATED, UNAUTHORIZED, OK } from 'http-status';
+import {
+  ARTICLE_NOT_FOUND,
+  COMMENT_DELETED_SUCCESS,
+  COMMENT_CREATED_SUCCESS,
+  COMMENT_NOT_OWNER,
+  COMMENT_NO_FOUND,
+} from '../../constants/message';
 import db from '../../db/models';
 import {
   contentResponse,
@@ -12,6 +18,7 @@ import {
 import { getArticleBySlug } from '../../helpers/article';
 import { getAllComment, getCommentById } from '../../helpers/comment';
 import { IJwtPayload } from '../../interfaces/api';
+import ERole from '../../interfaces/role';
 import CommentValidator from '../../validator/comment';
 
 export class Comment {
@@ -71,6 +78,55 @@ export class Comment {
       );
 
       return comments;
+    } catch (error) {
+      return getServerError(res, error.message);
+    }
+  };
+
+  /**
+   * controller to delete a comment
+   * @param req Request
+   * @param res Response
+   */
+  delete = async (req: Request, res: Response): Promise<any> => {
+    const { slug, id } = req.params;
+    const { id: userId, role } = req.user as IJwtPayload;
+
+    try {
+      const article = await getArticleBySlug(res, slug);
+      const comment = await getCommentById(res, Number(id));
+
+      if (!comment) {
+        return getResponse(res, NOT_FOUND, {
+          message: COMMENT_NO_FOUND,
+        });
+      }
+
+      if (!article) {
+        return getResponse(res, NOT_FOUND, {
+          message: ARTICLE_NOT_FOUND,
+        });
+      }
+
+      if (![ERole.ADMIN, ERole.SUPER_ADMIN].includes(role) && comment.get().userId !== userId) {
+        return getResponse(res, UNAUTHORIZED, {
+          message: COMMENT_NOT_OWNER,
+        });
+      }
+
+      const result = await db.Comment.destroy({
+        where: { id, articleId: article.get().id },
+      });
+
+      if (result > 0) {
+        return getResponse(res, OK, {
+          message: COMMENT_DELETED_SUCCESS,
+        });
+      }
+
+      return getResponse(res, NOT_FOUND, {
+        message: COMMENT_NO_FOUND,
+      });
     } catch (error) {
       return getServerError(res, error.message);
     }

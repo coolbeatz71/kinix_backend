@@ -12,7 +12,6 @@ const comment = async (res: Response, field: string, value: any): Promise<any> =
   try {
     const result = await db.Comment.findOne({
       where: { [field]: value },
-      attributes: { exclude: ['userId'] },
       include: [
         {
           as: 'user',
