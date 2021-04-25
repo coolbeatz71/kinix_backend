@@ -4,7 +4,6 @@ import { validationResult } from 'express-validator';
 import { CONFLICT, CREATED, NOT_FOUND, OK } from 'http-status';
 import { Op } from 'sequelize';
 import db from '../../db/models';
-import { getUserById } from '../../helpers/user';
 import {
   contentResponse,
   generateSlug,
@@ -23,7 +22,6 @@ import {
   ARTICLE_EXIST,
   ARTICLE_NOT_FOUND,
   ARTICLE_UPDATED_SUCCESS,
-  USER_NOT_FOUND,
 } from '../../constants/message';
 import {
   getArticleById,
@@ -88,25 +86,20 @@ export class AdminArticle {
    */
   update = async (req: Request, res: Response): Promise<any> => {
     const { slug } = req.params;
-    const { title, summary, body, userId, images, video, tags } = req.body;
+    const { title, summary, body, images, video, tags } = req.body;
+
+    const { id: userId } = req.user as IJwtPayload;
 
     await new ArticleValidator(req).create();
     const errors = validationResult(req);
     if (!errors.isEmpty()) return getValidationError(res, errors);
 
     try {
-      const user = await getUserById(res, userId);
       const article = await getArticleBySlug(res, slug, true);
 
       if (!article) {
         return getResponse(res, NOT_FOUND, {
           message: ARTICLE_NOT_FOUND,
-        });
-      }
-
-      if (!user) {
-        return getResponse(res, NOT_FOUND, {
-          message: USER_NOT_FOUND,
         });
       }
 

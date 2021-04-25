@@ -59,11 +59,11 @@ export const getPagingData = (
     count: number;
   },
 ): IUnknownObject => {
-  const { count: total, rows: videos } = data;
+  const { count: total, rows } = data;
   const currentPage = Number(page);
   const pages = Math.ceil(total / limit);
 
-  return { total, videos, pages, currentPage };
+  return { total, rows, pages, currentPage };
 };
 
 /**
