@@ -3,7 +3,14 @@ import { Request, Response } from 'express';
 import { NOT_FOUND, OK } from 'http-status';
 import { contentResponse, getResponse, getServerError } from '../../helpers/api';
 import { VIDEO_NOT_FOUND } from '../../constants/message';
-import { getAllVideo, getVideoBySlug } from '../../helpers/video';
+import {
+  getAllVideo,
+  getVideoByCategory,
+  getVideoBySlug,
+  getVideoDiscovery,
+  getVideoPopular,
+} from '../../helpers/video';
+import ECategory from '../../interfaces/category';
 
 export class Video {
   /**
@@ -43,6 +50,56 @@ export class Video {
       }
 
       return contentResponse(res, video, OK);
+    } catch (error) {
+      getServerError(res, error.message);
+    }
+  };
+
+  /**
+   * controller to get video feed
+   * @param req Request
+   * @param res Response
+   */
+  getFeed = async (_req: Request, res: Response): Promise<any> => {
+    try {
+      // get discovery by category
+      const musicVideoDiscovery = await getVideoDiscovery(res, ECategory.MUSIC_VIDEO);
+      const podcastDiscovery = await getVideoDiscovery(res, ECategory.PODCAST);
+      const interviewDiscovery = await getVideoDiscovery(res, ECategory.INTERVIEW);
+      const flexBeatzDiscovery = await getVideoDiscovery(res, ECategory.FLEXBEATZ);
+      const leFocusDiscovery = await getVideoDiscovery(res, ECategory.LEFOCUS);
+
+      const discovery = [
+        ...musicVideoDiscovery,
+        ...podcastDiscovery,
+        ...interviewDiscovery,
+        ...flexBeatzDiscovery,
+        ...leFocusDiscovery,
+      ];
+
+      // get popular videos;
+      const popular = await getVideoPopular(res);
+
+      // get video per category
+      const musicVideo = await getVideoByCategory(res, ECategory.MUSIC_VIDEO);
+      const podcast = await getVideoByCategory(res, ECategory.PODCAST);
+      const interview = await getVideoByCategory(res, ECategory.INTERVIEW);
+      const flexBeatz = await getVideoByCategory(res, ECategory.FLEXBEATZ);
+      const leFocus = await getVideoByCategory(res, ECategory.LEFOCUS);
+
+      const data = {
+        discovery,
+        popular,
+        musicVideo,
+        podcast,
+        interview,
+        flexBeatz,
+        leFocus,
+      };
+
+      return getResponse(res, OK, {
+        data,
+      });
     } catch (error) {
       getServerError(res, error.message);
     }

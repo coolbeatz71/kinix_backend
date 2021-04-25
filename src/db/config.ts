@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { config } from 'dotenv';
 import { Options } from 'sequelize';
 

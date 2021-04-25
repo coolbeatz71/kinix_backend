@@ -29,9 +29,8 @@ export const initRate = (sequelize: Sequelize) => {
         autoIncrement: true,
       },
       userId: {
-        // non-authenticated user also can rate video
         type: DataTypes.INTEGER,
-        allowNull: true,
+        allowNull: false,
       },
       videoId: {
         type: DataTypes.INTEGER,

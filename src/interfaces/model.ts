@@ -1,8 +1,8 @@
+/* eslint-disable no-use-before-define */
 import { ModelStatic, Model } from 'sequelize';
 import EProvider from './provider';
 import ERole from './role';
 
-/* eslint-disable no-use-before-define */
 export interface IModel {
   User: ModelStatic<Model<IUser, any>>;
   Article: ModelStatic<Model<IArticle, any>>;
@@ -55,6 +55,7 @@ export interface IVideo {
   title: string;
   tags: string[] | null;
   active?: boolean;
+  avgRate?: number;
   shared?: boolean;
   userId: number;
   categoryId: number;

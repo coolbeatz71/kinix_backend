@@ -2,6 +2,7 @@
 import { Response } from 'express';
 import { getServerError } from './api';
 import db from '../db/models';
+import ECategory from '../interfaces/category';
 
 const category = async (res: Response, field: string, value: any): Promise<any> => {
   try {
@@ -109,4 +110,109 @@ export const getVideoBySlug = async (
   isAdmin = false,
 ): Promise<any> => {
   return video(res, 'slug', slug, isAdmin);
+};
+
+export const getVideoDiscovery = async (res: Response, categoryName: ECategory): Promise<any> => {
+  try {
+    const cat = await getCategoryByName(res, categoryName);
+
+    const result = await db.Video.findAll({
+      limit: 3,
+      where: { active: true, categoryId: cat.get().id },
+      order: [['updatedAt', 'DESC']],
+      include: [
+        {
+          as: 'category',
+          model: db.Category,
+          attributes: ['id', 'name'],
+        },
+        {
+          as: 'user',
+          model: db.User,
+          attributes: ['id', 'userName', 'email', 'phoneNumber', 'image', 'role'],
+        },
+        {
+          as: 'rate',
+          model: db.Rate,
+        },
+        {
+          as: 'share',
+          model: db.Share,
+        },
+      ],
+    });
+
+    return result;
+  } catch (err) {
+    getServerError(res, err.message);
+  }
+};
+
+export const getVideoPopular = async (res: Response): Promise<any> => {
+  try {
+    const result = await db.Video.findAll({
+      limit: 15,
+      where: { active: true },
+      order: [['avgRate', 'DESC']],
+      include: [
+        {
+          as: 'category',
+          model: db.Category,
+          attributes: ['id', 'name'],
+        },
+        {
+          as: 'user',
+          model: db.User,
+          attributes: ['id', 'userName', 'email', 'phoneNumber', 'image', 'role'],
+        },
+        {
+          as: 'rate',
+          model: db.Rate,
+        },
+        {
+          as: 'share',
+          model: db.Share,
+        },
+      ],
+    });
+
+    return result;
+  } catch (err) {
+    getServerError(res, err.message);
+  }
+};
+
+export const getVideoByCategory = async (res: Response, name: ECategory): Promise<any> => {
+  try {
+    const cat = await getCategoryByName(res, name);
+    const result = await db.Video.findAll({
+      limit: 15,
+      where: { active: true, categoryId: cat.get().id },
+      order: [['avgRate', 'DESC']],
+      include: [
+        {
+          as: 'category',
+          model: db.Category,
+          attributes: ['id', 'name'],
+        },
+        {
+          as: 'user',
+          model: db.User,
+          attributes: ['id', 'userName', 'email', 'phoneNumber', 'image', 'role'],
+        },
+        {
+          as: 'rate',
+          model: db.Rate,
+        },
+        {
+          as: 'share',
+          model: db.Share,
+        },
+      ],
+    });
+
+    return result;
+  } catch (err) {
+    getServerError(res, err.message);
+  }
 };

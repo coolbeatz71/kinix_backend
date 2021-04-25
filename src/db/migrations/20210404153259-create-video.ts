@@ -24,6 +24,10 @@ export const up = async (queryInterface: QueryInterface) => {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
     },
+    avgRate: {
+      type: DataTypes.DOUBLE,
+      defaultValue: 0,
+    },
     shared: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
