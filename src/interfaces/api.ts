@@ -9,5 +9,6 @@ export interface IResponseBody {
 export interface IJwtPayload {
   id: number;
   userName: string;
+  email: string;
   role: ERole;
 }

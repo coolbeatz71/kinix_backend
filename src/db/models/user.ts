@@ -61,6 +61,15 @@ export default class User extends Model<IUser> implements IUser {
       foreignKey: 'userId',
       sourceKey: 'id',
     });
+
+    /**
+     * comment association
+     */
+    User.hasMany(models.Comment, {
+      as: 'comment',
+      foreignKey: 'userId',
+      sourceKey: 'id',
+    });
   }
 }
 
