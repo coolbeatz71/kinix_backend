@@ -12,7 +12,7 @@ const category = async (res: Response, field: string, value: any): Promise<any> 
 
     return result;
   } catch (err) {
-    getServerError(res, err.message);
+    return getServerError(res, err.message);
   }
 };
 
@@ -47,7 +47,7 @@ const video = async (res: Response, field: string, value: any, isAdmin = false):
 
     return result;
   } catch (err) {
-    getServerError(res, err.message);
+    return getServerError(res, err.message);
   }
 };
 
@@ -88,7 +88,7 @@ export const getAllVideo = async (
 
     return result;
   } catch (err) {
-    getServerError(res, err.message);
+    return getServerError(res, err.message);
   }
 };
 
@@ -144,7 +144,7 @@ export const getVideoDiscovery = async (res: Response, categoryName: ECategory):
 
     return result;
   } catch (err) {
-    getServerError(res, err.message);
+    return getServerError(res, err.message);
   }
 };
 
@@ -178,7 +178,7 @@ export const getVideoPopular = async (res: Response): Promise<any> => {
 
     return result;
   } catch (err) {
-    getServerError(res, err.message);
+    return getServerError(res, err.message);
   }
 };
 
@@ -213,6 +213,6 @@ export const getVideoByCategory = async (res: Response, name: ECategory): Promis
 
     return result;
   } catch (err) {
-    getServerError(res, err.message);
+    return getServerError(res, err.message);
   }
 };

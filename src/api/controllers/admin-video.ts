@@ -75,7 +75,7 @@ export class AdminVideo {
 
       return contentResponse(res, getVideo.get(), CREATED, VIDEO_CREATED_SUCCESS);
     } catch (error) {
-      getServerError(res, error.message);
+      return getServerError(res, error.message);
     }
   };
 
@@ -135,7 +135,7 @@ export class AdminVideo {
 
       return contentResponse(res, getVideo.get(), OK, VIDEO_UPDATED_SUCCESS);
     } catch (error) {
-      getServerError(res, error.message);
+      return getServerError(res, error.message);
     }
   };
 
@@ -173,7 +173,7 @@ export class AdminVideo {
 
       return contentResponse(res, update[1][0], OK, VIDEO_APPROVED_SUCCESS);
     } catch (error) {
-      getServerError(res, error.message);
+      return getServerError(res, error.message);
     }
   };
 
@@ -211,7 +211,7 @@ export class AdminVideo {
 
       return contentResponse(res, update[1][0], OK, VIDEO_DELETED_SUCCESS);
     } catch (error) {
-      getServerError(res, error.message);
+      return getServerError(res, error.message);
     }
   };
 
@@ -238,7 +238,7 @@ export class AdminVideo {
         data: result,
       });
     } catch (error) {
-      getServerError(res, error.message);
+      return getServerError(res, error.message);
     }
   };
 
@@ -262,7 +262,7 @@ export class AdminVideo {
 
       return contentResponse(res, video, OK);
     } catch (error) {
-      getServerError(res, error.message);
+      return getServerError(res, error.message);
     }
   };
 }

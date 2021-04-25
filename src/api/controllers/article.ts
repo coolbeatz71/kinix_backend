@@ -20,7 +20,7 @@ export class Article {
         data: { count, articles },
       });
     } catch (error) {
-      getServerError(res, error.message);
+      return getServerError(res, error.message);
     }
   };
 
@@ -44,7 +44,7 @@ export class Article {
 
       return contentResponse(res, article, OK);
     } catch (error) {
-      getServerError(res, error.message);
+      return getServerError(res, error.message);
     }
   };
 }

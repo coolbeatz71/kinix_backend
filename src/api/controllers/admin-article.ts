@@ -32,6 +32,7 @@ import {
   getReadTime,
 } from '../../helpers/article';
 import ArticleValidator from '../../validator/article';
+import { IJwtPayload } from '../../interfaces/api';
 
 export class AdminArticle {
   /**
@@ -40,7 +41,8 @@ export class AdminArticle {
    * @param res Response
    */
   create = async (req: Request, res: Response): Promise<any> => {
-    const { title, summary, body, userId, images, video, tags } = req.body;
+    const { title, summary, body, images, video, tags } = req.body;
+    const { id: userId } = req.user as IJwtPayload;
 
     await new ArticleValidator(req).create();
     const errors = validationResult(req);
@@ -49,14 +51,7 @@ export class AdminArticle {
     try {
       const slug = await generateSlug(title);
       const reads = getReadTime(title, summary, body);
-      const user = await getUserById(res, userId);
       const article = await getArticleByTitle(res, title, true);
-
-      if (!user) {
-        return getResponse(res, NOT_FOUND, {
-          message: USER_NOT_FOUND,
-        });
-      }
 
       if (article) {
         return getResponse(res, CONFLICT, {
@@ -82,7 +77,7 @@ export class AdminArticle {
 
       return contentResponse(res, getArticle.get(), CREATED, ARTICLE_CREATED_SUCCESS);
     } catch (error) {
-      getServerError(res, error.message);
+      return getServerError(res, error.message);
     }
   };
 
@@ -137,7 +132,7 @@ export class AdminArticle {
 
       return contentResponse(res, getArticle.get(), OK, ARTICLE_UPDATED_SUCCESS);
     } catch (error) {
-      getServerError(res, error.message);
+      return getServerError(res, error.message);
     }
   };
 
@@ -173,7 +168,7 @@ export class AdminArticle {
 
       return contentResponse(res, update[1][0], OK, ARTICLE_APPROVED_SUCCESS);
     } catch (error) {
-      getServerError(res, error.message);
+      return getServerError(res, error.message);
     }
   };
 
@@ -209,7 +204,7 @@ export class AdminArticle {
 
       return contentResponse(res, update[1][0], OK, ARTICLE_DELETED_SUCCESS);
     } catch (error) {
-      getServerError(res, error.message);
+      return getServerError(res, error.message);
     }
   };
 
@@ -236,7 +231,7 @@ export class AdminArticle {
         data: result,
       });
     } catch (error) {
-      getServerError(res, error.message);
+      return getServerError(res, error.message);
     }
   };
 
@@ -260,7 +255,7 @@ export class AdminArticle {
 
       return contentResponse(res, article, OK);
     } catch (error) {
-      getServerError(res, error.message);
+      return getServerError(res, error.message);
     }
   };
 }

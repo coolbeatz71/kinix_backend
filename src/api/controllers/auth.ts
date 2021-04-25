@@ -78,7 +78,7 @@ export class Auth {
 
       return this.userResponse(res, newUser.get(), token, CREATED, ACCOUNT_CREATED_SUCCESS);
     } catch (error) {
-      getServerError(res, error.message);
+      return getServerError(res, error.message);
     }
   };
 
@@ -131,7 +131,7 @@ export class Auth {
       const token = generateToken(user.get());
       return this.userResponse(res, update[1][0], token, OK, USER_LOGIN_SUCCESS);
     } catch (error) {
-      getServerError(res, error.message);
+      return getServerError(res, error.message);
     }
   };
 
@@ -177,7 +177,7 @@ export class Auth {
         message: SIGNOUT_SUCCESS,
       });
     } catch (error) {
-      getServerError(res, error.message);
+      return getServerError(res, error.message);
     }
   };
 }
