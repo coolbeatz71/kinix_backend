@@ -86,9 +86,8 @@ export class AdminArticle {
    */
   update = async (req: Request, res: Response): Promise<any> => {
     const { slug } = req.params;
-    const { title, summary, body, images, video, tags } = req.body;
-
     const { id: userId } = req.user as IJwtPayload;
+    const { title, summary, body, images, video, tags } = req.body;
 
     await new ArticleValidator(req).create();
     const errors = validationResult(req);

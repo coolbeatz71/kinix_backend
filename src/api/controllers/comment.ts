@@ -2,11 +2,12 @@ import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import { NOT_FOUND, CREATED, UNAUTHORIZED, OK } from 'http-status';
 import {
+  COMMENT_NOT_FOUND,
   ARTICLE_NOT_FOUND,
+  COMMENT_NOT_OWNER,
   COMMENT_DELETED_SUCCESS,
   COMMENT_CREATED_SUCCESS,
-  COMMENT_NOT_OWNER,
-  COMMENT_NO_FOUND,
+  COMMENT_UPDATED_SUCCESS,
 } from '../../constants/message';
 import db from '../../db/models';
 import {
@@ -98,7 +99,7 @@ export class Comment {
 
       if (!comment) {
         return getResponse(res, NOT_FOUND, {
-          message: COMMENT_NO_FOUND,
+          message: COMMENT_NOT_FOUND,
         });
       }
 
@@ -125,8 +126,54 @@ export class Comment {
       }
 
       return getResponse(res, NOT_FOUND, {
-        message: COMMENT_NO_FOUND,
+        message: COMMENT_NOT_FOUND,
       });
+    } catch (error) {
+      return getServerError(res, error.message);
+    }
+  };
+
+  /**
+   * controller to update a comment
+   * @param req Request
+   * @param res Response
+   */
+  update = async (req: Request, res: Response): Promise<any> => {
+    const { body } = req.body;
+    const { slug, id } = req.params;
+    const { id: userId } = req.user as IJwtPayload;
+
+    try {
+      const article = await getArticleBySlug(res, slug);
+      const comment = await getCommentById(res, Number(id));
+
+      if (!comment) {
+        return getResponse(res, NOT_FOUND, {
+          message: COMMENT_NOT_FOUND,
+        });
+      }
+
+      if (!article) {
+        return getResponse(res, NOT_FOUND, {
+          message: ARTICLE_NOT_FOUND,
+        });
+      }
+
+      if (comment.get().userId !== userId) {
+        return getResponse(res, UNAUTHORIZED, {
+          message: COMMENT_NOT_OWNER,
+        });
+      }
+
+      const update = await db.Comment.update(
+        { body },
+        {
+          returning: true,
+          where: { id, articleId: article.get().id },
+        },
+      );
+
+      return contentResponse(res, update[1][0], OK, COMMENT_UPDATED_SUCCESS);
     } catch (error) {
       return getServerError(res, error.message);
     }
