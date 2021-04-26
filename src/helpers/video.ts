@@ -1,5 +1,6 @@
 /* eslint-disable consistent-return */
 import { Response } from 'express';
+import { Sequelize } from 'sequelize';
 import { getServerError } from './api';
 import db from '../db/models';
 import ECategory from '../interfaces/category';
@@ -153,7 +154,10 @@ export const getVideoPopular = async (res: Response): Promise<any> => {
     const result = await db.Video.findAll({
       limit: 15,
       where: { active: true },
-      order: [['avgRate', 'DESC']],
+      order: [
+        ['avgRate', 'DESC'],
+        ['totalRaters', 'DESC'],
+      ],
       include: [
         {
           as: 'category',
@@ -212,6 +216,22 @@ export const getVideoByCategory = async (res: Response, name: ECategory): Promis
     });
 
     return result;
+  } catch (err) {
+    return getServerError(res, err.message);
+  }
+};
+
+export const calcVideoAVGRate = async (res: Response, videoId: number): Promise<any> => {
+  try {
+    const rate = db.Rate.findAll({
+      where: { videoId },
+      attributes: [
+        [Sequelize.cast(Sequelize.fn('SUM', Sequelize.col('count')), 'int'), 'sumRate'],
+        [Sequelize.cast(Sequelize.fn('COUNT', Sequelize.col('count')), 'int'), 'totalRaters'],
+      ],
+    });
+
+    return rate;
   } catch (err) {
     return getServerError(res, err.message);
   }
