@@ -1,10 +1,10 @@
 import bcrypt from 'bcrypt';
-import httpStatus, { BAD_REQUEST, NOT_FOUND } from 'http-status';
+import { BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND } from 'http-status';
 import { NextFunction, Request, Response } from 'express';
 import slugify from '@sindresorhus/slugify';
 import { config } from 'dotenv';
 import { IResponseBody } from '../interfaces/api';
-import { IVideo, IArticle } from '../interfaces/model';
+import { IVideo, IArticle, IComment } from '../interfaces/model';
 import { IUnknownObject } from '../interfaces/unknownObject';
 import { RESOURCE_NOT_FOUND } from '../constants/message';
 import Video from '../db/models/video';
@@ -59,11 +59,11 @@ export const getPagingData = (
     count: number;
   },
 ): IUnknownObject => {
-  const { count: total, rows: videos } = data;
+  const { count: total, rows } = data;
   const currentPage = Number(page);
   const pages = Math.ceil(total / limit);
 
-  return { total, videos, pages, currentPage };
+  return { total, rows, pages, currentPage };
 };
 
 /**
@@ -88,7 +88,7 @@ export const getResponse = (res: Response, status: number, body: IResponseBody):
  */
 export const contentResponse = (
   res: Response,
-  data: IVideo | IArticle,
+  data: IVideo | IArticle | IComment,
   status: number,
   message?: string,
 ) =>
@@ -140,8 +140,7 @@ export const notFoundError = (_req: Request, res: Response, _next: NextFunction)
  * @returns
  */
 export const getServerError = (res: Response, error: any) => {
-  const status = httpStatus.INTERNAL_SERVER_ERROR;
-  return getResponse(res, status, {
+  return getResponse(res, INTERNAL_SERVER_ERROR, {
     message: error,
   });
 };

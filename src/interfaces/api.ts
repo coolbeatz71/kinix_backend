@@ -7,7 +7,8 @@ export interface IResponseBody {
 }
 
 export interface IJwtPayload {
-  id: string;
+  id: number;
   userName: string;
+  email: string;
   role: ERole;
 }

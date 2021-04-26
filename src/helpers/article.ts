@@ -33,12 +33,16 @@ const article = async (res: Response, field: string, value: any, isAdmin = false
           as: 'bookmark',
           model: db.Bookmark,
         },
+        {
+          as: 'comment',
+          model: db.Comment,
+        },
       ],
     });
 
     return result;
   } catch (err) {
-    getServerError(res, err.message);
+    return getServerError(res, err.message);
   }
 };
 
@@ -69,12 +73,16 @@ export const getAllArticle = async (
           as: 'bookmark',
           model: db.Bookmark,
         },
+        {
+          as: 'comment',
+          model: db.Comment,
+        },
       ],
     });
 
     return result;
   } catch (err) {
-    getServerError(res, err.message);
+    return getServerError(res, err.message);
   }
 };
 

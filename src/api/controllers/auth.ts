@@ -25,6 +25,7 @@ import {
   USER_LOGIN_SUCCESS,
 } from '../../constants/message';
 import { IJwtPayload } from '../../interfaces/api';
+import ERole from '../../interfaces/role';
 
 export class Auth {
   /**
@@ -78,7 +79,7 @@ export class Auth {
 
       return this.userResponse(res, newUser.get(), token, CREATED, ACCOUNT_CREATED_SUCCESS);
     } catch (error) {
-      getServerError(res, error.message);
+      return getServerError(res, error.message);
     }
   };
 
@@ -128,10 +129,13 @@ export class Auth {
         { where: { id: user.id }, returning: true },
       );
 
-      const token = generateToken(user.get());
+      const token = generateToken(
+        user.get(),
+        user.get().role === ERole.ADMIN || user.get().role === ERole.SUPER_ADMIN,
+      );
       return this.userResponse(res, update[1][0], token, OK, USER_LOGIN_SUCCESS);
     } catch (error) {
-      getServerError(res, error.message);
+      return getServerError(res, error.message);
     }
   };
 
@@ -177,7 +181,7 @@ export class Auth {
         message: SIGNOUT_SUCCESS,
       });
     } catch (error) {
-      getServerError(res, error.message);
+      return getServerError(res, error.message);
     }
   };
 }

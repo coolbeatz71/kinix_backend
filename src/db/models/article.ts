@@ -35,6 +35,15 @@ export default class Article extends Model<IArticle> implements IArticle {
     });
 
     /**
+     * comment association
+     */
+    Article.hasMany(models.Comment, {
+      as: 'comment',
+      foreignKey: 'articleId',
+      sourceKey: 'id',
+    });
+
+    /**
      * user association
      */
     Article.belongsTo(models.User, {

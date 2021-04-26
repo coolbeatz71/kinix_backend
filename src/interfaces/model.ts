@@ -6,6 +6,7 @@ import ERole from './role';
 export interface IModel {
   User: ModelStatic<Model<IUser, any>>;
   Article: ModelStatic<Model<IArticle, any>>;
+  Comment: ModelStatic<Model<IComment, any>>;
   Video: ModelStatic<Model<IVideo, any>>;
   Playlist: ModelStatic<Model<IPlaylist, any>>;
   Bookmark: ModelStatic<Model<IBookmark, any>>;
@@ -44,6 +45,15 @@ export interface IArticle {
   active?: boolean;
   liked?: boolean;
   userId: number;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface IComment {
+  readonly id?: number;
+  userId: number;
+  articleId: number;
+  body: string;
   createdAt?: string;
   updatedAt?: string;
 }

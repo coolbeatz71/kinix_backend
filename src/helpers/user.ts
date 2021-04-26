@@ -12,7 +12,7 @@ const user = async (res: Response, field: string, value: any): Promise<any> => {
 
     return result;
   } catch (err) {
-    getServerError(res, err.message);
+    return getServerError(res, err.message);
   }
 };
 

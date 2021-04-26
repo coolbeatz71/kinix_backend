@@ -27,7 +27,7 @@ export class Video {
         data: { count, videos },
       });
     } catch (error) {
-      getServerError(res, error.message);
+      return getServerError(res, error.message);
     }
   };
 
@@ -51,7 +51,7 @@ export class Video {
 
       return contentResponse(res, video, OK);
     } catch (error) {
-      getServerError(res, error.message);
+      return getServerError(res, error.message);
     }
   };
 
@@ -101,7 +101,7 @@ export class Video {
         data,
       });
     } catch (error) {
-      getServerError(res, error.message);
+      return getServerError(res, error.message);
     }
   };
 }
