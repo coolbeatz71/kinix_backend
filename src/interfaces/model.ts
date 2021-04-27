@@ -66,6 +66,7 @@ export interface IVideo {
   tags: string[] | null;
   active?: boolean;
   avgRate?: number;
+  totalRaters?: number;
   shared?: boolean;
   userId: number;
   categoryId: number;
@@ -89,7 +90,7 @@ export interface ICategory {
 }
 
 export interface ILike {
-  readonly id: number;
+  readonly id?: number;
   userId: number;
   articleId: number;
   createdAt?: string;
@@ -97,7 +98,7 @@ export interface ILike {
 }
 
 export interface IPlaylist {
-  readonly id: number;
+  readonly id?: number;
   slug: string;
   title: string;
   userId: number;
@@ -107,7 +108,7 @@ export interface IPlaylist {
 }
 
 export interface IRate {
-  readonly id: number;
+  readonly id?: number;
   userId: number | null;
   videoId: number;
   count: number;
@@ -116,7 +117,7 @@ export interface IRate {
 }
 
 export interface IShare {
-  readonly id: number;
+  readonly id?: number;
   userId: number | null;
   videoId: number;
   createdAt?: string;

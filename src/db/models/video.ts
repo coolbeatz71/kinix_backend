@@ -8,6 +8,7 @@ export default class Video extends Model<IVideo> implements IVideo {
   title!: string;
   tags!: string[] | null;
   avgRate!: number;
+  totalRaters!: number;
   active!: boolean;
   shared!: boolean;
   userId!: number;
@@ -95,7 +96,11 @@ export const initVideo = (sequelize: Sequelize) => {
         defaultValue: true,
       },
       avgRate: {
-        type: DataTypes.DOUBLE,
+        type: DataTypes.FLOAT,
+        defaultValue: 0,
+      },
+      totalRaters: {
+        type: DataTypes.INTEGER,
         defaultValue: 0,
       },
       shared: {

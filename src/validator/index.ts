@@ -72,6 +72,20 @@ export class Validator {
       .withMessage('phone number is invalid')
       .run(req);
   };
+
+  /**
+   * validate rate count
+   * @param req Request
+   * @param field string
+   * @returns {void} Promise<void>
+   */
+  rate = async (req: Request, field: string): Promise<void> => {
+    await this.empty(req, field, 'rate count');
+    await check(field)
+      .isFloat({ min: 1, max: 5 })
+      .withMessage('rate count must be a number between 1 and 5')
+      .run(req);
+  };
 }
 
 const validate = new Validator();

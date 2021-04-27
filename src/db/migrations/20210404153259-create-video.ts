@@ -25,7 +25,11 @@ export const up = async (queryInterface: QueryInterface) => {
       defaultValue: true,
     },
     avgRate: {
-      type: DataTypes.DOUBLE,
+      type: DataTypes.FLOAT,
+      defaultValue: 0,
+    },
+    totalRaters: {
+      type: DataTypes.INTEGER,
       defaultValue: 0,
     },
     shared: {
