@@ -2,7 +2,7 @@
 import { Request } from 'express';
 import validate from '..';
 
-class RateArticleValidator {
+class RateVideoValidator {
   private req!: Request;
 
   constructor(req: Request) {
@@ -14,4 +14,4 @@ class RateArticleValidator {
   };
 }
 
-export default RateArticleValidator;
+export default RateVideoValidator;

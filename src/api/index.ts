@@ -4,7 +4,8 @@ import adminRoutes from './routes/admin';
 import videoRoutes from './routes/video';
 import commentRoutes from './routes/comment';
 import articleRoutes from './routes/article';
-import articleRateRoutes from './routes/rate';
+import videoRateRoutes from './routes/rate';
+import shareVideoRoutes from './routes/share';
 
 const router: Router = Router();
 
@@ -13,6 +14,7 @@ router.use('/admin', adminRoutes);
 router.use('/videos', videoRoutes);
 router.use('/articles', articleRoutes);
 router.use('/comments', commentRoutes);
-router.use('/rates', articleRateRoutes);
+router.use('/rates', videoRateRoutes);
+router.use('/shares', shareVideoRoutes);
 
 export default router;

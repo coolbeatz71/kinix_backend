@@ -1,9 +1,9 @@
 import express from 'express';
-import rateVideoCtrl from '../controllers/rate';
+import shareVideoCtrl from '../controllers/share';
 import { verifyToken } from '../middlewares/authorization';
 
 const router = express.Router();
 
-router.post('/:slug', verifyToken, rateVideoCtrl.create);
+router.post('/:slug', verifyToken, shareVideoCtrl.create);
 
 export default router;

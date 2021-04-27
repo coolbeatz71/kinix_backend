@@ -14,11 +14,11 @@ import {
   VIDEO_RATE_UPDATED_SUCCESS,
 } from '../../constants/message';
 import { IJwtPayload } from '../../interfaces/api';
-import RateArticleValidator from '../../validator/rate';
+import RateVideoValidator from '../../validator/rate';
 import { calcVideoAVGRate, getVideoById, getVideoBySlug } from '../../helpers/video';
 import db from '../../db/models';
 
-export class RateArticle {
+export class RateVideo {
   /**
    * update video after create/update rate
    * @param res Response
@@ -47,7 +47,7 @@ export class RateArticle {
   };
 
   /**
-   * controller to rate an article
+   * controller to rate a video
    * @param req Request
    * @param res Response
    */
@@ -56,7 +56,7 @@ export class RateArticle {
     const { slug } = req.params;
     const { id: userId } = req.user as IJwtPayload;
 
-    await new RateArticleValidator(req).create();
+    await new RateVideoValidator(req).create();
     const errors = validationResult(req);
     if (!errors.isEmpty()) return getValidationError(res, errors);
 
@@ -99,5 +99,5 @@ export class RateArticle {
   };
 }
 
-const rateArticleCtrl = new RateArticle();
-export default rateArticleCtrl;
+const rateVideoCtrl = new RateVideo();
+export default rateVideoCtrl;
