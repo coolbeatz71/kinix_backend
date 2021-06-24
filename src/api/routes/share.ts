@@ -1,5 +1,5 @@
 import express from 'express';
-import shareVideoCtrl from '../controllers/share';
+import shareVideoCtrl from '../controllers/share-video';
 import { verifyToken } from '../middlewares/authorization';
 
 const router = express.Router();

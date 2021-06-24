@@ -1,5 +1,5 @@
 import express from 'express';
-import rateVideoCtrl from '../controllers/rate';
+import rateVideoCtrl from '../controllers/rate-video';
 import { verifyToken } from '../middlewares/authorization';
 
 const router = express.Router();
