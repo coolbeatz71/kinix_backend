@@ -9,7 +9,7 @@ import db from '../../db/models';
 
 export class ShareVideo {
   /**
-   * update video after create/update rate
+   * update video after create/update sharing
    * @param res Response
    * @param videoId number
    */
