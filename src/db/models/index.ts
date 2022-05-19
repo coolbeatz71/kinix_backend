@@ -3,7 +3,7 @@
 /* eslint-disable */
 const Sequelize = require('sequelize');
 const env = process.env.NODE_ENV || 'development';
-const config = require(`${__dirname}/../config.ts`)[env];
+const config = require(`${__dirname}/../config`)[env];
 
 import { initArticle } from './article';
 import { initCategory } from './category';
