@@ -2,7 +2,7 @@
   "extends": "./node_modules/poetic/config/typescript/tsconfig.json",
   "compilerOptions": {
     "target": "es6",
-    "outDir": ".build",
+    "outDir": "build",
     "lib": ["dom", "dom.iterable", "esnext"],
     "typeRoots": ["./@types/", "./node_modules/@types"],
     "skipLibCheck": true,

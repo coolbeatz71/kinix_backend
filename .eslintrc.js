@@ -1,9 +1,4 @@
 module.exports = {
-  settings: {
-    react: {
-      version: 'latest',
-    },
-  },
   extends: ['./node_modules/poetic/config/eslint/eslint-config.js'],
   rules: {
     '@typescript-eslint/explicit-member-accessibility': 0,

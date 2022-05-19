@@ -106,6 +106,7 @@ dist
 
 dist/
 .build/
+build/
 .vscode/
 yarn.lock
 package-lock.json

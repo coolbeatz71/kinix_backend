@@ -1,14 +1,17 @@
 {
-  "name": "kinix_backend",
+  "name": "kiinox-rest-api",
   "version": "1.0.0",
   "description": "A RESTful API for a video container manager application",
   "repository": "https://github.com/coolbeatz71/kinix_backend.git",
   "author": "coolbeatz71 <sigmacool@gmail.com>",
   "license": "MIT",
+  "engines": {
+    "node": "16.x"
+  },
   "scripts": {
-    "start": "npm run build && cross-env NODE_ENV=production node build/server.js",
+    "start": "node build/server.js",
     "dev": "cross-env NODE_ENV=development nodemon",
-    "build": "npm run code:lint && tsc",
+    "postinstall": "tsc",
     "type:check": "tsc --noEmit",
     "test": "jest --detectOpenHandles --runInBand --forceExit --coverage",
     "code:lint": "eslint --ext .js,.jsx,.ts,.tsx \"src/\"",
@@ -17,6 +20,10 @@
     "db:seed:dev": "NODE_ENV=development npx sequelize db:seed:all",
     "db:drop:dev": "NODE_ENV=development npx sequelize db:drop",
     "db:dev": "npm run build && npm run db:drop:dev && npm run db:init:dev && npm run db:seed:dev",
+    "db:init:prod": "NODE_ENV=production npx sequelize db:create && NODE_ENV=production npx sequelize db:migrate",
+    "db:seed:prod": "NODE_ENV=production npx sequelize db:seed:all",
+    "db:drop:prod": "NODE_ENV=production npx sequelize db:drop",
+    "db:prod": "npm run build && npm run db:drop:prod && npm run db:init:prod && npm run db:seed:prod",
     "db:init:test": "NODE_ENV=test npx sequelize db:create && NODE_ENV=test npx sequelize db:migrate",
     "db:seed:test": "NODE_ENV=test npx sequelize db:seed:all",
     "db:drop:test": "NODE_ENV=test npx sequelize db:drop",
