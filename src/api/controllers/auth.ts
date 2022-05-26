@@ -1,7 +1,15 @@
 /* eslint-disable consistent-return */
 import { Request, Response } from 'express';
 import { Op } from 'sequelize';
-import { BAD_REQUEST, CONFLICT, CREATED, FORBIDDEN, OK, UNAUTHORIZED } from 'http-status';
+import {
+  BAD_REQUEST,
+  CONFLICT,
+  CREATED,
+  FORBIDDEN,
+  NOT_FOUND,
+  OK,
+  UNAUTHORIZED,
+} from 'http-status';
 import { validationResult } from 'express-validator';
 import {
   comparePassword,
@@ -18,14 +26,17 @@ import {
   ACCOUNT_CREATED_SUCCESS,
   ACCOUNT_EXIST,
   CHECK_CONFIRM_EMAIL,
+  GET_USER_SUCCESS,
   PASSWORD_INVALID,
   SIGNOUT_SUCCESS,
   USERNAME_EMAIL_INVALID,
   USERNAME_TAKEN,
   USER_LOGIN_SUCCESS,
+  USER_NOT_FOUND,
 } from '../../constants/message';
 import { IJwtPayload } from '../../interfaces/api';
 import ERole from '../../interfaces/role';
+import { getUserById } from '../../helpers/user';
 
 export class Auth {
   /**
@@ -134,6 +145,28 @@ export class Auth {
         user.get().role === ERole.ADMIN || user.get().role === ERole.SUPER_ADMIN,
       );
       return this.userResponse(res, update[1][0], token, OK, USER_LOGIN_SUCCESS);
+    } catch (error) {
+      return getServerError(res, error.message);
+    }
+  };
+
+  /**
+   * controller to get the current user
+   * @param req Request
+   * @param res Response
+   */
+  getCurrentUser = async (req: Request, res: Response): Promise<any> => {
+    try {
+      const { id } = req.user as IJwtPayload;
+      const user = await getUserById(res, id);
+
+      if (!user) {
+        return getResponse(res, NOT_FOUND, {
+          message: USER_NOT_FOUND,
+        });
+      }
+
+      return this.userResponse(res, user, '', OK, GET_USER_SUCCESS);
     } catch (error) {
       return getServerError(res, error.message);
     }
