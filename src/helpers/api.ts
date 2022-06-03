@@ -4,7 +4,7 @@ import { NextFunction, Request, Response } from 'express';
 import slugify from '@sindresorhus/slugify';
 import { config } from 'dotenv';
 import { IResponseBody } from '../interfaces/api';
-import { IVideo, IArticle, IComment, IRate, ILike } from '../interfaces/model';
+import { IVideo, IArticle, IComment, IRate, ILike, IUser } from '../interfaces/model';
 import { IUnknownObject } from '../interfaces/unknownObject';
 import { RESOURCE_NOT_FOUND } from '../constants/message';
 import Video from '../db/models/video';
@@ -12,11 +12,10 @@ import Article from '../db/models/article';
 
 config();
 
-export const generateSlug = async (title: string) => {
-  return `${await slugify(title, { lowercase: true })}-${
+export const generateSlug = async (title: string) =>
+  `${await slugify(title, { lowercase: true })}-${
     Math.floor(Math.random() * 999999999) + 100000000
   }`;
-};
 
 /**
  * check if the request body contains a given field
@@ -25,9 +24,8 @@ export const generateSlug = async (title: string) => {
  * @param field
  * @return boolean
  */
-export const isFieldInBody = (req: Request, field: string) => {
-  return Object.prototype.hasOwnProperty.call(req.body, field);
-};
+export const isFieldInBody = (req: Request, field: string) =>
+  Object.prototype.hasOwnProperty.call(req.body, field);
 
 /**
  * get pagination utils for dashboard tables
@@ -73,9 +71,8 @@ export const getPagingData = (
  * @param body
  * @return Response
  */
-export const getResponse = (res: Response, status: number, body: IResponseBody): Response => {
-  return res.status(status).json(body);
-};
+export const getResponse = (res: Response, status: number, body: IResponseBody): Response =>
+  res.status(status).json(body);
 
 /**
  * return the content response to the user
@@ -127,11 +124,10 @@ export const getSanitizedBody = (obj: IUnknownObject): IUnknownObject => {
  * @param res Response
  * @param _next NextFunction
  */
-export const notFoundError = (_req: Request, res: Response, _next: NextFunction) => {
-  return res.status(NOT_FOUND).json({
+export const notFoundError = (_req: Request, res: Response, _next: NextFunction) =>
+  res.status(NOT_FOUND).json({
     message: RESOURCE_NOT_FOUND,
   });
-};
 
 /**
  * return internal server error
@@ -139,26 +135,55 @@ export const notFoundError = (_req: Request, res: Response, _next: NextFunction)
  * @param error
  * @returns
  */
-export const getServerError = (res: Response, error: any) => {
-  return getResponse(res, INTERNAL_SERVER_ERROR, {
+export const getServerError = (res: Response, error: any) =>
+  getResponse(res, INTERNAL_SERVER_ERROR, {
     message: error,
   });
-};
 
 /**
  * generate a hashed password
  * @param password
  * @returns string
  */
-export const getHashedPassword = (password: string) => {
-  return bcrypt.hashSync(password, bcrypt.genSaltSync(8));
-};
+export const getHashedPassword = (password: string) =>
+  bcrypt.hashSync(password, bcrypt.genSaltSync(8));
 
 /**
  * compare passwords
  * @param password
  * @returns string
  */
-export const comparePassword = (password: string, hashedPassword: string) => {
-  return bcrypt.compareSync(password, hashedPassword);
-};
+export const comparePassword = (password: string, hashedPassword: string) =>
+  bcrypt.compareSync(password, hashedPassword);
+
+/**
+ * helper to send user info after authentication
+ * @param res Response
+ * @param user Object
+ * @param token string
+ * @param status number
+ * @param message string
+ * @returns
+ */
+export const getUserResponse = (
+  res: Response,
+  user: IUser,
+  token: string,
+  status: number,
+  message: string,
+) =>
+  getResponse(res, status, {
+    token,
+    message,
+    data: {
+      userName: user.userName,
+      email: user.email,
+      phoneNumber: user.phoneNumber,
+      image: user.image,
+      allowEmailNotification: user.allowEmailNotification,
+      role: user.role,
+      verified: user.verified,
+      isLoggedIn: user.isLoggedIn,
+      provider: user.provider,
+    },
+  });

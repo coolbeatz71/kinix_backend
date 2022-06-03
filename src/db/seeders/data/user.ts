@@ -15,6 +15,11 @@ const password = bcrypt.hashSync(plainPwd, bcrypt.genSaltSync(8));
 const createdAt = dayjs().format();
 const updatedAt = createdAt;
 
+const adminEmail = 'sigmacool@gmail.com';
+const superAdminEmail = 'kinix2021@gmail.com';
+const adminUserName = '@coolbeatz71';
+const superAdminUserName = '@superadmin';
+
 const UserData: IUser[] = [
   {
     userName: name.firstName(),
@@ -47,8 +52,8 @@ const UserData: IUser[] = [
     updatedAt,
   },
   {
-    userName: name.firstName(),
-    email: internet.email(),
+    userName: adminUserName,
+    email: adminEmail,
     phoneNumber: phone.phoneNumber(),
     password,
     image: image.avatar(),
@@ -57,8 +62,8 @@ const UserData: IUser[] = [
     updatedAt,
   },
   {
-    userName: name.firstName(),
-    email: internet.email(),
+    userName: superAdminUserName,
+    email: superAdminEmail,
     phoneNumber: phone.phoneNumber(),
     password,
     image: image.avatar(),
