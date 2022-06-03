@@ -16,11 +16,11 @@ import {
   getHashedPassword,
   getResponse,
   getServerError,
+  getUserResponse,
   getValidationError,
 } from '../../helpers/api';
 import AuthValidator from '../../validator/auth';
 import { generateToken } from '../../helpers/jwt';
-import { IUser } from '../../interfaces/model';
 import db from '../../db/models';
 import {
   ACCOUNT_CREATED_SUCCESS,
@@ -88,7 +88,7 @@ export class Auth {
 
       // TODO: should send email here for email confirmation
 
-      return this.userResponse(res, newUser.get(), token, CREATED, ACCOUNT_CREATED_SUCCESS);
+      return getUserResponse(res, newUser.get(), token, CREATED, ACCOUNT_CREATED_SUCCESS);
     } catch (error) {
       return getServerError(res, error.message);
     }
@@ -144,7 +144,7 @@ export class Auth {
         user.get(),
         user.get().role === ERole.ADMIN || user.get().role === ERole.SUPER_ADMIN,
       );
-      return this.userResponse(res, update[1][0], token, OK, USER_LOGIN_SUCCESS);
+      return getUserResponse(res, update[1][0], token, OK, USER_LOGIN_SUCCESS);
     } catch (error) {
       return getServerError(res, error.message);
     }
@@ -166,37 +166,10 @@ export class Auth {
         });
       }
 
-      return this.userResponse(res, user, '', OK, GET_USER_SUCCESS);
+      return getUserResponse(res, user, '', OK, GET_USER_SUCCESS);
     } catch (error) {
       return getServerError(res, error.message);
     }
-  };
-
-  /**
-   * helper to send user info after authentication
-   * @param res Response
-   * @param user Object
-   * @param token string
-   * @param status number
-   * @param message string
-   * @returns
-   */
-  userResponse = (res: Response, user: IUser, token: string, status: number, message: string) => {
-    return getResponse(res, status, {
-      token,
-      message,
-      data: {
-        userName: user.userName,
-        email: user.email,
-        phoneNumber: user.phoneNumber,
-        image: user.image,
-        allowEmailNotification: user.allowEmailNotification,
-        role: user.role,
-        verified: user.verified,
-        isLoggedIn: user.isLoggedIn,
-        provider: user.provider,
-      },
-    });
   };
 
   /**

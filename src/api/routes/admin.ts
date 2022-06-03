@@ -1,9 +1,23 @@
 import express from 'express';
 import adminArticleCtrl from '../controllers/admin-article';
+import adminAuthCtrl from '../controllers/admin-auth';
 import adminVideoCtrl from '../controllers/admin-video';
+import authCtrl from '../controllers/auth';
 import { adminsCheck, superAdminCheck } from '../middlewares/authorization';
 
 const router = express.Router();
+
+/*
+  |--------------------------------------------------------------------------
+  | Auth ENDPOINTS
+  |--------------------------------------------------------------------------
+  |
+  | Content all authentication endpoints for the admin or super admin
+  |
+*/
+router.post('/auth', adminAuthCtrl.login);
+router.get('/', adminsCheck, authCtrl.getCurrentUser);
+router.delete('/signout', adminsCheck, authCtrl.signout);
 
 /*
   |--------------------------------------------------------------------------
