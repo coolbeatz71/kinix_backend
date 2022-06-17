@@ -1,7 +1,7 @@
 import express from 'express';
-import adminArticleCtrl from '../controllers/admin-article';
-import adminAuthCtrl from '../controllers/admin-auth';
-import adminVideoCtrl from '../controllers/admin-video';
+import adminArticleCtrl from '../controllers/admin/article';
+import adminAuthCtrl from '../controllers/admin/auth';
+import adminVideoCtrl from '../controllers/admin/video';
 import authCtrl from '../controllers/auth';
 import { adminsCheck, superAdminCheck } from '../middlewares/authorization';
 

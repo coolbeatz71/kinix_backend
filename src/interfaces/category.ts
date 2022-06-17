@@ -10,4 +10,16 @@ enum ECategory {
   FLEXBEATZ = 'FLEX&BEATZ',
 }
 
+export enum EUserStatus {
+  ALL = 'ALL',
+  VERIFIED = 'VERIFIED',
+  UNVERIFIED = 'UNVERIFIED',
+}
+
+export enum EArticleStatus {
+  ALL = 'ALL',
+  LIKE = 'LIKE',
+  COMMENT = 'COMMENT',
+}
+
 export default ECategory;

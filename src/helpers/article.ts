@@ -2,6 +2,7 @@
 import { Response } from 'express';
 import { getServerError } from './api';
 import db from '../db/models';
+import { EArticleStatus } from '../interfaces/category';
 
 export const getReadTime = (title: string, summary: string, body: string) => {
   const wordsPerMinute = 200;
@@ -104,4 +105,25 @@ export const getArticleByTitle = async (
   isAdmin = false,
 ): Promise<any> => {
   return article(res, 'title', title, isAdmin);
+};
+
+export const countAllArticles = async (res: Response, status: EArticleStatus): Promise<any> => {
+  try {
+    let result;
+    switch (status) {
+      case EArticleStatus.COMMENT:
+        result = db.Comment.count();
+        break;
+      case EArticleStatus.LIKE:
+        result = db.Like.count();
+        break;
+      default:
+        result = db.Article.count();
+        break;
+    }
+
+    return result;
+  } catch (err) {
+    return getServerError(res, err.message);
+  }
 };
