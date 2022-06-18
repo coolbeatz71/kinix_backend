@@ -5,27 +5,14 @@ import { getServerError } from './api';
 
 const countAllPromotions = async (res: Response, status: EPromotionStatus): Promise<any> => {
   try {
-    let result;
-    switch (status) {
-      case EPromotionStatus.ACTIVE:
-        result = db.Promotion.count({
-          where: {
-            active: true,
-          },
-        });
-        break;
-      case EPromotionStatus.INACTIVE:
-        result = db.Promotion.count({
-          where: {
-            active: false,
-          },
-        });
-        break;
-      default:
-        result = db.Promotion.count();
-        break;
-    }
+    const where =
+      status === EPromotionStatus.ALL
+        ? {}
+        : {
+            active: status === EPromotionStatus.ACTIVE,
+          };
 
+    const result = await db.Promotion.count({ where });
     return result;
   } catch (err) {
     return getServerError(res, err.message);

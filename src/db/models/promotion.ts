@@ -114,7 +114,7 @@ export const initPromotion = (sequelize: Sequelize) => {
     {
       sequelize,
       timestamps: true,
-      tableName: 'Promotion',
+      tableName: 'promotion',
       modelName: 'Promotion',
     },
   );

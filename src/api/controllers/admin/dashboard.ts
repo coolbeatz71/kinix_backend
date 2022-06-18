@@ -1,7 +1,8 @@
 /* eslint-disable consistent-return */
 import { Request, Response } from 'express';
 import { OK } from 'http-status';
-import { getResponse } from '../../../helpers/api';
+import { DASHBOARD_OVERVIEW_SUCCESS } from '../../../constants/message';
+import { contentResponse } from '../../../helpers/api';
 import { countAllArticles } from '../../../helpers/article';
 import countAllPromotions from '../../../helpers/promotion';
 import { countTotalUsers } from '../../../helpers/user';
@@ -65,9 +66,7 @@ export class AdminDashboard {
       },
     };
 
-    return getResponse(res, OK, {
-      data: result,
-    });
+    return contentResponse(res, result, OK, DASHBOARD_OVERVIEW_SUCCESS);
   };
 }
 

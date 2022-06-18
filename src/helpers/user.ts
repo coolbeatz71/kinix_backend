@@ -46,7 +46,7 @@ export const countTotalUsers = async (res: Response, status: EUserStatus): Promi
           [Op.and]: [
             ...admins,
             {
-              verified: status,
+              verified: status === EUserStatus.VERIFIED,
             },
           ],
         };

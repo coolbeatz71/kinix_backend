@@ -28,6 +28,7 @@ const UserData: IUser[] = [
     password,
     image: image.avatar(),
     role: ERole.VIDEO_CLIENT,
+    verified: true,
     createdAt,
     updatedAt,
   },

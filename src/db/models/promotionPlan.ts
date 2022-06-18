@@ -51,7 +51,7 @@ export const initPromotionPlan = (sequelize: Sequelize) => {
     {
       sequelize,
       timestamps: true,
-      tableName: 'PromotionPlan',
+      tableName: 'promotionPlan',
       modelName: 'PromotionPlan',
     },
   );
