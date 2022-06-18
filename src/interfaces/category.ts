@@ -30,4 +30,10 @@ export enum EVideoStatus {
   SHARE = 'SHARE',
 }
 
+export enum EPromotionStatus {
+  ALL = 'ALL',
+  ACTIVE = 'ACTIVE',
+  INACTIVE = 'INACTIVE',
+}
+
 export default ECategory;

@@ -1,9 +1,17 @@
 /* eslint-disable consistent-return */
 import { Request, Response } from 'express';
+import { OK } from 'http-status';
+import { getResponse } from '../../../helpers/api';
 import { countAllArticles } from '../../../helpers/article';
+import countAllPromotions from '../../../helpers/promotion';
 import { countTotalUsers } from '../../../helpers/user';
 import { countAllVideos } from '../../../helpers/video';
-import { EArticleStatus, EUserStatus, EVideoStatus } from '../../../interfaces/category';
+import {
+  EArticleStatus,
+  EPromotionStatus,
+  EUserStatus,
+  EVideoStatus,
+} from '../../../interfaces/category';
 
 export class AdminDashboard {
   /**
@@ -11,7 +19,7 @@ export class AdminDashboard {
    * @param req Request
    * @param res Response
    */
-  getOverview = async (req: Request, res: Response): Promise<any> => {
+  getOverview = async (_req: Request, res: Response): Promise<any> => {
     // users overview
     const allUsers = await countTotalUsers(res, EUserStatus.ALL);
     const verifiedUsers = await countTotalUsers(res, EUserStatus.VERIFIED);
@@ -26,6 +34,40 @@ export class AdminDashboard {
     const allVideos = await countAllVideos(res, EVideoStatus.ALL);
     const ratedVideos = await countAllVideos(res, EVideoStatus.RATE);
     const sharedVideos = await countAllVideos(res, EVideoStatus.SHARE);
+
+    // promotions overview
+    const allPromotions = await countAllPromotions(res, EPromotionStatus.ALL);
+    const activePromotions = await countAllPromotions(res, EPromotionStatus.ACTIVE);
+    const inactivePromotions = await countAllPromotions(res, EPromotionStatus.INACTIVE);
+
+    const result = {
+      general: {
+        users: {
+          all: allUsers,
+          verified: verifiedUsers,
+          unverified: unverifiedUsers,
+        },
+        articles: {
+          all: allArticles,
+          liked: likedArticles,
+          commented: commentedArticles,
+        },
+        videos: {
+          all: allVideos,
+          rated: ratedVideos,
+          shared: sharedVideos,
+        },
+        promotions: {
+          all: allPromotions,
+          active: activePromotions,
+          inactive: inactivePromotions,
+        },
+      },
+    };
+
+    return getResponse(res, OK, {
+      data: result,
+    });
   };
 }
 
