@@ -3,9 +3,9 @@ import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import { CONFLICT, CREATED, NOT_FOUND, OK } from 'http-status';
 import { Op } from 'sequelize';
-import db from '../../db/models';
-import { getUserById } from '../../helpers/user';
-import VideoValidator from '../../validator/video';
+import db from '../../../db/models';
+import { getUserById } from '../../../helpers/user';
+import VideoValidator from '../../../validator/video';
 import {
   contentResponse,
   generateSlug,
@@ -14,7 +14,7 @@ import {
   getResponse,
   getServerError,
   getValidationError,
-} from '../../helpers/api';
+} from '../../../helpers/api';
 import {
   CATEGORY_NOT_FOUND,
   USER_NOT_FOUND,
@@ -25,8 +25,8 @@ import {
   VIDEO_DELETED_SUCCESS,
   VIDEO_NOT_FOUND,
   VIDEO_UPDATED_SUCCESS,
-} from '../../constants/message';
-import { getCategoryById, getVideoById, getVideoBySlug } from '../../helpers/video';
+} from '../../../constants/message';
+import { getCategoryById, getVideoById, getVideoBySlug } from '../../../helpers/video';
 
 export class AdminVideo {
   /**

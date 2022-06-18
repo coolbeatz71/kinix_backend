@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import { CONFLICT, CREATED, NOT_FOUND, OK } from 'http-status';
 import { Op } from 'sequelize';
-import db from '../../db/models';
+import db from '../../../db/models';
 import {
   contentResponse,
   generateSlug,
@@ -12,7 +12,7 @@ import {
   getResponse,
   getServerError,
   getValidationError,
-} from '../../helpers/api';
+} from '../../../helpers/api';
 import {
   ARTICLE_ALREADY_ACTIVE,
   ARTICLE_ALREADY_INACTIVE,
@@ -22,15 +22,15 @@ import {
   ARTICLE_EXIST,
   ARTICLE_NOT_FOUND,
   ARTICLE_UPDATED_SUCCESS,
-} from '../../constants/message';
+} from '../../../constants/message';
 import {
   getArticleById,
   getArticleBySlug,
   getArticleByTitle,
   getReadTime,
-} from '../../helpers/article';
-import ArticleValidator from '../../validator/article';
-import { IJwtPayload } from '../../interfaces/api';
+} from '../../../helpers/article';
+import ArticleValidator from '../../../validator/article';
+import { IJwtPayload } from '../../../interfaces/api';
 
 export class AdminArticle {
   /**

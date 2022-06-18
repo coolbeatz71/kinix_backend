@@ -15,6 +15,8 @@ import { initUser } from './user';
 import { initVideo } from './video';
 import { initBookmark } from './bookmark';
 import { initComment } from './comment';
+import { initPromotion } from './promotion';
+import { initPromotionPlan } from './promotionPlan';
 
 const sequelize = config.use_env_variable
   ? new Sequelize(process.env[config.use_env_variable], config)
@@ -33,6 +35,8 @@ const db = {
   Share: initShare(sequelize),
   Bookmark: initBookmark(sequelize),
   Comment: initComment(sequelize),
+  Promotion: initPromotion(sequelize),
+  PromotionPlan: initPromotionPlan(sequelize),
 };
 
 Object.values(db).forEach((model: any) => {

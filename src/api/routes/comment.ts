@@ -1,5 +1,5 @@
 import express from 'express';
-import commentCtrl from '../controllers/comment-article';
+import commentCtrl from '../controllers/commentArticle';
 import { verifyToken } from '../middlewares/authorization';
 
 const router = express.Router();

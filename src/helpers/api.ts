@@ -9,6 +9,7 @@ import { IUnknownObject } from '../interfaces/unknownObject';
 import { RESOURCE_NOT_FOUND } from '../constants/message';
 import Video from '../db/models/video';
 import Article from '../db/models/article';
+import IOverview from '../interfaces/overview';
 
 config();
 
@@ -85,7 +86,7 @@ export const getResponse = (res: Response, status: number, body: IResponseBody):
  */
 export const contentResponse = (
   res: Response,
-  data: IVideo | IArticle | IComment | IRate | ILike,
+  data: IVideo | IArticle | IComment | IRate | ILike | IOverview,
   status: number,
   message?: string,
 ) =>

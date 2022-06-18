@@ -8,16 +8,16 @@ import {
   getServerError,
   getUserResponse,
   getValidationError,
-} from '../../helpers/api';
-import AuthValidator from '../../validator/auth';
-import { generateToken } from '../../helpers/jwt';
-import db from '../../db/models';
+} from '../../../helpers/api';
+import AuthValidator from '../../../validator/auth';
+import { generateToken } from '../../../helpers/jwt';
+import db from '../../../db/models';
 import {
   PASSWORD_INVALID,
   USERNAME_EMAIL_INVALID,
   USER_LOGIN_SUCCESS,
-} from '../../constants/message';
-import ERole from '../../interfaces/role';
+} from '../../../constants/message';
+import ERole from '../../../interfaces/role';
 
 export class AdminAuth {
   /**

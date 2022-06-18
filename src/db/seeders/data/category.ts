@@ -31,5 +31,15 @@ const CategoryData = [
     createdAt,
     updatedAt,
   },
+  {
+    name: ECategory.ADS_PROMO,
+    createdAt,
+    updatedAt,
+  },
+  {
+    name: ECategory.STORY_PROMO,
+    createdAt,
+    updatedAt,
+  },
 ];
 export default CategoryData;
