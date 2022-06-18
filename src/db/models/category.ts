@@ -4,7 +4,7 @@ import { ICategory, IModel } from '../../interfaces/model';
 
 export default class Category extends Model<ICategory> implements ICategory {
   readonly id!: number;
-  name!: string;
+  name!: ECategory;
 
   static associate(models: IModel) {
     /**

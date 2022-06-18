@@ -1,5 +1,5 @@
 import express from 'express';
-import likeArticleCtrl from '../controllers/like-article';
+import likeArticleCtrl from '../controllers/likeArticle';
 import { verifyToken } from '../middlewares/authorization';
 
 const router = express.Router();

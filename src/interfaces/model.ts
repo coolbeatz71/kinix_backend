@@ -2,6 +2,8 @@
 import { ModelStatic, Model } from 'sequelize';
 import EProvider from './provider';
 import ERole from './role';
+import EPromotionPlan from './promotionPlan';
+import ECategory from './category';
 
 export interface IModel {
   User: ModelStatic<Model<IUser, any>>;
@@ -14,6 +16,8 @@ export interface IModel {
   Category: ModelStatic<Model<ICategory, any>>;
   Share: ModelStatic<Model<IShare, any>>;
   Rate: ModelStatic<Model<IRate, any>>;
+  Promotion: ModelStatic<Model<IPromotion, any>>;
+  PromotionPlan: ModelStatic<Model<IPromotionPlan, any>>;
 }
 
 export interface IUser {
@@ -84,7 +88,7 @@ export interface IBookmark {
 
 export interface ICategory {
   readonly id: number;
-  name: string;
+  name: ECategory;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -120,6 +124,34 @@ export interface IShare {
   readonly id?: number;
   userId: number | null;
   videoId: number;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface IPromotion {
+  readonly id?: number;
+  userId: number | null;
+  categoryId: number;
+  promotionPlanId: number;
+  slug: string;
+  legend: string;
+  title: string;
+  subTitle: string;
+  body: string;
+  url?: string | null;
+  media: string;
+  mediaType: string;
+  active: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface IPromotionPlan {
+  readonly id: number;
+  name: EPromotionPlan;
+  price: number;
+  startDate: string;
+  endDate: string;
   createdAt?: string;
   updatedAt?: string;
 }

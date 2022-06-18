@@ -1,6 +1,7 @@
 import express from 'express';
 import adminArticleCtrl from '../controllers/admin/article';
 import adminAuthCtrl from '../controllers/admin/auth';
+import adminDashboardCtrl from '../controllers/admin/dashboard';
 import adminVideoCtrl from '../controllers/admin/video';
 import authCtrl from '../controllers/auth';
 import { adminsCheck, superAdminCheck } from '../middlewares/authorization';
@@ -48,6 +49,16 @@ router.post('/articles', adminsCheck, adminArticleCtrl.create);
 router.get('/articles', adminsCheck, adminArticleCtrl.getAll);
 router.get('/articles/:slug', adminsCheck, adminArticleCtrl.get);
 router.put('/articles/:slug', adminsCheck, adminArticleCtrl.update);
+
+/*
+  |--------------------------------------------------------------------------
+  | dashboard ENDPOINTS
+  |--------------------------------------------------------------------------
+  |
+  | Content all dashboard endpoints for the admin or super admin
+  |
+*/
+router.get('/overview', adminsCheck, adminDashboardCtrl.getOverview);
 
 // super admin
 router.put('/articles/approve/:slug', superAdminCheck, adminArticleCtrl.approve);
