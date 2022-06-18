@@ -2,7 +2,8 @@
 import { Request, Response } from 'express';
 import { countAllArticles } from '../../../helpers/article';
 import { countTotalUsers } from '../../../helpers/user';
-import { EArticleStatus, EUserStatus } from '../../../interfaces/category';
+import { countAllVideos } from '../../../helpers/video';
+import { EArticleStatus, EUserStatus, EVideoStatus } from '../../../interfaces/category';
 
 export class AdminDashboard {
   /**
@@ -20,6 +21,11 @@ export class AdminDashboard {
     const allArticles = await countAllArticles(res, EArticleStatus.ALL);
     const likedArticles = await countAllArticles(res, EArticleStatus.LIKE);
     const commentedArticles = await countAllArticles(res, EArticleStatus.COMMENT);
+
+    // videos overview
+    const allVideos = await countAllVideos(res, EVideoStatus.ALL);
+    const ratedVideos = await countAllVideos(res, EVideoStatus.RATE);
+    const sharedVideos = await countAllVideos(res, EVideoStatus.SHARE);
   };
 }
 

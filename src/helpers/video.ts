@@ -3,7 +3,7 @@ import { Response } from 'express';
 import { Sequelize } from 'sequelize';
 import { getServerError } from './api';
 import db from '../db/models';
-import ECategory from '../interfaces/category';
+import ECategory, { EVideoStatus } from '../interfaces/category';
 
 const category = async (res: Response, field: string, value: any): Promise<any> => {
   try {
@@ -232,6 +232,27 @@ export const calcVideoAVGRate = async (res: Response, videoId: number): Promise<
     });
 
     return rate;
+  } catch (err) {
+    return getServerError(res, err.message);
+  }
+};
+
+export const countAllVideos = async (res: Response, status: EVideoStatus): Promise<any> => {
+  try {
+    let result;
+    switch (status) {
+      case EVideoStatus.RATE:
+        result = db.Rate.count();
+        break;
+      case EVideoStatus.SHARE:
+        result = db.Share.count();
+        break;
+      default:
+        result = db.Video.count();
+        break;
+    }
+
+    return result;
   } catch (err) {
     return getServerError(res, err.message);
   }

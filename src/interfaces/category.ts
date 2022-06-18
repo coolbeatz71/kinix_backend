@@ -22,4 +22,10 @@ export enum EArticleStatus {
   COMMENT = 'COMMENT',
 }
 
+export enum EVideoStatus {
+  ALL = 'ALL',
+  RATE = 'RATE',
+  SHARE = 'SHARE',
+}
+
 export default ECategory;
