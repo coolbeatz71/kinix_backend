@@ -23,9 +23,6 @@ export const up = async (queryInterface: QueryInterface) => {
     images: {
       type: DataTypes.ARRAY(DataTypes.STRING),
     },
-    video: {
-      type: DataTypes.STRING,
-    },
     reads: {
       type: DataTypes.INTEGER,
     },

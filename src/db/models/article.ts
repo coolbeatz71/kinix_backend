@@ -8,7 +8,6 @@ export default class Article extends Model<IArticle> implements IArticle {
   summary!: string;
   body!: string;
   images!: string[] | null;
-  video!: string[] | null;
   reads!: number;
   tags!: string[] | null;
   active!: boolean;
@@ -88,10 +87,6 @@ export const initArticle = (sequelize: Sequelize) => {
         allowNull: false,
       },
       images: {
-        type: DataTypes.ARRAY(DataTypes.STRING),
-        allowNull: true,
-      },
-      video: {
         type: DataTypes.ARRAY(DataTypes.STRING),
         allowNull: true,
       },
