@@ -43,7 +43,6 @@ export interface IArticle {
   summary: string;
   body: string;
   images: string[] | null;
-  video: string[] | null;
   reads: number;
   tags: string[] | null;
   active?: boolean;
