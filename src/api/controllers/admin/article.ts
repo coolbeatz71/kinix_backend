@@ -39,7 +39,7 @@ export class AdminArticle {
    * @param res Response
    */
   create = async (req: Request, res: Response): Promise<any> => {
-    const { title, summary, body, images, video, tags } = req.body;
+    const { title, summary, body, images, tags } = req.body;
     const { id: userId } = req.user as IJwtPayload;
 
     await new ArticleValidator(req).create();
@@ -63,7 +63,6 @@ export class AdminArticle {
         summary,
         body,
         images,
-        video,
         tags,
         userId,
         reads,
@@ -87,7 +86,7 @@ export class AdminArticle {
   update = async (req: Request, res: Response): Promise<any> => {
     const { slug } = req.params;
     const { id: userId } = req.user as IJwtPayload;
-    const { title, summary, body, images, video, tags } = req.body;
+    const { title, summary, body, images, tags } = req.body;
 
     await new ArticleValidator(req).create();
     const errors = validationResult(req);
@@ -112,7 +111,6 @@ export class AdminArticle {
           summary,
           body,
           images,
-          video,
           tags,
           userId,
           reads,
