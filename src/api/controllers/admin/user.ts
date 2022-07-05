@@ -50,7 +50,7 @@ export class AdminUser {
   getAllClients = async (req: Request, res: Response): Promise<any> => {
     const { search, page = 0, size = 20 } = req.query;
     const { limit, offset } = getPagination(Number(page), Number(size));
-    const admins = [
+    const excludeAdmins = [
       {
         role: { [Op.ne]: ERole.ADMIN },
       },
@@ -61,7 +61,7 @@ export class AdminUser {
     const where = search
       ? {
           [Op.and]: [
-            ...admins,
+            ...excludeAdmins,
             {
               [Op.or]: [
                 { email: { [Op.like]: `%${search}%` } },
