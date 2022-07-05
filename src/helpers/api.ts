@@ -10,6 +10,7 @@ import { RESOURCE_NOT_FOUND } from '../constants/message';
 import Video from '../db/models/video';
 import Article from '../db/models/article';
 import IOverview from '../interfaces/overview';
+import User from '../db/models/user';
 
 config();
 
@@ -54,7 +55,7 @@ export const getPagingData = (
   page: number,
   limit: number,
   data: {
-    rows: Video[] | Article[];
+    rows: Video[] | Article[] | User[];
     count: number;
   },
 ): IUnknownObject => {
