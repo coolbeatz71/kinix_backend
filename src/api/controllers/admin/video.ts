@@ -222,7 +222,7 @@ export class AdminVideo {
    */
   getAll = async (req: Request, res: Response): Promise<any> => {
     const { page = 0, size = 20, title } = req.query;
-    const condition = title ? { title: { [Op.like]: `%${title}%` } } : undefined;
+    const condition = title ? { title: { [Op.iLike]: `%${title}%` } } : undefined;
     const { limit, offset } = getPagination(Number(page), Number(size));
 
     try {

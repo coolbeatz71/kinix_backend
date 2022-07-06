@@ -37,7 +37,7 @@ export const getAllComment = async (
 ): Promise<any> => {
   let where;
   const article = await getArticleBySlug(res, slug);
-  where = body ? { body: { [Op.like]: `%${body}%` } } : undefined;
+  where = body ? { body: { [Op.iLike]: `%${body}%` } } : undefined;
 
   try {
     if (!article) {

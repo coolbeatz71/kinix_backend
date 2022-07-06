@@ -18,8 +18,8 @@ export class AdminUser {
     const where = search
       ? {
           [Op.or]: [
-            { email: { [Op.like]: `%${search}%` } },
-            { userName: { [Op.like]: `%${search}%` } },
+            { email: { [Op.iLike]: `%${search}%` } },
+            { userName: { [Op.iLike]: `%${search}%` } },
           ],
         }
       : undefined;
@@ -61,16 +61,18 @@ export class AdminUser {
     const where = search
       ? {
           [Op.and]: [
-            ...excludeAdmins,
             {
               [Op.or]: [
-                { email: { [Op.like]: `%${search}%` } },
-                { userName: { [Op.like]: `%${search}%` } },
+                { email: { [Op.iLike]: `%${search}%` } },
+                { userName: { [Op.iLike]: `%${search}%` } },
               ],
             },
+            ...excludeAdmins,
           ],
         }
-      : undefined;
+      : {
+          [Op.and]: [...excludeAdmins],
+        };
 
     try {
       const data = await db.User.findAndCountAll({
