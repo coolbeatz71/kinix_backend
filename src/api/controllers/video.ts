@@ -11,6 +11,7 @@ import {
   getVideoPopular,
 } from '../../helpers/video';
 import ECategory from '../../interfaces/category';
+import db from '../../db/models';
 
 export class Video {
   /**
@@ -97,6 +98,17 @@ export class Video {
         leFocus,
       };
 
+      return getResponse(res, OK, {
+        data,
+      });
+    } catch (error) {
+      return getServerError(res, error.message);
+    }
+  };
+
+  getCategories = async (_req: Request, res: Response): Promise<any> => {
+    try {
+      const data = await db.Category.findAll();
       return getResponse(res, OK, {
         data,
       });
