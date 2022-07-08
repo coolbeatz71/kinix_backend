@@ -1,8 +1,10 @@
 /* eslint-disable consistent-return */
 import { Request, Response } from 'express';
+import { Op } from 'sequelize';
 import { NOT_FOUND, OK } from 'http-status';
+import { lowerCase } from 'lodash';
 import { contentResponse, getResponse, getServerError } from '../../helpers/api';
-import { VIDEO_NOT_FOUND } from '../../constants/message';
+import { VIDEO_NOT_FOUND, VIDEO_TAGS_NOT_FOUND } from '../../constants/message';
 import {
   getAllVideo,
   getVideoByCategory,
@@ -116,6 +118,87 @@ export class Video {
       const data = await db.Category.findAll();
       return getResponse(res, OK, {
         data,
+      });
+    } catch (error) {
+      return getServerError(res, error.message);
+    }
+  };
+
+  /**
+   * controller to get all the video tags
+   * @param req Request
+   * @param res Response
+   */
+  getAllTags = async (_req: Request, res: Response): Promise<any> => {
+    try {
+      const data = await db.Video.findAll({
+        attributes: ['tags'],
+      });
+
+      if (!data) {
+        return getResponse(res, NOT_FOUND, {
+          message: VIDEO_TAGS_NOT_FOUND,
+        });
+      }
+
+      const tags = data.map((dt) => dt.tags).flat();
+      const formatted = tags?.map((tag) => tag?.toLowerCase());
+      const set = new Set(formatted);
+
+      return getResponse(res, OK, {
+        data: [...set],
+      });
+    } catch (error) {
+      return getServerError(res, error.message);
+    }
+  };
+
+  /**
+   * controller to search all videos by tags
+   * @param req Request
+   * @param res Response
+   */
+  getByTags = async (req: Request, res: Response): Promise<any> => {
+    const { limit = 20, offset = 0, tag } = req.query;
+    const formatted = lowerCase(String(tag));
+    const where = tag
+      ? {
+          tags: {
+            [Op.contains]: [formatted],
+          },
+        }
+      : {};
+    try {
+      const { count, rows: videos } = await db.Video.findAndCountAll({
+        where,
+        distinct: true,
+        limit: Number(limit),
+        offset: Number(offset),
+        order: [['updatedAt', 'DESC']],
+        include: [
+          {
+            as: 'category',
+            model: db.Category,
+            attributes: ['id', 'name'],
+          },
+          {
+            as: 'user',
+            model: db.User,
+            attributes: ['id', 'userName', 'email', 'phoneNumber', 'image', 'role'],
+          },
+          {
+            as: 'rate',
+            model: db.Rate,
+          },
+          {
+            as: 'share',
+            model: db.Share,
+          },
+        ],
+      });
+
+      return getResponse(res, OK, {
+        data: { count, videos },
       });
     } catch (error) {
       return getServerError(res, error.message);

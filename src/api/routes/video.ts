@@ -5,6 +5,8 @@ const router = express.Router();
 
 router.get('/', videoCtrl.getAll);
 router.get('/feed', videoCtrl.getFeed);
+router.get('/tags', videoCtrl.getAllTags);
+router.get('/search', videoCtrl.getByTags);
 router.get('/categories', videoCtrl.getAllCategories);
 router.get('/:slug', videoCtrl.get);
 
