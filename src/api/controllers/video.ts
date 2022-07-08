@@ -2,7 +2,7 @@
 import { Request, Response } from 'express';
 import { NOT_FOUND, OK } from 'http-status';
 import { contentResponse, getResponse, getServerError } from '../../helpers/api';
-import { VIDEO_NOT_FOUND } from '../../constants/message';
+import { VIDEO_NOT_FOUND, VIDEO_TAGS_NOT_FOUND } from '../../constants/message';
 import {
   getAllVideo,
   getVideoByCategory,
@@ -116,6 +116,35 @@ export class Video {
       const data = await db.Category.findAll();
       return getResponse(res, OK, {
         data,
+      });
+    } catch (error) {
+      return getServerError(res, error.message);
+    }
+  };
+
+  /**
+   * controller to get all the video tags
+   * @param req Request
+   * @param res Response
+   */
+  getAllTags = async (_req: Request, res: Response): Promise<any> => {
+    try {
+      const data = await db.Video.findAll({
+        attributes: ['tags'],
+      });
+
+      if (!data) {
+        return getResponse(res, NOT_FOUND, {
+          message: VIDEO_TAGS_NOT_FOUND,
+        });
+      }
+
+      const tags = data.map((dt) => dt.tags).flat();
+      const formatted = tags?.map((tag) => tag?.toLowerCase());
+      const set = new Set(formatted);
+
+      return getResponse(res, OK, {
+        data: [...set],
       });
     } catch (error) {
       return getServerError(res, error.message);
