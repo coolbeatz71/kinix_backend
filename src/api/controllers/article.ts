@@ -1,6 +1,8 @@
 /* eslint-disable consistent-return */
 import { Request, Response } from 'express';
+import { Op } from 'sequelize';
 import { NOT_FOUND, OK } from 'http-status';
+import { lowerCase } from 'lodash';
 import { ARTICLE_NOT_FOUND, ARTICLE_TAGS_NOT_FOUND } from '../../constants/message';
 import db from '../../db/models';
 import { contentResponse, getResponse, getServerError } from '../../helpers/api';
@@ -14,7 +16,6 @@ export class Article {
    */
   getAll = async (req: Request, res: Response): Promise<any> => {
     const { limit = 20, offset = 0 } = req.query;
-
     try {
       const { count, rows: articles } = await getAllArticle(res, Number(limit), Number(offset));
       return getResponse(res, OK, {
@@ -72,6 +73,58 @@ export class Article {
 
       return getResponse(res, OK, {
         data: [...set],
+      });
+    } catch (error) {
+      return getServerError(res, error.message);
+    }
+  };
+
+  /**
+   * TODO should add the query string for search (title, summary, body, etc.) and also search the keyword in the list of tags
+   * controller to search all articles by tags
+   * @param req Request
+   * @param res Response
+   */
+  getByTags = async (req: Request, res: Response): Promise<any> => {
+    const { limit = 20, offset = 0, tag } = req.query;
+    const formatted = lowerCase(String(tag));
+    const where = tag
+      ? {
+          tags: {
+            [Op.contains]: [formatted],
+          },
+        }
+      : {};
+    try {
+      const { count, rows: articles } = await db.Article.findAndCountAll({
+        where,
+        distinct: true,
+        limit: Number(limit),
+        offset: Number(offset),
+        order: [['updatedAt', 'DESC']],
+        include: [
+          {
+            as: 'user',
+            model: db.User,
+            attributes: ['id', 'userName', 'email', 'phoneNumber', 'image', 'role'],
+          },
+          {
+            as: 'like',
+            model: db.Like,
+          },
+          {
+            as: 'bookmark',
+            model: db.Bookmark,
+          },
+          {
+            as: 'comment',
+            model: db.Comment,
+          },
+        ],
+      });
+
+      return getResponse(res, OK, {
+        data: { count, articles },
       });
     } catch (error) {
       return getServerError(res, error.message);
