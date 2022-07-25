@@ -19,6 +19,7 @@ import {
   ARTICLE_APPROVED_SUCCESS,
   ARTICLE_CREATED_SUCCESS,
   ARTICLE_DELETED_SUCCESS,
+  ARTICLE_DISABLED_SUCCESS,
   ARTICLE_EXIST,
   ARTICLE_NOT_FOUND,
   ARTICLE_UPDATED_SUCCESS,
@@ -163,11 +164,11 @@ export class AdminArticle {
   };
 
   /**
-   * controller to delete an article
+   * controller to disable an article
    * @param req Request
    * @param res Response
    */
-  delete = async (req: Request, res: Response): Promise<any> => {
+  disable = async (req: Request, res: Response): Promise<any> => {
     const { slug } = req.params;
 
     try {
@@ -192,7 +193,33 @@ export class AdminArticle {
         { where: { id: article.get().id }, returning: true },
       );
 
-      return contentResponse(res, update[1][0], OK, ARTICLE_DELETED_SUCCESS);
+      return contentResponse(res, update[1][0], OK, ARTICLE_DISABLED_SUCCESS);
+    } catch (error) {
+      return getServerError(res, error.message);
+    }
+  };
+
+  /**
+   * controller to delete an article from the DB
+   * @param req Request
+   * @param res Response
+   */
+  delete = async (req: Request, res: Response): Promise<any> => {
+    const { slug } = req.params;
+
+    try {
+      const article = await getArticleBySlug(res, slug, true);
+
+      if (!article) {
+        return getResponse(res, NOT_FOUND, {
+          message: ARTICLE_NOT_FOUND,
+        });
+      }
+
+      await db.Article.destroy({ where: { id: article.get().id } });
+      return getResponse(res, OK, {
+        message: ARTICLE_DELETED_SUCCESS,
+      });
     } catch (error) {
       return getServerError(res, error.message);
     }
