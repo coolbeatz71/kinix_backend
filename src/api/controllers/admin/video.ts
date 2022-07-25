@@ -23,6 +23,7 @@ import {
   VIDEO_APPROVED_SUCCESS,
   VIDEO_CREATED_SUCCESS,
   VIDEO_DELETED_SUCCESS,
+  VIDEO_DISABLED_SUCCESS,
   VIDEO_NOT_FOUND,
   VIDEO_UPDATED_SUCCESS,
 } from '../../../constants/message';
@@ -178,11 +179,11 @@ export class AdminVideo {
   };
 
   /**
-   * controller to delete a video
+   * controller to disable a video
    * @param req Request
    * @param res Response
    */
-  delete = async (req: Request, res: Response): Promise<any> => {
+  disable = async (req: Request, res: Response): Promise<any> => {
     const { slug } = req.params;
 
     try {
@@ -206,10 +207,37 @@ export class AdminVideo {
         },
         { where: { id: video.get().id }, returning: true },
       );
-
       // TODO: should send email/notification to the video owner
 
-      return contentResponse(res, update[1][0], OK, VIDEO_DELETED_SUCCESS);
+      return contentResponse(res, update[1][0], OK, VIDEO_DISABLED_SUCCESS);
+    } catch (error) {
+      return getServerError(res, error.message);
+    }
+  };
+
+  /**
+   * controller to delete a video
+   * @param req Request
+   * @param res Response
+   */
+  delete = async (req: Request, res: Response): Promise<any> => {
+    const { slug } = req.params;
+
+    try {
+      const video = await getVideoBySlug(res, slug, true);
+
+      if (!video) {
+        return getResponse(res, NOT_FOUND, {
+          message: VIDEO_NOT_FOUND,
+        });
+      }
+
+      await db.Video.destroy({ where: { id: video.get().id } });
+      // TODO: should send email/notification to the video owner
+
+      return getResponse(res, OK, {
+        message: VIDEO_DELETED_SUCCESS,
+      });
     } catch (error) {
       return getServerError(res, error.message);
     }
