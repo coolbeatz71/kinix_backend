@@ -1,5 +1,6 @@
 /* eslint-disable consistent-return */
 import { Response } from 'express';
+import { Sequelize } from 'sequelize';
 import { getServerError } from './api';
 import db from '../db/models';
 import { EArticleStatus } from '../interfaces/category';
@@ -19,7 +20,29 @@ const article = async (res: Response, field: string, value: any, isAdmin = false
   try {
     const result = await db.Article.findOne({
       where,
-      attributes: { exclude: ['userId'] },
+      attributes: {
+        exclude: ['userId'],
+        include: [
+          [
+            Sequelize.literal(
+              '(SELECT COUNT(*) FROM "like" WHERE "like"."articleId" = "Article"."id")',
+            ),
+            'likesCount',
+          ],
+          [
+            Sequelize.literal(
+              '(SELECT COUNT(*) FROM "comment" WHERE "comment"."articleId" = "Article"."id")',
+            ),
+            'commentsCount',
+          ],
+          [
+            Sequelize.literal(
+              '(SELECT COUNT(*) FROM "bookmark" WHERE "bookmark"."articleId" = "Article"."id")',
+            ),
+            'bookmarksCount',
+          ],
+        ],
+      },
       include: [
         {
           as: 'user',
@@ -60,6 +83,28 @@ export const getAllArticle = async (
       distinct: true,
       where: { active },
       order: [['updatedAt', 'DESC']],
+      attributes: {
+        include: [
+          [
+            Sequelize.literal(
+              '(SELECT COUNT(*) FROM "like" WHERE "like"."articleId" = "Article"."id")',
+            ),
+            'likesCount',
+          ],
+          [
+            Sequelize.literal(
+              '(SELECT COUNT(*) FROM "comment" WHERE "comment"."articleId" = "Article"."id")',
+            ),
+            'commentsCount',
+          ],
+          [
+            Sequelize.literal(
+              '(SELECT COUNT(*) FROM "bookmark" WHERE "bookmark"."articleId" = "Article"."id")',
+            ),
+            'bookmarksCount',
+          ],
+        ],
+      },
       include: [
         {
           as: 'user',

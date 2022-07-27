@@ -38,7 +38,7 @@ export const isFieldInBody = (req: Request, field: string) =>
  */
 export const getPagination = (page: number, size: number): IUnknownObject => {
   const limit = size;
-  const offset = page * limit;
+  const offset = (page - 1) * limit;
 
   return { limit, offset };
 };
@@ -56,7 +56,7 @@ export const getPagingData = (
   limit: number,
   data: {
     rows: Video[] | Article[] | User[];
-    count: number;
+    count: number | any;
   },
 ): IUnknownObject => {
   const { count: total, rows } = data;

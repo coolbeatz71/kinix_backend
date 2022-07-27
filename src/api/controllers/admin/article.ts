@@ -2,7 +2,7 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import { CONFLICT, CREATED, NOT_FOUND, OK } from 'http-status';
-import { Op } from 'sequelize';
+import { Op, Sequelize } from 'sequelize';
 import db from '../../../db/models';
 import {
   contentResponse,
@@ -231,8 +231,22 @@ export class AdminArticle {
    * @param res Response
    */
   getAll = async (req: Request, res: Response): Promise<any> => {
-    const { page = 0, size = 20, title } = req.query;
-    const condition = title ? { title: { [Op.iLike]: `%${title}%` } } : undefined;
+    const { page = 1, size = 20, search } = req.query;
+    const condition = search
+      ? {
+          [Op.or]: [
+            {
+              title: { [Op.iLike]: `%${search}%` },
+            },
+            {
+              summary: { [Op.iLike]: `%${search}%` },
+            },
+            {
+              body: { [Op.iLike]: `%${search}%` },
+            },
+          ],
+        }
+      : undefined;
     const { limit, offset } = getPagination(Number(page), Number(size));
 
     try {
@@ -241,6 +255,35 @@ export class AdminArticle {
         limit,
         offset,
         order: [['updatedAt', 'DESC']],
+        attributes: {
+          include: [
+            [
+              Sequelize.literal(
+                '(SELECT COUNT(*) FROM "like" WHERE "like"."articleId" = "Article"."id")',
+              ),
+              'likesCount',
+            ],
+            [
+              Sequelize.literal(
+                '(SELECT COUNT(*) FROM "comment" WHERE "comment"."articleId" = "Article"."id")',
+              ),
+              'commentsCount',
+            ],
+            [
+              Sequelize.literal(
+                '(SELECT COUNT(*) FROM "bookmark" WHERE "bookmark"."articleId" = "Article"."id")',
+              ),
+              'bookmarksCount',
+            ],
+          ],
+        },
+        include: [
+          {
+            as: 'user',
+            model: db.User,
+            attributes: ['id', 'userName', 'email', 'phoneNumber', 'image', 'role'],
+          },
+        ],
       });
       const result = getPagingData(Number(page), limit, data);
 

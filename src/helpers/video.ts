@@ -23,7 +23,23 @@ const video = async (res: Response, field: string, value: any, isAdmin = false):
   try {
     const result = await db.Video.findOne({
       where,
-      attributes: { exclude: ['userId', 'categoryId'] },
+      attributes: {
+        exclude: ['userId', 'categoryId'],
+        include: [
+          [
+            Sequelize.literal(
+              '(SELECT COUNT(*) FROM "share" WHERE "share"."videoId" = "Video"."id")',
+            ),
+            'sharesCount',
+          ],
+          [
+            Sequelize.literal(
+              '(SELECT COUNT(*) FROM "playlist" WHERE "playlist"."videoId" = "Video"."id")',
+            ),
+            'playlistsCount',
+          ],
+        ],
+      },
       include: [
         {
           as: 'category',
@@ -65,6 +81,22 @@ export const getAllVideo = async (
       distinct: true,
       where: { active },
       order: [['updatedAt', 'DESC']],
+      attributes: {
+        include: [
+          [
+            Sequelize.literal(
+              '(SELECT COUNT(*) FROM "share" WHERE "share"."videoId" = "Video"."id")',
+            ),
+            'sharesCount',
+          ],
+          [
+            Sequelize.literal(
+              '(SELECT COUNT(*) FROM "playlist" WHERE "playlist"."videoId" = "Video"."id")',
+            ),
+            'playlistsCount',
+          ],
+        ],
+      },
       include: [
         {
           as: 'category',
@@ -121,6 +153,22 @@ export const getVideoDiscovery = async (res: Response, categoryName: ECategory):
       limit: 3,
       where: { active: true, categoryId: cat.get().id },
       order: [['updatedAt', 'DESC']],
+      attributes: {
+        include: [
+          [
+            Sequelize.literal(
+              '(SELECT COUNT(*) FROM "share" WHERE "share"."videoId" = "Video"."id")',
+            ),
+            'sharesCount',
+          ],
+          [
+            Sequelize.literal(
+              '(SELECT COUNT(*) FROM "playlist" WHERE "playlist"."videoId" = "Video"."id")',
+            ),
+            'playlistsCount',
+          ],
+        ],
+      },
       include: [
         {
           as: 'category',
@@ -158,6 +206,22 @@ export const getVideoPopular = async (res: Response): Promise<any> => {
         ['avgRate', 'DESC'],
         ['totalRaters', 'DESC'],
       ],
+      attributes: {
+        include: [
+          [
+            Sequelize.literal(
+              '(SELECT COUNT(*) FROM "share" WHERE "share"."videoId" = "Video"."id")',
+            ),
+            'sharesCount',
+          ],
+          [
+            Sequelize.literal(
+              '(SELECT COUNT(*) FROM "playlist" WHERE "playlist"."videoId" = "Video"."id")',
+            ),
+            'playlistsCount',
+          ],
+        ],
+      },
       include: [
         {
           as: 'category',
@@ -193,6 +257,22 @@ export const getVideoByCategory = async (res: Response, name: ECategory): Promis
       limit: 15,
       where: { active: true, categoryId: cat.get().id },
       order: [['avgRate', 'DESC']],
+      attributes: {
+        include: [
+          [
+            Sequelize.literal(
+              '(SELECT COUNT(*) FROM "share" WHERE "share"."videoId" = "Video"."id")',
+            ),
+            'sharesCount',
+          ],
+          [
+            Sequelize.literal(
+              '(SELECT COUNT(*) FROM "playlist" WHERE "playlist"."videoId" = "Video"."id")',
+            ),
+            'playlistsCount',
+          ],
+        ],
+      },
       include: [
         {
           as: 'category',
