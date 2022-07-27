@@ -2,7 +2,7 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import { CONFLICT, CREATED, NOT_FOUND, OK } from 'http-status';
-import { Op } from 'sequelize';
+import { Op, Sequelize } from 'sequelize';
 import db from '../../../db/models';
 import { getUserById } from '../../../helpers/user';
 import VideoValidator from '../../../validator/video';
@@ -249,8 +249,8 @@ export class AdminVideo {
    * @param res Response
    */
   getAll = async (req: Request, res: Response): Promise<any> => {
-    const { page = 0, size = 20, title } = req.query;
-    const condition = title ? { title: { [Op.iLike]: `%${title}%` } } : undefined;
+    const { page = 0, size = 20, search } = req.query;
+    const condition = search ? { title: { [Op.iLike]: `%${search}%` } } : undefined;
     const { limit, offset } = getPagination(Number(page), Number(size));
 
     try {
@@ -259,6 +259,42 @@ export class AdminVideo {
         limit,
         offset,
         order: [['updatedAt', 'DESC']],
+        attributes: {
+          include: [
+            [
+              Sequelize.literal(
+                '(SELECT COUNT(*) FROM "share" WHERE "share"."videoId" = "Video"."id")',
+              ),
+              'sharesCount',
+            ],
+            [
+              Sequelize.literal(
+                '(SELECT COUNT(*) FROM "playlist" WHERE "playlist"."videoId" = "Video"."id")',
+              ),
+              'playlistsCount',
+            ],
+          ],
+        },
+        include: [
+          {
+            as: 'category',
+            model: db.Category,
+            attributes: ['id', 'name'],
+          },
+          {
+            as: 'user',
+            model: db.User,
+            attributes: ['id', 'userName', 'email', 'phoneNumber', 'image', 'role'],
+          },
+          {
+            as: 'rate',
+            model: db.Rate,
+          },
+          {
+            as: 'share',
+            model: db.Share,
+          },
+        ],
       });
       const result = getPagingData(Number(page), limit, data);
 
