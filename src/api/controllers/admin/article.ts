@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import { CONFLICT, CREATED, NOT_FOUND, OK } from 'http-status';
 import { Op, Sequelize } from 'sequelize';
+import { isEmpty, lowerCase } from 'lodash';
 import db from '../../../db/models';
 import {
   contentResponse,
@@ -31,7 +32,7 @@ import {
   getReadTime,
 } from '../../../helpers/article';
 import ArticleValidator from '../../../validator/article';
-import { IJwtPayload } from '../../../interfaces/api';
+import { EnumStatus, IJwtPayload } from '../../../interfaces/api';
 
 export class AdminArticle {
   /**
@@ -231,8 +232,17 @@ export class AdminArticle {
    * @param res Response
    */
   getAll = async (req: Request, res: Response): Promise<any> => {
-    const { page = 1, size = 20, search } = req.query;
-    const condition = search
+    const { page = 1, size = 20, search, status } = req.query;
+    const isStatus = !isEmpty(status);
+    const isActive = status === lowerCase(EnumStatus.ACTIVE);
+    const { limit, offset } = getPagination(Number(page), Number(size));
+
+    const whereStatus = isStatus
+      ? {
+          active: isActive,
+        }
+      : undefined;
+    const whereSearch = search
       ? {
           [Op.or]: [
             {
@@ -247,14 +257,13 @@ export class AdminArticle {
           ],
         }
       : undefined;
-    const { limit, offset } = getPagination(Number(page), Number(size));
 
     try {
       const data = await db.Article.findAndCountAll({
-        where: condition,
         limit,
         offset,
         order: [['updatedAt', 'DESC']],
+        where: { [Op.and]: [{ ...whereSearch, ...whereStatus }] },
         attributes: {
           include: [
             [

@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import { CONFLICT, CREATED, NOT_FOUND, OK } from 'http-status';
 import { Op, Sequelize } from 'sequelize';
+import { isEmpty, lowerCase } from 'lodash';
 import db from '../../../db/models';
 import { getUserById } from '../../../helpers/user';
 import VideoValidator from '../../../validator/video';
@@ -28,6 +29,7 @@ import {
   VIDEO_UPDATED_SUCCESS,
 } from '../../../constants/message';
 import { getCategoryById, getVideoById, getVideoBySlug } from '../../../helpers/video';
+import { EnumStatus } from '../../../interfaces/api';
 
 export class AdminVideo {
   /**
@@ -249,16 +251,24 @@ export class AdminVideo {
    * @param res Response
    */
   getAll = async (req: Request, res: Response): Promise<any> => {
-    const { page = 0, size = 20, search } = req.query;
-    const condition = search ? { title: { [Op.iLike]: `%${search}%` } } : undefined;
+    const { page = 0, size = 20, search, status } = req.query;
+    const isStatus = !isEmpty(status);
+    const isActive = status === lowerCase(EnumStatus.ACTIVE);
     const { limit, offset } = getPagination(Number(page), Number(size));
+
+    const whereStatus = isStatus
+      ? {
+          active: isActive,
+        }
+      : undefined;
+    const whereSearch = search ? { title: { [Op.iLike]: `%${search}%` } } : undefined;
 
     try {
       const data = await db.Video.findAndCountAll({
-        where: condition,
         limit,
         offset,
         order: [['updatedAt', 'DESC']],
+        where: { [Op.and]: [{ ...whereSearch, ...whereStatus }] },
         attributes: {
           include: [
             [
