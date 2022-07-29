@@ -12,3 +12,9 @@ export interface IJwtPayload {
   email: string;
   role: ERole;
 }
+
+export enum EnumStatus {
+  ALL = 'ALL',
+  ACTIVE = 'ACTIVE',
+  INACTIVE = 'INACTIVE',
+}
