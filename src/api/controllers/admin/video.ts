@@ -1,13 +1,14 @@
 /* eslint-disable consistent-return */
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
-import { CONFLICT, CREATED, NOT_FOUND, OK } from 'http-status';
+import { CONFLICT, CREATED, FORBIDDEN, NOT_FOUND, OK, UNAUTHORIZED } from 'http-status';
 import { Op, Sequelize } from 'sequelize';
 import { isEmpty, lowerCase } from 'lodash';
 import db from '../../../db/models';
 import { getUserById } from '../../../helpers/user';
 import VideoValidator from '../../../validator/video';
 import {
+  comparePassword,
   contentResponse,
   generateSlug,
   getPagination,
@@ -18,6 +19,8 @@ import {
 } from '../../../helpers/api';
 import {
   CATEGORY_NOT_FOUND,
+  PASSWORD_INVALID,
+  USERNAME_EMAIL_INVALID,
   USER_NOT_FOUND,
   VIDEO_ALREADY_ACTIVE,
   VIDEO_ALREADY_INACTIVE,
@@ -29,7 +32,7 @@ import {
   VIDEO_UPDATED_SUCCESS,
 } from '../../../constants/message';
 import { getCategoryById, getVideoById, getVideoBySlug } from '../../../helpers/video';
-import { EnumStatus } from '../../../interfaces/api';
+import { EnumStatus, IJwtPayload } from '../../../interfaces/api';
 
 export class AdminVideo {
   /**
@@ -149,8 +152,29 @@ export class AdminVideo {
    */
   approve = async (req: Request, res: Response): Promise<any> => {
     const { slug } = req.params;
+    const { password } = req.body;
+    const { email } = req.user as IJwtPayload;
 
     try {
+      const admin = await db.User.findOne({
+        where: {
+          email,
+        },
+      });
+      if (!admin) {
+        return getResponse(res, UNAUTHORIZED, {
+          message: USERNAME_EMAIL_INVALID,
+        });
+      }
+
+      const isPasswordValid = comparePassword(password, admin.get().password);
+
+      if (!isPasswordValid) {
+        return getResponse(res, FORBIDDEN, {
+          message: PASSWORD_INVALID,
+        });
+      }
+
       const video = await getVideoBySlug(res, slug, true);
 
       if (!video) {
@@ -187,8 +211,29 @@ export class AdminVideo {
    */
   disable = async (req: Request, res: Response): Promise<any> => {
     const { slug } = req.params;
+    const { password } = req.body;
+    const { email } = req.user as IJwtPayload;
 
     try {
+      const admin = await db.User.findOne({
+        where: {
+          email,
+        },
+      });
+      if (!admin) {
+        return getResponse(res, UNAUTHORIZED, {
+          message: USERNAME_EMAIL_INVALID,
+        });
+      }
+
+      const isPasswordValid = comparePassword(password, admin.get().password);
+
+      if (!isPasswordValid) {
+        return getResponse(res, FORBIDDEN, {
+          message: PASSWORD_INVALID,
+        });
+      }
+
       const video = await getVideoBySlug(res, slug, true);
 
       if (!video) {
@@ -224,8 +269,28 @@ export class AdminVideo {
    */
   delete = async (req: Request, res: Response): Promise<any> => {
     const { slug } = req.params;
+    const { password } = req.body;
+    const { email } = req.user as IJwtPayload;
 
     try {
+      const admin = await db.User.findOne({
+        where: {
+          email,
+        },
+      });
+      if (!admin) {
+        return getResponse(res, UNAUTHORIZED, {
+          message: USERNAME_EMAIL_INVALID,
+        });
+      }
+
+      const isPasswordValid = comparePassword(password, admin.get().password);
+
+      if (!isPasswordValid) {
+        return getResponse(res, FORBIDDEN, {
+          message: PASSWORD_INVALID,
+        });
+      }
       const video = await getVideoBySlug(res, slug, true);
 
       if (!video) {
