@@ -1,11 +1,12 @@
 /* eslint-disable consistent-return */
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
-import { CONFLICT, CREATED, NOT_FOUND, OK } from 'http-status';
+import { CONFLICT, CREATED, FORBIDDEN, NOT_FOUND, OK, UNAUTHORIZED } from 'http-status';
 import { Op, Sequelize } from 'sequelize';
 import { isEmpty, lowerCase } from 'lodash';
 import db from '../../../db/models';
 import {
+  comparePassword,
   contentResponse,
   generateSlug,
   getPagination,
@@ -24,6 +25,9 @@ import {
   ARTICLE_EXIST,
   ARTICLE_NOT_FOUND,
   ARTICLE_UPDATED_SUCCESS,
+  PASSWORD_INVALID,
+  PASSWORD_REQUIRED,
+  USERNAME_EMAIL_INVALID,
 } from '../../../constants/message';
 import {
   getArticleById,
@@ -135,8 +139,35 @@ export class AdminArticle {
    */
   approve = async (req: Request, res: Response): Promise<any> => {
     const { slug } = req.params;
+    const { password } = req.body;
+    const { email } = req.user as IJwtPayload;
+
+    if (!password) {
+      return getResponse(res, UNAUTHORIZED, {
+        message: PASSWORD_REQUIRED,
+      });
+    }
 
     try {
+      const admin = await db.User.findOne({
+        where: {
+          email,
+        },
+      });
+      if (!admin) {
+        return getResponse(res, UNAUTHORIZED, {
+          message: USERNAME_EMAIL_INVALID,
+        });
+      }
+
+      const isPasswordValid = comparePassword(password, admin.get().password);
+
+      if (!isPasswordValid) {
+        return getResponse(res, FORBIDDEN, {
+          message: PASSWORD_INVALID,
+        });
+      }
+
       const article = await getArticleBySlug(res, slug, true);
 
       if (!article) {
@@ -171,8 +202,35 @@ export class AdminArticle {
    */
   disable = async (req: Request, res: Response): Promise<any> => {
     const { slug } = req.params;
+    const { password } = req.body;
+    const { email } = req.user as IJwtPayload;
+
+    if (!password) {
+      return getResponse(res, UNAUTHORIZED, {
+        message: PASSWORD_REQUIRED,
+      });
+    }
 
     try {
+      const admin = await db.User.findOne({
+        where: {
+          email,
+        },
+      });
+      if (!admin) {
+        return getResponse(res, UNAUTHORIZED, {
+          message: USERNAME_EMAIL_INVALID,
+        });
+      }
+
+      const isPasswordValid = comparePassword(password, admin.get().password);
+
+      if (!isPasswordValid) {
+        return getResponse(res, FORBIDDEN, {
+          message: PASSWORD_INVALID,
+        });
+      }
+
       const article = await getArticleBySlug(res, slug, true);
 
       if (!article) {
@@ -207,8 +265,35 @@ export class AdminArticle {
    */
   delete = async (req: Request, res: Response): Promise<any> => {
     const { slug } = req.params;
+    const { password } = req.body;
+    const { email } = req.user as IJwtPayload;
+
+    if (!password) {
+      return getResponse(res, UNAUTHORIZED, {
+        message: PASSWORD_REQUIRED,
+      });
+    }
 
     try {
+      const admin = await db.User.findOne({
+        where: {
+          email,
+        },
+      });
+      if (!admin) {
+        return getResponse(res, UNAUTHORIZED, {
+          message: USERNAME_EMAIL_INVALID,
+        });
+      }
+
+      const isPasswordValid = comparePassword(password, admin.get().password);
+
+      if (!isPasswordValid) {
+        return getResponse(res, FORBIDDEN, {
+          message: PASSWORD_INVALID,
+        });
+      }
+
       const article = await getArticleBySlug(res, slug, true);
 
       if (!article) {
