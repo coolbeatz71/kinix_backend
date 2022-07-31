@@ -26,6 +26,7 @@ import {
   ARTICLE_NOT_FOUND,
   ARTICLE_UPDATED_SUCCESS,
   PASSWORD_INVALID,
+  PASSWORD_REQUIRED,
   USERNAME_EMAIL_INVALID,
 } from '../../../constants/message';
 import {
@@ -141,6 +142,12 @@ export class AdminArticle {
     const { password } = req.body;
     const { email } = req.user as IJwtPayload;
 
+    if (!password) {
+      return getResponse(res, UNAUTHORIZED, {
+        message: PASSWORD_REQUIRED,
+      });
+    }
+
     try {
       const admin = await db.User.findOne({
         where: {
@@ -198,6 +205,12 @@ export class AdminArticle {
     const { password } = req.body;
     const { email } = req.user as IJwtPayload;
 
+    if (!password) {
+      return getResponse(res, UNAUTHORIZED, {
+        message: PASSWORD_REQUIRED,
+      });
+    }
+
     try {
       const admin = await db.User.findOne({
         where: {
@@ -254,6 +267,12 @@ export class AdminArticle {
     const { slug } = req.params;
     const { password } = req.body;
     const { email } = req.user as IJwtPayload;
+
+    if (!password) {
+      return getResponse(res, UNAUTHORIZED, {
+        message: PASSWORD_REQUIRED,
+      });
+    }
 
     try {
       const admin = await db.User.findOne({

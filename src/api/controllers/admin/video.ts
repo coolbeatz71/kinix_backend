@@ -20,6 +20,7 @@ import {
 import {
   CATEGORY_NOT_FOUND,
   PASSWORD_INVALID,
+  PASSWORD_REQUIRED,
   USERNAME_EMAIL_INVALID,
   USER_NOT_FOUND,
   VIDEO_ALREADY_ACTIVE,
@@ -155,12 +156,19 @@ export class AdminVideo {
     const { password } = req.body;
     const { email } = req.user as IJwtPayload;
 
+    if (!password) {
+      return getResponse(res, UNAUTHORIZED, {
+        message: PASSWORD_REQUIRED,
+      });
+    }
+
     try {
       const admin = await db.User.findOne({
         where: {
           email,
         },
       });
+
       if (!admin) {
         return getResponse(res, UNAUTHORIZED, {
           message: USERNAME_EMAIL_INVALID,
@@ -213,6 +221,12 @@ export class AdminVideo {
     const { slug } = req.params;
     const { password } = req.body;
     const { email } = req.user as IJwtPayload;
+
+    if (!password) {
+      return getResponse(res, UNAUTHORIZED, {
+        message: PASSWORD_REQUIRED,
+      });
+    }
 
     try {
       const admin = await db.User.findOne({
@@ -271,6 +285,12 @@ export class AdminVideo {
     const { slug } = req.params;
     const { password } = req.body;
     const { email } = req.user as IJwtPayload;
+
+    if (!password) {
+      return getResponse(res, UNAUTHORIZED, {
+        message: PASSWORD_REQUIRED,
+      });
+    }
 
     try {
       const admin = await db.User.findOne({
