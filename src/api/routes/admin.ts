@@ -36,7 +36,7 @@ router.put('/videos/:slug', adminsCheck, adminVideoCtrl.update);
 
 // super admin
 router.put('/videos/approve/:slug', superAdminCheck, adminVideoCtrl.approve);
-router.delete('/videos/disable/:slug', superAdminCheck, adminVideoCtrl.disable);
+router.put('/videos/disable/:slug', superAdminCheck, adminVideoCtrl.disable);
 router.delete('/videos/delete/:slug', superAdminCheck, adminVideoCtrl.delete);
 
 /*
@@ -75,7 +75,7 @@ router.get('/clients', adminsCheck, adminUserCtrl.getAllClients);
 
 // super admin
 router.put('/articles/approve/:slug', superAdminCheck, adminArticleCtrl.approve);
-router.delete('/articles/disable/:slug', superAdminCheck, adminArticleCtrl.disable);
+router.put('/articles/disable/:slug', superAdminCheck, adminArticleCtrl.disable);
 router.delete('/articles/delete/:slug', superAdminCheck, adminArticleCtrl.delete);
 
 export default router;
