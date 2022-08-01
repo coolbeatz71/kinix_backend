@@ -112,7 +112,7 @@ export class AdminArticle {
 
       await db.Article.update(
         {
-          slug,
+          slug: newSlug,
           title,
           summary,
           body,
