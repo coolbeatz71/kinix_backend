@@ -32,8 +32,14 @@ import {
   VIDEO_NOT_FOUND,
   VIDEO_UPDATED_SUCCESS,
 } from '../../../constants/message';
-import { getCategoryById, getVideoById, getVideoBySlug } from '../../../helpers/video';
+import {
+  getCategoryById,
+  getCategoryByName,
+  getVideoById,
+  getVideoBySlug,
+} from '../../../helpers/video';
 import { EnumStatus, IJwtPayload } from '../../../interfaces/api';
+import ECategory from '../../../interfaces/category';
 
 export class AdminVideo {
   /**
@@ -336,10 +342,17 @@ export class AdminVideo {
    * @param res Response
    */
   getAll = async (req: Request, res: Response): Promise<any> => {
-    const { page = 0, size = 20, search, status } = req.query;
+    const { page = 1, size = 20, search, status, category } = req.query;
     const isStatus = !isEmpty(status);
+    const isCategory = !isEmpty(category);
     const isActive = status === lowerCase(EnumStatus.ACTIVE);
     const { limit, offset } = getPagination(Number(page), Number(size));
+
+    const values = Object.values(ECategory);
+    const isCategoryValid = values.includes(String(category).toUpperCase() as unknown as ECategory);
+
+    const cat = (await getCategoryByName(res, String(category).toUpperCase())) || null;
+    const whereCategory = isCategory && isCategoryValid ? { categoryId: cat.get().id } : undefined;
 
     const whereStatus = isStatus
       ? {
@@ -353,7 +366,7 @@ export class AdminVideo {
         limit,
         offset,
         order: [['updatedAt', 'DESC']],
-        where: { [Op.and]: [{ ...whereSearch, ...whereStatus }] },
+        where: { [Op.and]: [{ ...whereSearch, ...whereStatus, ...whereCategory }] },
         attributes: {
           include: [
             [
