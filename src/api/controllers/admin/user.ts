@@ -13,7 +13,7 @@ export class AdminUser {
    * @param res Response
    */
   getAllUsers = async (req: Request, res: Response): Promise<any> => {
-    const { search, page = 0, size = 20 } = req.query;
+    const { search, page = 1, size = 20 } = req.query;
     const { limit, offset } = getPagination(Number(page), Number(size));
     const where = search
       ? {
@@ -48,7 +48,7 @@ export class AdminUser {
    * @param res Response
    */
   getAllClients = async (req: Request, res: Response): Promise<any> => {
-    const { search, page = 0, size = 20 } = req.query;
+    const { search, page = 1, size = 20 } = req.query;
     const { limit, offset } = getPagination(Number(page), Number(size));
     const excludeAdmins = [
       {
