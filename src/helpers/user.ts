@@ -61,3 +61,19 @@ export const countTotalUsers = async (res: Response, status: EUserStatus): Promi
     return getServerError(res, err.message);
   }
 };
+export const countUsersByConfirmation = async (
+  res: Response,
+  isVerified: boolean,
+): Promise<any> => {
+  try {
+    const result = await db.User.count({
+      where: {
+        verified: isVerified,
+      },
+    });
+
+    return result;
+  } catch (err) {
+    return getServerError(res, err.message);
+  }
+};
