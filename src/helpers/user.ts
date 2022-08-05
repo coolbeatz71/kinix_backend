@@ -79,12 +79,12 @@ export const countUsersBy = async (
   }
 };
 
-// count users by verification status
-export const countVerifiedUsers = async (res: Response) => {
-  return countUsersBy(res, 'verified', true);
+// count users by activity status
+export const countActiveUsers = async (res: Response) => {
+  return countUsersBy(res, 'isLoggedIn', true);
 };
-export const countNonVerifiedUsers = async (res: Response) => {
-  return countUsersBy(res, 'verified', false);
+export const countInactiveUsers = async (res: Response) => {
+  return countUsersBy(res, 'isLoggedIn', false);
 };
 
 // count users by login provider
