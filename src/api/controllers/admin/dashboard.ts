@@ -5,7 +5,21 @@ import { DASHBOARD_OVERVIEW_SUCCESS } from '../../../constants/message';
 import { contentResponse } from '../../../helpers/api';
 import { countAllArticles } from '../../../helpers/article';
 import countAllPromotions from '../../../helpers/promotion';
-import { countTotalUsers } from '../../../helpers/user';
+import {
+  countActiveUsers,
+  countAdminUsers,
+  countAdsClients,
+  countEmailDisabledUsers,
+  countEmailEnabledUsers,
+  countFacebookUsers,
+  countGoogleUsers,
+  countInactiveUsers,
+  countLocalUsers,
+  countSuperAdminUsers,
+  countTotalUsers,
+  countVideoClients,
+  countViewerClients,
+} from '../../../helpers/user';
 import { countAllVideos } from '../../../helpers/video';
 import {
   EArticleStatus,
@@ -41,6 +55,23 @@ export class AdminDashboard {
     const activePromotions = await countAllPromotions(res, EPromotionStatus.ACTIVE);
     const inactivePromotions = await countAllPromotions(res, EPromotionStatus.INACTIVE);
 
+    // users by activity
+    const activeUsers = await countActiveUsers(res);
+    const inactiveUsers = await countInactiveUsers(res);
+    // users by provider
+    const localUsers = await countLocalUsers(res);
+    const googleUsers = await countGoogleUsers(res);
+    const facebookUsers = await countFacebookUsers(res);
+    // users by notification
+    const activeNotification = await countEmailEnabledUsers(res);
+    const inactiveNotification = await countEmailDisabledUsers(res);
+    // users by role
+    const viewerClients = await countViewerClients(res);
+    const videoClients = await countVideoClients(res);
+    const adsClients = await countAdsClients(res);
+    const adminUsers = await countAdminUsers(res);
+    const superAdminUsers = await countSuperAdminUsers(res);
+
     const result = {
       general: {
         users: {
@@ -62,6 +93,28 @@ export class AdminDashboard {
           all: allPromotions,
           active: activePromotions,
           inactive: inactivePromotions,
+        },
+      },
+      users: {
+        activity: {
+          active: activeUsers,
+          inactive: inactiveUsers,
+        },
+        provider: {
+          local: localUsers,
+          google: googleUsers,
+          facebook: facebookUsers,
+        },
+        notification: {
+          active: activeNotification,
+          inactive: inactiveNotification,
+        },
+        role: {
+          ads: adsClients,
+          admin: adminUsers,
+          video: videoClients,
+          viewer: viewerClients,
+          superAdmin: superAdminUsers,
         },
       },
     };

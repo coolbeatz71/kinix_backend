@@ -5,6 +5,7 @@ import db from '../db/models';
 import { EUserStatus } from '../interfaces/category';
 import ERole from '../interfaces/role';
 import { getServerError } from './api';
+import EProvider from '../interfaces/provider';
 
 const user = async (res: Response, field: string, value: any): Promise<any> => {
   try {
@@ -60,4 +61,64 @@ export const countTotalUsers = async (res: Response, status: EUserStatus): Promi
   } catch (err) {
     return getServerError(res, err.message);
   }
+};
+export const countUsersBy = async (
+  res: Response,
+  field: string,
+  value: any,
+): Promise<Response | number> => {
+  try {
+    const result = await db.User.count({
+      where: { [field]: value },
+      attributes: { exclude: ['password'] },
+    });
+
+    return result;
+  } catch (err) {
+    return getServerError(res, err.message);
+  }
+};
+
+// count users by activity status
+export const countActiveUsers = async (res: Response) => {
+  return countUsersBy(res, 'isLoggedIn', true);
+};
+export const countInactiveUsers = async (res: Response) => {
+  return countUsersBy(res, 'isLoggedIn', false);
+};
+
+// count users by login provider
+export const countLocalUsers = async (res: Response) => {
+  return countUsersBy(res, 'provider', EProvider.LOCAL);
+};
+export const countGoogleUsers = async (res: Response) => {
+  return countUsersBy(res, 'provider', EProvider.GOOGLE);
+};
+export const countFacebookUsers = async (res: Response) => {
+  return countUsersBy(res, 'provider', EProvider.FACEBOOK);
+};
+
+// count users by email notification
+export const countEmailEnabledUsers = async (res: Response) => {
+  return countUsersBy(res, 'allowEmailNotification', true);
+};
+export const countEmailDisabledUsers = async (res: Response) => {
+  return countUsersBy(res, 'allowEmailNotification', false);
+};
+
+// count users by role
+export const countViewerClients = async (res: Response) => {
+  return countUsersBy(res, 'role', ERole.VIEWER_CLIENT);
+};
+export const countVideoClients = async (res: Response) => {
+  return countUsersBy(res, 'role', ERole.VIDEO_CLIENT);
+};
+export const countAdsClients = async (res: Response) => {
+  return countUsersBy(res, 'role', ERole.ADS_CLIENT);
+};
+export const countAdminUsers = async (res: Response) => {
+  return countUsersBy(res, 'role', ERole.ADMIN);
+};
+export const countSuperAdminUsers = async (res: Response) => {
+  return countUsersBy(res, 'role', ERole.SUPER_ADMIN);
 };
