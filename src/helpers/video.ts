@@ -364,3 +364,15 @@ export const countTopSharedVideos = async (res: Response, limit = 5) => {
     return getServerError(res, err.message);
   }
 };
+
+export const countVideoByCategory = async (res: Response, name: ECategory) => {
+  try {
+    const cat = await getCategoryByName(res, name);
+    const result = await db.Video.count({
+      where: { active: true, categoryId: cat.get().id },
+    });
+    return result;
+  } catch (err) {
+    return getServerError(res, err.message);
+  }
+};
