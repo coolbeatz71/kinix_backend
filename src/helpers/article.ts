@@ -1,6 +1,6 @@
 /* eslint-disable consistent-return */
 import { Response } from 'express';
-import { Op, Sequelize } from 'sequelize';
+import { literal } from 'sequelize';
 import { getServerError } from './api';
 import db from '../db/models';
 import { EArticleStatus } from '../interfaces/category';
@@ -24,19 +24,17 @@ const article = async (res: Response, field: string, value: any, isAdmin = false
         exclude: ['userId'],
         include: [
           [
-            Sequelize.literal(
-              '(SELECT COUNT(*) FROM "like" WHERE "like"."articleId" = "Article"."id")',
-            ),
+            literal('(SELECT COUNT(*) FROM "like" WHERE "like"."articleId" = "Article"."id")'),
             'likesCount',
           ],
           [
-            Sequelize.literal(
+            literal(
               '(SELECT COUNT(*) FROM "comment" WHERE "comment"."articleId" = "Article"."id")',
             ),
             'commentsCount',
           ],
           [
-            Sequelize.literal(
+            literal(
               '(SELECT COUNT(*) FROM "bookmark" WHERE "bookmark"."articleId" = "Article"."id")',
             ),
             'bookmarksCount',
@@ -86,19 +84,17 @@ export const getAllArticle = async (
       attributes: {
         include: [
           [
-            Sequelize.literal(
-              '(SELECT COUNT(*) FROM "like" WHERE "like"."articleId" = "Article"."id")',
-            ),
+            literal('(SELECT COUNT(*) FROM "like" WHERE "like"."articleId" = "Article"."id")'),
             'likesCount',
           ],
           [
-            Sequelize.literal(
+            literal(
               '(SELECT COUNT(*) FROM "comment" WHERE "comment"."articleId" = "Article"."id")',
             ),
             'commentsCount',
           ],
           [
-            Sequelize.literal(
+            literal(
               '(SELECT COUNT(*) FROM "bookmark" WHERE "bookmark"."articleId" = "Article"."id")',
             ),
             'bookmarksCount',
@@ -209,13 +205,17 @@ export const countNonLikedArticles = async (res: Response) => {
 
 export const countTopLikedArticles = async (res: Response, limit = 5) => {
   try {
-    const result = await db.Like.findAll({
+    const result = db.Article.findAll({
+      attributes: [
+        'Article.id',
+        'Article.title',
+        [
+          literal('(SELECT COUNT(*) FROM "like" WHERE "like"."articleId" = "Article"."id")'),
+          'likesCount',
+        ],
+      ],
+      order: [[literal('likesCount'), 'DESC']],
       limit,
-      where: {
-        id: {
-          [Op.in]: [Sequelize.literal('SELECT MAX(id) FROM like GROUP BY articleId')],
-        },
-      },
     });
 
     return result;
@@ -226,13 +226,17 @@ export const countTopLikedArticles = async (res: Response, limit = 5) => {
 
 export const countTopCommentedArticles = async (res: Response, limit = 5) => {
   try {
-    const result = await db.Like.findAll({
+    const result = db.Article.findAll({
+      attributes: [
+        'Article.id',
+        'Article.title',
+        [
+          literal('(SELECT COUNT(*) FROM "comment" WHERE "comment"."articleId" = "Article"."id")'),
+          'commentsCount',
+        ],
+      ],
+      order: [[literal('commentsCount'), 'DESC']],
       limit,
-      where: {
-        id: {
-          [Op.in]: [Sequelize.literal('SELECT MAX(id) FROM comment GROUP BY articleId')],
-        },
-      },
     });
 
     return result;

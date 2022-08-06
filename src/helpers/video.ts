@@ -1,6 +1,6 @@
 /* eslint-disable consistent-return */
 import { Response } from 'express';
-import { Sequelize } from 'sequelize';
+import { literal } from 'sequelize';
 import { getServerError } from './api';
 import db from '../db/models';
 import ECategory, { EVideoStatus } from '../interfaces/category';
@@ -27,15 +27,11 @@ const video = async (res: Response, field: string, value: any, isAdmin = false):
         exclude: ['userId', 'categoryId'],
         include: [
           [
-            Sequelize.literal(
-              '(SELECT COUNT(*) FROM "share" WHERE "share"."videoId" = "Video"."id")',
-            ),
+            literal('(SELECT COUNT(*) FROM "share" WHERE "share"."videoId" = "Video"."id")'),
             'sharesCount',
           ],
           [
-            Sequelize.literal(
-              '(SELECT COUNT(*) FROM "playlist" WHERE "playlist"."videoId" = "Video"."id")',
-            ),
+            literal('(SELECT COUNT(*) FROM "playlist" WHERE "playlist"."videoId" = "Video"."id")'),
             'playlistsCount',
           ],
         ],
@@ -84,15 +80,11 @@ export const getAllVideo = async (
       attributes: {
         include: [
           [
-            Sequelize.literal(
-              '(SELECT COUNT(*) FROM "share" WHERE "share"."videoId" = "Video"."id")',
-            ),
+            literal('(SELECT COUNT(*) FROM "share" WHERE "share"."videoId" = "Video"."id")'),
             'sharesCount',
           ],
           [
-            Sequelize.literal(
-              '(SELECT COUNT(*) FROM "playlist" WHERE "playlist"."videoId" = "Video"."id")',
-            ),
+            literal('(SELECT COUNT(*) FROM "playlist" WHERE "playlist"."videoId" = "Video"."id")'),
             'playlistsCount',
           ],
         ],
@@ -156,15 +148,11 @@ export const getVideoDiscovery = async (res: Response, categoryName: ECategory):
       attributes: {
         include: [
           [
-            Sequelize.literal(
-              '(SELECT COUNT(*) FROM "share" WHERE "share"."videoId" = "Video"."id")',
-            ),
+            literal('(SELECT COUNT(*) FROM "share" WHERE "share"."videoId" = "Video"."id")'),
             'sharesCount',
           ],
           [
-            Sequelize.literal(
-              '(SELECT COUNT(*) FROM "playlist" WHERE "playlist"."videoId" = "Video"."id")',
-            ),
+            literal('(SELECT COUNT(*) FROM "playlist" WHERE "playlist"."videoId" = "Video"."id")'),
             'playlistsCount',
           ],
         ],
@@ -209,15 +197,11 @@ export const getVideoPopular = async (res: Response): Promise<any> => {
       attributes: {
         include: [
           [
-            Sequelize.literal(
-              '(SELECT COUNT(*) FROM "share" WHERE "share"."videoId" = "Video"."id")',
-            ),
+            literal('(SELECT COUNT(*) FROM "share" WHERE "share"."videoId" = "Video"."id")'),
             'sharesCount',
           ],
           [
-            Sequelize.literal(
-              '(SELECT COUNT(*) FROM "playlist" WHERE "playlist"."videoId" = "Video"."id")',
-            ),
+            literal('(SELECT COUNT(*) FROM "playlist" WHERE "playlist"."videoId" = "Video"."id")'),
             'playlistsCount',
           ],
         ],
@@ -260,15 +244,11 @@ export const getVideoByCategory = async (res: Response, name: ECategory): Promis
       attributes: {
         include: [
           [
-            Sequelize.literal(
-              '(SELECT COUNT(*) FROM "share" WHERE "share"."videoId" = "Video"."id")',
-            ),
+            literal('(SELECT COUNT(*) FROM "share" WHERE "share"."videoId" = "Video"."id")'),
             'sharesCount',
           ],
           [
-            Sequelize.literal(
-              '(SELECT COUNT(*) FROM "playlist" WHERE "playlist"."videoId" = "Video"."id")',
-            ),
+            literal('(SELECT COUNT(*) FROM "playlist" WHERE "playlist"."videoId" = "Video"."id")'),
             'playlistsCount',
           ],
         ],
@@ -306,8 +286,8 @@ export const calcVideoAVGRate = async (res: Response, videoId: number): Promise<
     const rate = db.Rate.findAll({
       where: { videoId },
       attributes: [
-        [Sequelize.cast(Sequelize.fn('SUM', Sequelize.col('count')), 'int'), 'sumRate'],
-        [Sequelize.cast(Sequelize.fn('COUNT', Sequelize.col('count')), 'int'), 'totalRaters'],
+        [cast(fn('SUM', col('count')), 'int'), 'sumRate'],
+        [cast(fn('COUNT', col('count')), 'int'), 'totalRaters'],
       ],
     });
 

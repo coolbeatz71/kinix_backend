@@ -2,7 +2,7 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import { CONFLICT, CREATED, FORBIDDEN, NOT_FOUND, OK, UNAUTHORIZED } from 'http-status';
-import { Op, Sequelize } from 'sequelize';
+import { literal, Op } from 'sequelize';
 import { isEmpty, lowerCase } from 'lodash';
 import db from '../../../db/models';
 import {
@@ -352,19 +352,17 @@ export class AdminArticle {
         attributes: {
           include: [
             [
-              Sequelize.literal(
-                '(SELECT COUNT(*) FROM "like" WHERE "like"."articleId" = "Article"."id")',
-              ),
+              literal('(SELECT COUNT(*) FROM "like" WHERE "like"."articleId" = "Article"."id")'),
               'likesCount',
             ],
             [
-              Sequelize.literal(
+              literal(
                 '(SELECT COUNT(*) FROM "comment" WHERE "comment"."articleId" = "Article"."id")',
               ),
               'commentsCount',
             ],
             [
-              Sequelize.literal(
+              literal(
                 '(SELECT COUNT(*) FROM "bookmark" WHERE "bookmark"."articleId" = "Article"."id")',
               ),
               'bookmarksCount',
