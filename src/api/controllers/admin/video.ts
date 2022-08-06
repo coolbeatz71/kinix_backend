@@ -2,7 +2,7 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import { CONFLICT, CREATED, FORBIDDEN, NOT_FOUND, OK, UNAUTHORIZED } from 'http-status';
-import { Op, Sequelize } from 'sequelize';
+import { literal, Op } from 'sequelize';
 import { isEmpty, lowerCase } from 'lodash';
 import db from '../../../db/models';
 import { getUserById } from '../../../helpers/user';
@@ -370,13 +370,11 @@ export class AdminVideo {
         attributes: {
           include: [
             [
-              Sequelize.literal(
-                '(SELECT COUNT(*) FROM "share" WHERE "share"."videoId" = "Video"."id")',
-              ),
+              literal('(SELECT COUNT(*) FROM "share" WHERE "share"."videoId" = "Video"."id")'),
               'sharesCount',
             ],
             [
-              Sequelize.literal(
+              literal(
                 '(SELECT COUNT(*) FROM "playlist" WHERE "playlist"."videoId" = "Video"."id")',
               ),
               'playlistsCount',
