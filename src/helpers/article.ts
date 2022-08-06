@@ -1,6 +1,6 @@
 /* eslint-disable consistent-return */
 import { Response } from 'express';
-import { Sequelize } from 'sequelize';
+import { Op, Sequelize } from 'sequelize';
 import { getServerError } from './api';
 import db from '../db/models';
 import { EArticleStatus } from '../interfaces/category';
@@ -152,7 +152,10 @@ export const getArticleByTitle = async (
   return article(res, 'title', title, isAdmin);
 };
 
-export const countAllArticles = async (res: Response, status: EArticleStatus): Promise<any> => {
+export const countAllArticles = async (
+  res: Response,
+  status: EArticleStatus,
+): Promise<Response | number> => {
   try {
     let result;
     switch (status) {
@@ -166,6 +169,71 @@ export const countAllArticles = async (res: Response, status: EArticleStatus): P
         result = db.Article.count();
         break;
     }
+
+    return result;
+  } catch (err) {
+    return getServerError(res, err.message);
+  }
+};
+
+export const countArticlesBy = async (
+  res: Response,
+  field: string,
+  value: any,
+): Promise<Response | number> => {
+  try {
+    const result = await db.Article.count({
+      where: { [field]: value },
+    });
+
+    return result;
+  } catch (err) {
+    return getServerError(res, err.message);
+  }
+};
+
+// count articles by activity status
+export const countActiveArticles = async (res: Response) => {
+  return countArticlesBy(res, 'active', true);
+};
+export const countInactiveArticles = async (res: Response) => {
+  return countArticlesBy(res, 'active', false);
+};
+// count articles by like status
+export const countLikedArticles = async (res: Response) => {
+  return countArticlesBy(res, 'liked', true);
+};
+export const countNonLikedArticles = async (res: Response) => {
+  return countArticlesBy(res, 'liked', false);
+};
+
+export const countTopLikedArticles = async (res: Response, limit = 5) => {
+  try {
+    const result = await db.Like.findAll({
+      limit,
+      where: {
+        id: {
+          [Op.in]: [Sequelize.literal('SELECT MAX(id) FROM like GROUP BY articleId')],
+        },
+      },
+    });
+
+    return result;
+  } catch (err) {
+    return getServerError(res, err.message);
+  }
+};
+
+export const countTopCommentedArticles = async (res: Response, limit = 5) => {
+  try {
+    const result = await db.Like.findAll({
+      limit,
+      where: {
+        id: {
+          [Op.in]: [Sequelize.literal('SELECT MAX(id) FROM comment GROUP BY articleId')],
+        },
+      },
+    });
 
     return result;
   } catch (err) {

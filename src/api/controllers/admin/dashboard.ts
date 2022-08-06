@@ -3,7 +3,15 @@ import { Request, Response } from 'express';
 import { OK } from 'http-status';
 import { DASHBOARD_OVERVIEW_SUCCESS } from '../../../constants/message';
 import { contentResponse } from '../../../helpers/api';
-import { countAllArticles } from '../../../helpers/article';
+import {
+  countActiveArticles,
+  countAllArticles,
+  countInactiveArticles,
+  countLikedArticles,
+  countNonLikedArticles,
+  countTopCommentedArticles,
+  countTopLikedArticles,
+} from '../../../helpers/article';
 import countAllPromotions from '../../../helpers/promotion';
 import {
   countActiveUsers,
@@ -22,10 +30,10 @@ import {
 } from '../../../helpers/user';
 import { countAllVideos } from '../../../helpers/video';
 import {
-  EArticleStatus,
-  EPromotionStatus,
   EUserStatus,
+  EArticleStatus,
   EVideoStatus,
+  EPromotionStatus,
 } from '../../../interfaces/category';
 
 export class AdminDashboard {
@@ -42,8 +50,8 @@ export class AdminDashboard {
 
     // articles overview
     const allArticles = await countAllArticles(res, EArticleStatus.ALL);
-    const likedArticles = await countAllArticles(res, EArticleStatus.LIKE);
-    const commentedArticles = await countAllArticles(res, EArticleStatus.COMMENT);
+    const totalArticlesLikes = await countAllArticles(res, EArticleStatus.LIKE);
+    const totalArticlesComments = await countAllArticles(res, EArticleStatus.COMMENT);
 
     // videos overview
     const allVideos = await countAllVideos(res, EVideoStatus.ALL);
@@ -55,6 +63,7 @@ export class AdminDashboard {
     const activePromotions = await countAllPromotions(res, EPromotionStatus.ACTIVE);
     const inactivePromotions = await countAllPromotions(res, EPromotionStatus.INACTIVE);
 
+    // users overview
     // users by activity
     const activeUsers = await countActiveUsers(res);
     const inactiveUsers = await countInactiveUsers(res);
@@ -72,49 +81,74 @@ export class AdminDashboard {
     const adminUsers = await countAdminUsers(res);
     const superAdminUsers = await countSuperAdminUsers(res);
 
+    // articles overview
+    // articles by activity
+    const activeArticles = await countActiveArticles(res);
+    const inactiveArticles = await countInactiveArticles(res);
+    // articles by like
+    const likedArticles = await countLikedArticles(res);
+    const nonLikedArticles = await countNonLikedArticles(res);
+    // top 5 liked articles
+    const topLikedArticles = await countTopLikedArticles(res, 5);
+    const topCommentedArticles = await countTopCommentedArticles(res, 5);
+
     const result = {
       general: {
         users: {
-          all: allUsers,
-          verified: verifiedUsers,
-          unverified: unverifiedUsers,
+          all: Number(allUsers),
+          verified: Number(verifiedUsers),
+          unverified: Number(unverifiedUsers),
         },
         articles: {
-          all: allArticles,
-          liked: likedArticles,
-          commented: commentedArticles,
+          all: Number(allArticles),
+          liked: Number(totalArticlesLikes),
+          commented: Number(totalArticlesComments),
         },
         videos: {
-          all: allVideos,
-          rated: ratedVideos,
-          shared: sharedVideos,
+          all: Number(allVideos),
+          rated: Number(ratedVideos),
+          shared: Number(sharedVideos),
         },
         promotions: {
-          all: allPromotions,
-          active: activePromotions,
-          inactive: inactivePromotions,
+          all: Number(allPromotions),
+          active: Number(activePromotions),
+          inactive: Number(inactivePromotions),
         },
       },
       users: {
         activity: {
-          active: activeUsers,
-          inactive: inactiveUsers,
+          active: Number(activeUsers),
+          inactive: Number(inactiveUsers),
         },
         provider: {
-          local: localUsers,
-          google: googleUsers,
-          facebook: facebookUsers,
+          local: Number(localUsers),
+          google: Number(googleUsers),
+          facebook: Number(facebookUsers),
         },
         notification: {
-          active: activeNotification,
-          inactive: inactiveNotification,
+          active: Number(activeNotification),
+          inactive: Number(inactiveNotification),
         },
         role: {
-          ads: adsClients,
-          admin: adminUsers,
-          video: videoClients,
-          viewer: viewerClients,
-          superAdmin: superAdminUsers,
+          ads: Number(adsClients),
+          admin: Number(adminUsers),
+          video: Number(videoClients),
+          viewer: Number(viewerClients),
+          superAdmin: Number(superAdminUsers),
+        },
+      },
+      articles: {
+        activity: {
+          active: Number(activeArticles),
+          inactive: Number(inactiveArticles),
+        },
+        likes: {
+          liked: Number(likedArticles),
+          nonLiked: Number(nonLikedArticles),
+        },
+        top: {
+          likes: topLikedArticles,
+          comments: topCommentedArticles,
         },
       },
     };

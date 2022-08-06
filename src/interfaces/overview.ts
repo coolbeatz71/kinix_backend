@@ -22,15 +22,43 @@ interface Promotions {
   inactive: number;
 }
 
-interface General {
+interface IGeneralOverview {
   users: Users;
   articles: Articles;
   videos: Videos;
   promotions: Promotions;
 }
 
+interface UserActivity {
+  active: number;
+  inactive: number;
+}
+interface UserProvider {
+  local: number;
+  google: number;
+  facebook: number;
+}
+
+type UserNotification = UserActivity;
+
+interface UserRole {
+  ads: number;
+  admin: number;
+  video: number;
+  viewer: number;
+  superAdmin: number;
+}
+
+interface IUserOverview {
+  activity: UserActivity;
+  provider: UserProvider;
+  notification: UserNotification;
+  role: UserRole;
+}
+
 interface IOverview {
-  general: General;
+  general: IGeneralOverview;
+  users: IUserOverview;
 }
 
 export default IOverview;
