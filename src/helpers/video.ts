@@ -317,3 +317,50 @@ export const countAllVideos = async (res: Response, status: EVideoStatus): Promi
     return getServerError(res, err.message);
   }
 };
+
+export const countVideosBy = async (
+  res: Response,
+  field: string,
+  value: any,
+): Promise<Response | number> => {
+  try {
+    const result = await db.Video.count({
+      where: { [field]: value },
+    });
+
+    return result;
+  } catch (err) {
+    return getServerError(res, err.message);
+  }
+};
+
+// count videos by activity status
+export const countActiveVideos = async (res: Response) => {
+  return countVideosBy(res, 'active', true);
+};
+export const countInactiveVideos = async (res: Response) => {
+  return countVideosBy(res, 'active', false);
+};
+// get top shared videos
+export const countTopSharedVideos = async (res: Response, limit = 5) => {
+  try {
+    const result = db.Video.findAll({
+      attributes: [
+        'id',
+        'title',
+        'link',
+        'slug',
+        [
+          literal('(SELECT COUNT(*) FROM "share" WHERE "share"."videoId" = "Video"."id")'),
+          'sharesCount',
+        ],
+      ],
+      order: [[literal('sharesCount'), 'DESC']],
+      limit,
+    });
+
+    return result;
+  } catch (err) {
+    return getServerError(res, err.message);
+  }
+};

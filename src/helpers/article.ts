@@ -230,6 +230,7 @@ export const countTopCommentedArticles = async (res: Response, limit = 5) => {
       attributes: [
         'id',
         'title',
+        'slug',
         [
           literal('(SELECT COUNT(*) FROM "comment" WHERE "comment"."articleId" = "Article"."id")'),
           'commentsCount',
