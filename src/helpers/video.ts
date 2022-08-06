@@ -1,6 +1,6 @@
 /* eslint-disable consistent-return */
 import { Response } from 'express';
-import { literal } from 'sequelize';
+import { cast, col, fn, literal } from 'sequelize';
 import { getServerError } from './api';
 import db from '../db/models';
 import ECategory, { EVideoStatus } from '../interfaces/category';

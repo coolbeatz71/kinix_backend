@@ -207,8 +207,8 @@ export const countTopLikedArticles = async (res: Response, limit = 5) => {
   try {
     const result = db.Article.findAll({
       attributes: [
-        'Article.id',
-        'Article.title',
+        'id',
+        'title',
         [
           literal('(SELECT COUNT(*) FROM "like" WHERE "like"."articleId" = "Article"."id")'),
           'likesCount',
@@ -228,8 +228,8 @@ export const countTopCommentedArticles = async (res: Response, limit = 5) => {
   try {
     const result = db.Article.findAll({
       attributes: [
-        'Article.id',
-        'Article.title',
+        'id',
+        'title',
         [
           literal('(SELECT COUNT(*) FROM "comment" WHERE "comment"."articleId" = "Article"."id")'),
           'commentsCount',
