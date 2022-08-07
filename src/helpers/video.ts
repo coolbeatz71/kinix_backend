@@ -317,3 +317,96 @@ export const countAllVideos = async (res: Response, status: EVideoStatus): Promi
     return getServerError(res, err.message);
   }
 };
+
+export const countVideosBy = async (
+  res: Response,
+  field: string,
+  value: any,
+): Promise<Response | number> => {
+  try {
+    const result = await db.Video.count({
+      where: { [field]: value },
+    });
+
+    return result;
+  } catch (err) {
+    return getServerError(res, err.message);
+  }
+};
+
+// count videos by activity status
+export const countActiveVideos = async (res: Response) => {
+  return countVideosBy(res, 'active', true);
+};
+export const countInactiveVideos = async (res: Response) => {
+  return countVideosBy(res, 'active', false);
+};
+// get top shared videos
+export const countTopSharedVideos = async (res: Response, limit = 5) => {
+  try {
+    const result = db.Video.findAll({
+      attributes: [
+        'id',
+        'title',
+        'link',
+        'slug',
+        [
+          literal('(SELECT COUNT(*) FROM "share" WHERE "share"."videoId" = "Video"."id")'),
+          'sharesCount',
+        ],
+      ],
+      order: [[literal('"sharesCount"'), 'DESC']],
+      limit,
+    });
+
+    return result;
+  } catch (err) {
+    return getServerError(res, err.message);
+  }
+};
+
+export const countTopRatedVideos = async (res: Response, limit = 5) => {
+  try {
+    const result = await db.Video.findAll({
+      limit,
+      where: { active: true },
+      order: [
+        ['avgRate', 'DESC'],
+        ['totalRaters', 'DESC'],
+      ],
+      attributes: ['id', 'title', 'link', 'slug', 'avgRate', 'totalRaters'],
+      include: [
+        {
+          as: 'category',
+          model: db.Category,
+          attributes: ['id', 'name'],
+        },
+        {
+          as: 'user',
+          model: db.User,
+          attributes: ['id', 'userName', 'email', 'phoneNumber', 'image', 'role'],
+        },
+        {
+          as: 'rate',
+          model: db.Rate,
+        },
+      ],
+    });
+
+    return result;
+  } catch (err) {
+    return getServerError(res, err.message);
+  }
+};
+
+export const countVideoByCategory = async (res: Response, name: ECategory) => {
+  try {
+    const cat = await getCategoryByName(res, name);
+    const result = await db.Video.count({
+      where: { categoryId: cat.get().id },
+    });
+    return result;
+  } catch (err) {
+    return getServerError(res, err.message);
+  }
+};
