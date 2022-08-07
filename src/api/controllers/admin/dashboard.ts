@@ -2,7 +2,7 @@
 import { Request, Response } from 'express';
 import { OK } from 'http-status';
 import { DASHBOARD_OVERVIEW_SUCCESS } from '../../../constants/message';
-import { contentResponse } from '../../../helpers/api';
+import { contentResponse, getServerError } from '../../../helpers/api';
 import {
   countActiveArticles,
   countAllArticles,
@@ -50,148 +50,152 @@ export class AdminDashboard {
    * @param res Response
    */
   getOverview = async (_req: Request, res: Response): Promise<any> => {
-    // users overview
-    const allUsers = await countTotalUsers(res, EUserStatus.ALL);
-    const verifiedUsers = await countTotalUsers(res, EUserStatus.VERIFIED);
-    const unverifiedUsers = await countTotalUsers(res, EUserStatus.UNVERIFIED);
+    try {
+      // users overview
+      const allUsers = await countTotalUsers(res, EUserStatus.ALL);
+      const verifiedUsers = await countTotalUsers(res, EUserStatus.VERIFIED);
+      const unverifiedUsers = await countTotalUsers(res, EUserStatus.UNVERIFIED);
 
-    // articles overview
-    const allArticles = await countAllArticles(res, EArticleStatus.ALL);
-    const totalArticlesLikes = await countAllArticles(res, EArticleStatus.LIKE);
-    const totalArticlesComments = await countAllArticles(res, EArticleStatus.COMMENT);
+      // articles overview
+      const allArticles = await countAllArticles(res, EArticleStatus.ALL);
+      const totalArticlesLikes = await countAllArticles(res, EArticleStatus.LIKE);
+      const totalArticlesComments = await countAllArticles(res, EArticleStatus.COMMENT);
 
-    // videos overview
-    const allVideos = await countAllVideos(res, EVideoStatus.ALL);
-    const ratedVideos = await countAllVideos(res, EVideoStatus.RATE);
-    const sharedVideos = await countAllVideos(res, EVideoStatus.SHARE);
+      // videos overview
+      const allVideos = await countAllVideos(res, EVideoStatus.ALL);
+      const ratedVideos = await countAllVideos(res, EVideoStatus.RATE);
+      const sharedVideos = await countAllVideos(res, EVideoStatus.SHARE);
 
-    // promotions overview
-    const allPromotions = await countAllPromotions(res, EPromotionStatus.ALL);
-    const activePromotions = await countAllPromotions(res, EPromotionStatus.ACTIVE);
-    const inactivePromotions = await countAllPromotions(res, EPromotionStatus.INACTIVE);
+      // promotions overview
+      const allPromotions = await countAllPromotions(res, EPromotionStatus.ALL);
+      const activePromotions = await countAllPromotions(res, EPromotionStatus.ACTIVE);
+      const inactivePromotions = await countAllPromotions(res, EPromotionStatus.INACTIVE);
 
-    // users overview
-    // users by activity
-    const activeUsers = await countActiveUsers(res);
-    const inactiveUsers = await countInactiveUsers(res);
-    // users by provider
-    const localUsers = await countLocalUsers(res);
-    const googleUsers = await countGoogleUsers(res);
-    const facebookUsers = await countFacebookUsers(res);
-    // users by notification
-    const activeNotification = await countEmailEnabledUsers(res);
-    const inactiveNotification = await countEmailDisabledUsers(res);
-    // users by role
-    const viewerClients = await countViewerClients(res);
-    const videoClients = await countVideoClients(res);
-    const adsClients = await countAdsClients(res);
-    const adminUsers = await countAdminUsers(res);
-    const superAdminUsers = await countSuperAdminUsers(res);
+      // users overview
+      // users by activity
+      const activeUsers = await countActiveUsers(res);
+      const inactiveUsers = await countInactiveUsers(res);
+      // users by provider
+      const localUsers = await countLocalUsers(res);
+      const googleUsers = await countGoogleUsers(res);
+      const facebookUsers = await countFacebookUsers(res);
+      // users by notification
+      const activeNotification = await countEmailEnabledUsers(res);
+      const inactiveNotification = await countEmailDisabledUsers(res);
+      // users by role
+      const viewerClients = await countViewerClients(res);
+      const videoClients = await countVideoClients(res);
+      const adsClients = await countAdsClients(res);
+      const adminUsers = await countAdminUsers(res);
+      const superAdminUsers = await countSuperAdminUsers(res);
 
-    // articles overview
-    // articles by activity
-    const activeArticles = await countActiveArticles(res);
-    const inactiveArticles = await countInactiveArticles(res);
-    // articles by like
-    const likedArticles = await countLikedArticles(res);
-    const nonLikedArticles = await countNonLikedArticles(res);
-    // top 5 liked/commented articles
-    const topLikedArticles = await countTopLikedArticles(res, 5);
-    const topCommentedArticles = await countTopCommentedArticles(res, 5);
+      // articles overview
+      // articles by activity
+      const activeArticles = await countActiveArticles(res);
+      const inactiveArticles = await countInactiveArticles(res);
+      // articles by like
+      const likedArticles = await countLikedArticles(res);
+      const nonLikedArticles = await countNonLikedArticles(res);
+      // top 5 liked/commented articles
+      const topLikedArticles = await countTopLikedArticles(res, 5);
+      const topCommentedArticles = await countTopCommentedArticles(res, 5);
 
-    // video overview
-    // video by activity status
-    const activeVideos = await countActiveVideos(res);
-    const inactiveVideos = await countInactiveVideos(res);
-    // video per category
-    const musicVideos = await countVideoByCategory(res, ECategory.MUSIC_VIDEO);
-    const interviews = await countVideoByCategory(res, ECategory.INTERVIEW);
-    const podcasts = await countVideoByCategory(res, ECategory.PODCAST);
-    const leFocus = await countVideoByCategory(res, ECategory.LEFOCUS);
-    const flexBeatz = await countVideoByCategory(res, ECategory.FLEXBEATZ);
-    // top 5 shared/rated videos
-    const topSharedVideos = await countTopSharedVideos(res, 5);
-    const topRatedVideos = await countTopRatedVideos(res, 5);
+      // video overview
+      // video by activity status
+      const activeVideos = await countActiveVideos(res);
+      const inactiveVideos = await countInactiveVideos(res);
+      // video per category
+      const musicVideos = await countVideoByCategory(res, ECategory.MUSIC_VIDEO);
+      const interviews = await countVideoByCategory(res, ECategory.INTERVIEW);
+      const podcasts = await countVideoByCategory(res, ECategory.PODCAST);
+      const leFocus = await countVideoByCategory(res, ECategory.LEFOCUS);
+      const flexBeatz = await countVideoByCategory(res, ECategory.FLEXBEATZ);
+      // top 5 shared/rated videos
+      const topSharedVideos = await countTopSharedVideos(res, 5);
+      const topRatedVideos = await countTopRatedVideos(res, 5);
 
-    const result = {
-      general: {
+      const result = {
+        general: {
+          users: {
+            all: Number(allUsers),
+            verified: Number(verifiedUsers),
+            unverified: Number(unverifiedUsers),
+          },
+          articles: {
+            all: Number(allArticles),
+            liked: Number(totalArticlesLikes),
+            commented: Number(totalArticlesComments),
+          },
+          videos: {
+            all: Number(allVideos),
+            rated: Number(ratedVideos),
+            shared: Number(sharedVideos),
+          },
+          promotions: {
+            all: Number(allPromotions),
+            active: Number(activePromotions),
+            inactive: Number(inactivePromotions),
+          },
+        },
         users: {
-          all: Number(allUsers),
-          verified: Number(verifiedUsers),
-          unverified: Number(unverifiedUsers),
+          activity: {
+            active: Number(activeUsers),
+            inactive: Number(inactiveUsers),
+          },
+          provider: {
+            local: Number(localUsers),
+            google: Number(googleUsers),
+            facebook: Number(facebookUsers),
+          },
+          notification: {
+            active: Number(activeNotification),
+            inactive: Number(inactiveNotification),
+          },
+          role: {
+            ads: Number(adsClients),
+            admin: Number(adminUsers),
+            video: Number(videoClients),
+            viewer: Number(viewerClients),
+            superAdmin: Number(superAdminUsers),
+          },
         },
         articles: {
-          all: Number(allArticles),
-          liked: Number(totalArticlesLikes),
-          commented: Number(totalArticlesComments),
+          activity: {
+            active: Number(activeArticles),
+            inactive: Number(inactiveArticles),
+          },
+          likes: {
+            liked: Number(likedArticles),
+            nonLiked: Number(nonLikedArticles),
+          },
+          top: {
+            likes: topLikedArticles,
+            comments: topCommentedArticles,
+          },
         },
         videos: {
-          all: Number(allVideos),
-          rated: Number(ratedVideos),
-          shared: Number(sharedVideos),
+          activity: {
+            active: Number(activeVideos),
+            inactive: Number(inactiveVideos),
+          },
+          category: {
+            musicVideos,
+            interviews,
+            leFocus,
+            flexBeatz,
+            podcasts,
+          },
+          top: {
+            shares: topSharedVideos,
+            rates: topRatedVideos,
+          },
         },
-        promotions: {
-          all: Number(allPromotions),
-          active: Number(activePromotions),
-          inactive: Number(inactivePromotions),
-        },
-      },
-      users: {
-        activity: {
-          active: Number(activeUsers),
-          inactive: Number(inactiveUsers),
-        },
-        provider: {
-          local: Number(localUsers),
-          google: Number(googleUsers),
-          facebook: Number(facebookUsers),
-        },
-        notification: {
-          active: Number(activeNotification),
-          inactive: Number(inactiveNotification),
-        },
-        role: {
-          ads: Number(adsClients),
-          admin: Number(adminUsers),
-          video: Number(videoClients),
-          viewer: Number(viewerClients),
-          superAdmin: Number(superAdminUsers),
-        },
-      },
-      articles: {
-        activity: {
-          active: Number(activeArticles),
-          inactive: Number(inactiveArticles),
-        },
-        likes: {
-          liked: Number(likedArticles),
-          nonLiked: Number(nonLikedArticles),
-        },
-        top: {
-          likes: topLikedArticles,
-          comments: topCommentedArticles,
-        },
-      },
-      videos: {
-        activity: {
-          active: Number(activeVideos),
-          inactive: Number(inactiveVideos),
-        },
-        category: {
-          musicVideos,
-          interviews,
-          leFocus,
-          flexBeatz,
-          podcasts,
-        },
-        top: {
-          shares: topSharedVideos,
-          rates: topRatedVideos,
-        },
-      },
-    };
+      };
 
-    return contentResponse(res, result, OK, DASHBOARD_OVERVIEW_SUCCESS);
+      return contentResponse(res, result, OK, DASHBOARD_OVERVIEW_SUCCESS);
+    } catch (err) {
+      return getServerError(res, err.message);
+    }
   };
 }
 

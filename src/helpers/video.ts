@@ -355,7 +355,7 @@ export const countTopSharedVideos = async (res: Response, limit = 5) => {
           'sharesCount',
         ],
       ],
-      order: [[literal('sharesCount'), 'DESC']],
+      order: [[literal('"sharesCount"'), 'DESC']],
       limit,
     });
 
@@ -365,7 +365,7 @@ export const countTopSharedVideos = async (res: Response, limit = 5) => {
   }
 };
 
-export const countTopRatedVideos = async (res: Response, limit = 5): Promise<any> => {
+export const countTopRatedVideos = async (res: Response, limit = 5) => {
   try {
     const result = await db.Video.findAll({
       limit,
