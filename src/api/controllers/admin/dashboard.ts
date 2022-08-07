@@ -9,6 +9,7 @@ import {
   countInactiveArticles,
   countLikedArticles,
   countNonLikedArticles,
+  countTopBookmarkedArticles,
   countTopCommentedArticles,
   countTopLikedArticles,
 } from '../../../helpers/article';
@@ -17,12 +18,14 @@ import {
   countActiveUsers,
   countAdminUsers,
   countAdsClients,
+  countBookmarkedUsers,
   countEmailDisabledUsers,
   countEmailEnabledUsers,
   countFacebookUsers,
   countGoogleUsers,
   countInactiveUsers,
   countLocalUsers,
+  countPlaylistedUsers,
   countSuperAdminUsers,
   countTotalUsers,
   countVideoClients,
@@ -32,6 +35,7 @@ import {
   countActiveVideos,
   countAllVideos,
   countInactiveVideos,
+  countTopPlaylistedVideos,
   countTopRatedVideos,
   countTopSharedVideos,
   countVideoByCategory,
@@ -114,6 +118,15 @@ export class AdminDashboard {
       const topSharedVideos = await countTopSharedVideos(res, 5);
       const topRatedVideos = await countTopRatedVideos(res, 5);
 
+      // bookmarked article overview
+      const bookmarkedArticles = await countAllArticles(res, EArticleStatus.BOOKMARK);
+      const topBookmarkedArticles = await countTopBookmarkedArticles(res, 5);
+      const bookmarkedUsers = await countBookmarkedUsers(res);
+      // playlisted video overview
+      const playlistedVideos = await countAllVideos(res, EVideoStatus.PLAYLIST);
+      const topPlaylistedVideos = await countTopPlaylistedVideos(res, 5);
+      const playlistedUsers = await countPlaylistedUsers(res);
+
       const result = {
         general: {
           users: {
@@ -188,6 +201,20 @@ export class AdminDashboard {
           top: {
             shares: topSharedVideos,
             rates: topRatedVideos,
+          },
+        },
+        bookmarks: {
+          users: bookmarkedUsers,
+          articles: bookmarkedArticles,
+          top: {
+            bookmarked: topBookmarkedArticles,
+          },
+        },
+        playlists: {
+          users: playlistedUsers,
+          videos: playlistedVideos,
+          top: {
+            playlisted: topPlaylistedVideos,
           },
         },
       };

@@ -161,6 +161,9 @@ export const countAllArticles = async (
       case EArticleStatus.LIKE:
         result = db.Like.count();
         break;
+      case EArticleStatus.BOOKMARK:
+        result = db.Bookmark.count();
+        break;
       default:
         result = db.Article.count();
         break;
@@ -238,6 +241,30 @@ export const countTopCommentedArticles = async (res: Response, limit = 5) => {
         ],
       ],
       order: [[literal('"commentsCount"'), 'DESC']],
+      limit,
+    });
+
+    return result;
+  } catch (err) {
+    return getServerError(res, err.message);
+  }
+};
+
+export const countTopBookmarkedArticles = async (res: Response, limit = 5) => {
+  try {
+    const result = db.Article.findAll({
+      attributes: [
+        'id',
+        'title',
+        'slug',
+        [
+          literal(
+            '(SELECT COUNT(*) FROM "bookmark" WHERE "bookmark"."articleId" = "Article"."id")',
+          ),
+          'bookmarksCount',
+        ],
+      ],
+      order: [[literal('"bookmarksCount"'), 'DESC']],
       limit,
     });
 
