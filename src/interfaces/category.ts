@@ -22,12 +22,14 @@ export enum EArticleStatus {
   ALL = 'ALL',
   LIKE = 'LIKE',
   COMMENT = 'COMMENT',
+  BOOKMARK = 'BOOKMARK',
 }
 
 export enum EVideoStatus {
   ALL = 'ALL',
   RATE = 'RATE',
   SHARE = 'SHARE',
+  PLAYLIST = 'PLAYLIST',
 }
 
 export enum EPromotionStatus {

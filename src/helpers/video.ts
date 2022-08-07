@@ -307,6 +307,9 @@ export const countAllVideos = async (res: Response, status: EVideoStatus): Promi
       case EVideoStatus.SHARE:
         result = db.Share.count();
         break;
+      case EVideoStatus.PLAYLIST:
+        result = db.Playlist.count();
+        break;
       default:
         result = db.Video.count();
         break;
@@ -405,6 +408,28 @@ export const countVideoByCategory = async (res: Response, name: ECategory) => {
     const result = await db.Video.count({
       where: { categoryId: cat.get().id },
     });
+    return result;
+  } catch (err) {
+    return getServerError(res, err.message);
+  }
+};
+
+export const countTopPlaylistedVideos = async (res: Response, limit = 5) => {
+  try {
+    const result = db.Video.findAll({
+      attributes: [
+        'id',
+        'title',
+        'slug',
+        [
+          literal('(SELECT COUNT(*) FROM "playlist" WHERE "playlist"."videoId" = "Video"."id")'),
+          'playlistsCount',
+        ],
+      ],
+      order: [[literal('"playlistsCount"'), 'DESC']],
+      limit,
+    });
+
     return result;
   } catch (err) {
     return getServerError(res, err.message);

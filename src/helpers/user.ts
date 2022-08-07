@@ -122,3 +122,31 @@ export const countAdminUsers = async (res: Response) => {
 export const countSuperAdminUsers = async (res: Response) => {
   return countUsersBy(res, 'role', ERole.SUPER_ADMIN);
 };
+
+// count users who bookmarked articles
+export const countBookmarkedUsers = async (res: Response) => {
+  try {
+    const result = db.Bookmark.count({
+      distinct: true,
+      col: 'userId',
+    });
+
+    return result;
+  } catch (err) {
+    return getServerError(res, err.message);
+  }
+};
+
+// count users who playlisted videos
+export const countPlaylistedUsers = async (res: Response) => {
+  try {
+    const result = db.Playlist.count({
+      distinct: true,
+      col: 'userId',
+    });
+
+    return result;
+  } catch (err) {
+    return getServerError(res, err.message);
+  }
+};
