@@ -28,8 +28,15 @@ import {
   countVideoClients,
   countViewerClients,
 } from '../../../helpers/user';
-import { countAllVideos } from '../../../helpers/video';
 import {
+  countActiveVideos,
+  countAllVideos,
+  countInactiveVideos,
+  countTopRatedVideos,
+  countTopSharedVideos,
+  countVideoByCategory,
+} from '../../../helpers/video';
+import ECategory, {
   EUserStatus,
   EArticleStatus,
   EVideoStatus,
@@ -88,9 +95,23 @@ export class AdminDashboard {
     // articles by like
     const likedArticles = await countLikedArticles(res);
     const nonLikedArticles = await countNonLikedArticles(res);
-    // top 5 liked articles
+    // top 5 liked/commented articles
     const topLikedArticles = await countTopLikedArticles(res, 5);
     const topCommentedArticles = await countTopCommentedArticles(res, 5);
+
+    // video overview
+    // video by activity status
+    const activeVideos = await countActiveVideos(res);
+    const inactiveVideos = await countInactiveVideos(res);
+    // video per category
+    const musicVideos = await countVideoByCategory(res, ECategory.MUSIC_VIDEO);
+    const interviews = await countVideoByCategory(res, ECategory.INTERVIEW);
+    const podcasts = await countVideoByCategory(res, ECategory.PODCAST);
+    const leFocus = await countVideoByCategory(res, ECategory.LEFOCUS);
+    const flexBeatz = await countVideoByCategory(res, ECategory.FLEXBEATZ);
+    // top 5 shared/rated videos
+    const topSharedVideos = await countTopSharedVideos(res, 5);
+    const topRatedVideos = await countTopRatedVideos(res, 5);
 
     const result = {
       general: {
@@ -149,6 +170,23 @@ export class AdminDashboard {
         top: {
           likes: topLikedArticles,
           comments: topCommentedArticles,
+        },
+      },
+      videos: {
+        activity: {
+          active: Number(activeVideos),
+          inactive: Number(inactiveVideos),
+        },
+        category: {
+          musicVideos,
+          interviews,
+          leFocus,
+          flexBeatz,
+          podcasts,
+        },
+        top: {
+          shares: topSharedVideos,
+          rates: topRatedVideos,
         },
       },
     };

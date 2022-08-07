@@ -365,11 +365,45 @@ export const countTopSharedVideos = async (res: Response, limit = 5) => {
   }
 };
 
+export const countTopRatedVideos = async (res: Response, limit = 5): Promise<any> => {
+  try {
+    const result = await db.Video.findAll({
+      limit,
+      where: { active: true },
+      order: [
+        ['avgRate', 'DESC'],
+        ['totalRaters', 'DESC'],
+      ],
+      attributes: ['id', 'title', 'link', 'slug', 'avgRate', 'totalRaters'],
+      include: [
+        {
+          as: 'category',
+          model: db.Category,
+          attributes: ['id', 'name'],
+        },
+        {
+          as: 'user',
+          model: db.User,
+          attributes: ['id', 'userName', 'email', 'phoneNumber', 'image', 'role'],
+        },
+        {
+          as: 'rate',
+          model: db.Rate,
+        },
+      ],
+    });
+
+    return result;
+  } catch (err) {
+    return getServerError(res, err.message);
+  }
+};
+
 export const countVideoByCategory = async (res: Response, name: ECategory) => {
   try {
     const cat = await getCategoryByName(res, name);
     const result = await db.Video.count({
-      where: { active: true, categoryId: cat.get().id },
+      where: { categoryId: cat.get().id },
     });
     return result;
   } catch (err) {
