@@ -29,6 +29,7 @@ export interface IUser {
   provider?: EProvider;
   isLoggedIn?: boolean;
   verified?: boolean;
+  active?: boolean;
   image?: string | null;
   allowEmailNotification?: boolean;
   role?: ERole;
