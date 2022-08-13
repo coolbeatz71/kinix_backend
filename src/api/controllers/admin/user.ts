@@ -88,34 +88,21 @@ export class AdminUser {
     const whereRole = isRole && isRoleValid ? { role: String(role).toUpperCase() } : undefined;
     const whereStatus = isStatus
       ? {
-          [Op.and]: [
-            {
-              active: isActive,
-            },
-            ...excludeAdmins,
-          ],
+          active: isActive,
         }
       : undefined;
     const whereSearch = search
       ? {
-          [Op.and]: [
-            {
-              [Op.or]: [
-                { email: { [Op.iLike]: `%${search}%` } },
-                { userName: { [Op.iLike]: `%${search}%` } },
-              ],
-            },
-            ...excludeAdmins,
+          [Op.or]: [
+            { email: { [Op.iLike]: `%${search}%` } },
+            { userName: { [Op.iLike]: `%${search}%` } },
           ],
         }
       : undefined;
 
-    const where =
-      !whereRole && !whereStatus && !whereSearch
-        ? {
-            [Op.and]: [...excludeAdmins],
-          }
-        : undefined;
+    const where = {
+      [Op.and]: [...excludeAdmins],
+    };
 
     try {
       const data = await db.User.findAndCountAll({
@@ -156,34 +143,21 @@ export class AdminUser {
 
     const whereStatus = isStatus
       ? {
-          [Op.and]: [
-            {
-              active: isActive,
-            },
-            ...onlyAdmins,
-          ],
+          active: isActive,
         }
       : undefined;
     const whereSearch = search
       ? {
-          [Op.and]: [
-            {
-              [Op.or]: [
-                { email: { [Op.iLike]: `%${search}%` } },
-                { userName: { [Op.iLike]: `%${search}%` } },
-              ],
-            },
-            ...onlyAdmins,
+          [Op.or]: [
+            { email: { [Op.iLike]: `%${search}%` } },
+            { userName: { [Op.iLike]: `%${search}%` } },
           ],
         }
       : undefined;
 
-    const where =
-      !whereStatus && !whereSearch
-        ? {
-            [Op.and]: [...onlyAdmins],
-          }
-        : undefined;
+    const where = {
+      [Op.and]: [...onlyAdmins],
+    };
 
     try {
       const data = await db.User.findAndCountAll({
