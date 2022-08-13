@@ -149,6 +149,9 @@ export class AdminUser {
       {
         role: { [Op.eq]: ERole.ADMIN },
       },
+      {
+        role: { [Op.eq]: ERole.SUPER_ADMIN },
+      },
     ];
 
     const whereStatus = isStatus
