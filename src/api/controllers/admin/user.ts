@@ -1,6 +1,7 @@
 /* eslint-disable consistent-return */
 import { Request, Response } from 'express';
 import { CONFLICT, FORBIDDEN, NOT_FOUND, OK, UNAUTHORIZED } from 'http-status';
+import { isEmpty, lowerCase } from 'lodash';
 import { Op } from 'sequelize';
 import {
   PASSWORD_INVALID,
@@ -22,8 +23,8 @@ import {
   getResponse,
   getServerError,
 } from '../../../helpers/api';
-import { IJwtPayload } from '../../../interfaces/api';
-import ERole from '../../../interfaces/role';
+import { EnumStatus, IJwtPayload } from '../../../interfaces/api';
+import ERole, { ERoleClient } from '../../../interfaces/role';
 
 export class AdminUser {
   /**
@@ -67,8 +68,14 @@ export class AdminUser {
    * @param res Response
    */
   getAllClients = async (req: Request, res: Response): Promise<any> => {
-    const { search, page = 1, size = 20 } = req.query;
+    const { search, page = 1, size = 20, status, role } = req.query;
+    const isRole = !isEmpty(role);
+    const isStatus = !isEmpty(status);
+    const isActive = status === lowerCase(EnumStatus.ACTIVE);
     const { limit, offset } = getPagination(Number(page), Number(size));
+
+    const values = Object.values(ERoleClient);
+    const isRoleValid = values.includes(String(role).toUpperCase() as unknown as ERoleClient);
     const excludeAdmins = [
       {
         role: { [Op.ne]: ERole.ADMIN },
@@ -77,7 +84,19 @@ export class AdminUser {
         role: { [Op.ne]: ERole.SUPER_ADMIN },
       },
     ];
-    const where = search
+
+    const whereRole = isRole && isRoleValid ? { role: String(role).toUpperCase() } : undefined;
+    const whereStatus = isStatus
+      ? {
+          [Op.and]: [
+            {
+              active: isActive,
+            },
+            ...excludeAdmins,
+          ],
+        }
+      : undefined;
+    const whereSearch = search
       ? {
           [Op.and]: [
             {
@@ -89,17 +108,22 @@ export class AdminUser {
             ...excludeAdmins,
           ],
         }
-      : {
-          [Op.and]: [...excludeAdmins],
-        };
+      : undefined;
+
+    const where =
+      !whereRole && !whereStatus && !whereSearch
+        ? {
+            [Op.and]: [...excludeAdmins],
+          }
+        : undefined;
 
     try {
       const data = await db.User.findAndCountAll({
-        where,
         limit,
         offset,
         order: [['updatedAt', 'DESC']],
         attributes: { exclude: ['password'] },
+        where: { [Op.and]: [{ ...whereSearch, ...whereStatus, ...whereRole, ...where }] },
       });
       const result = getPagingData(Number(page), limit, data);
 
@@ -117,14 +141,27 @@ export class AdminUser {
    * @param res Response
    */
   getAllAdmins = async (req: Request, res: Response): Promise<any> => {
-    const { search, page = 1, size = 20 } = req.query;
+    const { search, page = 1, size = 20, status } = req.query;
+    const isStatus = !isEmpty(status);
+    const isActive = status === lowerCase(EnumStatus.ACTIVE);
     const { limit, offset } = getPagination(Number(page), Number(size));
     const onlyAdmins = [
       {
         role: { [Op.eq]: ERole.ADMIN },
       },
     ];
-    const where = search
+
+    const whereStatus = isStatus
+      ? {
+          [Op.and]: [
+            {
+              active: isActive,
+            },
+            ...onlyAdmins,
+          ],
+        }
+      : undefined;
+    const whereSearch = search
       ? {
           [Op.and]: [
             {
@@ -136,17 +173,22 @@ export class AdminUser {
             ...onlyAdmins,
           ],
         }
-      : {
-          [Op.and]: [...onlyAdmins],
-        };
+      : undefined;
+
+    const where =
+      !whereStatus && !whereSearch
+        ? {
+            [Op.and]: [...onlyAdmins],
+          }
+        : undefined;
 
     try {
       const data = await db.User.findAndCountAll({
-        where,
         limit,
         offset,
         order: [['updatedAt', 'DESC']],
         attributes: { exclude: ['password'] },
+        where: { [Op.and]: [{ ...whereSearch, ...whereStatus, ...where }] },
       });
       const result = getPagingData(Number(page), limit, data);
 
