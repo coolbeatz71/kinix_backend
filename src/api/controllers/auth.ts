@@ -31,6 +31,7 @@ import {
   SIGNOUT_SUCCESS,
   USERNAME_EMAIL_INVALID,
   USERNAME_TAKEN,
+  USER_BLOCKED,
   USER_LOGIN_SUCCESS,
   USER_NOT_FOUND,
 } from '../../constants/message';
@@ -135,6 +136,12 @@ export class Auth {
         });
       }
 
+      if (user.get().active === false) {
+        return getResponse(res, FORBIDDEN, {
+          message: USER_BLOCKED,
+        });
+      }
+
       const update = await db.User.update(
         { isLoggedIn: true },
         { where: { id: user.id }, returning: true },
@@ -163,6 +170,12 @@ export class Auth {
       if (!user) {
         return getResponse(res, NOT_FOUND, {
           message: USER_NOT_FOUND,
+        });
+      }
+
+      if (user.get().active === false) {
+        return getResponse(res, FORBIDDEN, {
+          message: USER_BLOCKED,
         });
       }
 

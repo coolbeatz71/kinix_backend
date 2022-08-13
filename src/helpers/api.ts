@@ -87,7 +87,7 @@ export const getResponse = (res: Response, status: number, body: IResponseBody):
  */
 export const contentResponse = (
   res: Response,
-  data: IVideo | IArticle | IComment | IRate | ILike | IOverview,
+  data: IVideo | IArticle | IComment | IRate | ILike | IOverview | IUser,
   status: number,
   message?: string,
 ) =>

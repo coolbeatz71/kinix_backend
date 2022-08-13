@@ -15,6 +15,7 @@ import db from '../../../db/models';
 import {
   PASSWORD_INVALID,
   USERNAME_EMAIL_INVALID,
+  USER_BLOCKED,
   USER_LOGIN_SUCCESS,
 } from '../../../constants/message';
 import ERole from '../../../interfaces/role';
@@ -50,6 +51,12 @@ export class AdminAuth {
       if (!isPasswordValid) {
         return getResponse(res, FORBIDDEN, {
           message: PASSWORD_INVALID,
+        });
+      }
+
+      if (user.get().active === false) {
+        return getResponse(res, FORBIDDEN, {
+          message: USER_BLOCKED,
         });
       }
 

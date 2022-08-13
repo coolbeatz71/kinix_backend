@@ -12,6 +12,7 @@ export default class User extends Model<IUser> implements IUser {
   provider?: EProvider;
   isLoggedIn?: boolean;
   verified?: boolean;
+  active!: boolean;
   image?: string | null;
   allowEmailNotification?: boolean;
   role?: ERole;
@@ -125,6 +126,10 @@ export const initUser = (sequelize: Sequelize) => {
       verified: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
+      },
+      active: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true,
       },
       image: DataTypes.STRING,
       allowEmailNotification: {
