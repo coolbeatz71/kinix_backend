@@ -112,6 +112,53 @@ export class AdminUser {
   };
 
   /**
+   * controller to get all admins or search by username or email
+   * @param req Request
+   * @param res Response
+   */
+  getAllAdmins = async (req: Request, res: Response): Promise<any> => {
+    const { search, page = 1, size = 20 } = req.query;
+    const { limit, offset } = getPagination(Number(page), Number(size));
+    const onlyAdmins = [
+      {
+        role: { [Op.eq]: ERole.ADMIN },
+      },
+    ];
+    const where = search
+      ? {
+          [Op.and]: [
+            {
+              [Op.or]: [
+                { email: { [Op.iLike]: `%${search}%` } },
+                { userName: { [Op.iLike]: `%${search}%` } },
+              ],
+            },
+            ...onlyAdmins,
+          ],
+        }
+      : {
+          [Op.and]: [...onlyAdmins],
+        };
+
+    try {
+      const data = await db.User.findAndCountAll({
+        where,
+        limit,
+        offset,
+        order: [['updatedAt', 'DESC']],
+        attributes: { exclude: ['password'] },
+      });
+      const result = getPagingData(Number(page), limit, data);
+
+      return getResponse(res, OK, {
+        data: result,
+      });
+    } catch (error) {
+      return getServerError(res, error.message);
+    }
+  };
+
+  /**
    * controller to unblock a user
    * @param req Request
    * @param res Response
