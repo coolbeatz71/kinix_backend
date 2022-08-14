@@ -6,17 +6,17 @@ export class Validator {
    * validate names (firstName or lastName)
    * @param req Request
    * @param field string
-   * @param nameType string
+   * @param label string
    * @returns {void} Promise<void>
    */
-  names = async (req: Request, field: string, nameType: string): Promise<void> => {
-    await this.empty(req, field, nameType);
+  names = async (req: Request, field: string, label: string): Promise<void> => {
+    await this.empty(req, field, label);
     await check(field)
       .trim()
       .matches(/^[a-zA-Z\-\s]+$/)
-      .withMessage(`${nameType} can only contain alphatic characters`)
+      .withMessage(`${label} can only contain alphatic characters`)
       .isLength({ min: 3 })
-      .withMessage(`${nameType} must be at least 3 characters long`)
+      .withMessage(`${label} must be at least 3 characters long`)
       .run(req);
   };
 
@@ -24,11 +24,11 @@ export class Validator {
    * validate empty fields
    * @param req Request
    * @param field string
-   * @param nameType string
+   * @param label string
    * @returns {void} Promise<void>
    */
-  empty = async (req: Request, field: string, nameType: string): Promise<void> => {
-    await check(field).trim().not().isEmpty().withMessage(`${nameType} cannot be empty`).run(req);
+  empty = async (req: Request, field: string, label: string): Promise<void> => {
+    await check(field).trim().not().isEmpty().withMessage(`${label} cannot be empty`).run(req);
   };
 
   /**
