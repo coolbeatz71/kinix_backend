@@ -33,7 +33,7 @@ import {
 } from '../../../helpers/api';
 import { EnumStatus, IJwtPayload } from '../../../interfaces/api';
 import ERole, { ERoleClient } from '../../../interfaces/role';
-import AuthValidator from '../../../validator/auth';
+import UserValidator from '../../../validator/user';
 
 export class AdminUser {
   /**
@@ -44,7 +44,7 @@ export class AdminUser {
   createAccount = async (req: Request, res: Response): Promise<any> => {
     const { userName, email, password, role } = req.body;
 
-    await new AuthValidator(req).createAccount();
+    await new UserValidator(req).createAccount();
     const errors = validationResult(req);
     if (!errors.isEmpty()) return getValidationError(res, errors);
 
@@ -104,7 +104,7 @@ export class AdminUser {
     const userId = Number(id);
     const { userName, email, role } = req.body;
 
-    await new AuthValidator(req).createAccount();
+    await new UserValidator(req).updateAccount();
     const errors = validationResult(req);
     if (!errors.isEmpty()) return getValidationError(res, errors);
 
