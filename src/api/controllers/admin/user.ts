@@ -1,12 +1,16 @@
 /* eslint-disable consistent-return */
 import { Request, Response } from 'express';
-import { CONFLICT, FORBIDDEN, NOT_FOUND, OK, UNAUTHORIZED } from 'http-status';
+import { validationResult } from 'express-validator';
+import { CONFLICT, CREATED, FORBIDDEN, NOT_FOUND, OK, UNAUTHORIZED } from 'http-status';
 import { isEmpty, lowerCase } from 'lodash';
 import { Op } from 'sequelize';
 import {
+  ACCOUNT_CREATED_SUCCESS,
+  ACCOUNT_EXIST,
   PASSWORD_INVALID,
   PASSWORD_REQUIRED,
   USERNAME_EMAIL_INVALID,
+  USERNAME_TAKEN,
   USER_ALREADY_ACTIVE,
   USER_ALREADY_BLOCKED,
   USER_BLOCKED_SUCCESS,
@@ -18,15 +22,80 @@ import db from '../../../db/models';
 import {
   comparePassword,
   contentResponse,
+  getHashedPassword,
   getPagination,
   getPagingData,
   getResponse,
   getServerError,
+  getUserResponse,
+  getValidationError,
 } from '../../../helpers/api';
+import { generateToken } from '../../../helpers/jwt';
 import { EnumStatus, IJwtPayload } from '../../../interfaces/api';
 import ERole, { ERoleClient } from '../../../interfaces/role';
+import AuthValidator from '../../../validator/auth';
 
 export class AdminUser {
+  /**
+   * controller to create user account
+   * @param req Request
+   * @param res Response
+   */
+  createAccount = async (req: Request, res: Response): Promise<any> => {
+    const { userName, email, password, role } = req.body;
+
+    await new AuthValidator(req).createAccount();
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) return getValidationError(res, errors);
+
+    const values = Object.values(ERole);
+    const isRoleValid = values.includes(String(role).toUpperCase() as unknown as ERole);
+    const userRole = isRoleValid ? (String(role).toUpperCase() as ERole) : ERole.VIEWER_CLIENT;
+
+    try {
+      const isUserNameExist = await db.User.findOne({
+        where: {
+          userName,
+        },
+      });
+
+      const isEmailExist = await db.User.findOne({
+        where: {
+          email,
+        },
+      });
+
+      if (isUserNameExist) {
+        return getResponse(res, CONFLICT, {
+          message: USERNAME_TAKEN,
+        });
+      }
+
+      if (isEmailExist) {
+        return getResponse(res, CONFLICT, {
+          message: ACCOUNT_EXIST,
+        });
+      }
+
+      const hashPassword = getHashedPassword(password);
+
+      const newUser = await db.User.create({
+        email,
+        userName,
+        role: userRole,
+        password: hashPassword,
+      });
+
+      const token = generateToken(newUser.get());
+
+      // TODO: should send email here for email confirmation with the user default email
+
+      return getUserResponse(res, newUser.get(), token, CREATED, ACCOUNT_CREATED_SUCCESS);
+    } catch (error) {
+      return getServerError(res, error.message);
+    }
+  };
+
   /**
    * controller to get all users or search by username or email
    * @param req Request
