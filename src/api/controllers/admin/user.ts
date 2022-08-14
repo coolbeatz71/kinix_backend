@@ -7,6 +7,7 @@ import { Op } from 'sequelize';
 import {
   ACCOUNT_CREATED_SUCCESS,
   ACCOUNT_EXIST,
+  ACCOUNT_UPDATED_SUCCESS,
   PASSWORD_INVALID,
   PASSWORD_REQUIRED,
   USERNAME_EMAIL_INVALID,
@@ -30,7 +31,6 @@ import {
   getUserResponse,
   getValidationError,
 } from '../../../helpers/api';
-import { generateToken } from '../../../helpers/jwt';
 import { EnumStatus, IJwtPayload } from '../../../interfaces/api';
 import ERole, { ERoleClient } from '../../../interfaces/role';
 import AuthValidator from '../../../validator/auth';
@@ -86,11 +86,69 @@ export class AdminUser {
         password: hashPassword,
       });
 
-      const token = generateToken(newUser.get());
-
       // TODO: should send email here for email confirmation with the user default email
 
-      return getUserResponse(res, newUser.get(), token, CREATED, ACCOUNT_CREATED_SUCCESS);
+      return getUserResponse(res, newUser.get(), '', CREATED, ACCOUNT_CREATED_SUCCESS);
+    } catch (error) {
+      return getServerError(res, error.message);
+    }
+  };
+
+  /**
+   * controller to update user account
+   * @param req Request
+   * @param res Response
+   */
+  updateAccount = async (req: Request, res: Response): Promise<any> => {
+    const { id } = req.params;
+    const userId = Number(id);
+    const { userName, email, role } = req.body;
+
+    await new AuthValidator(req).createAccount();
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) return getValidationError(res, errors);
+
+    const values = Object.values(ERole);
+    const isRoleValid = values.includes(String(role).toUpperCase() as unknown as ERole);
+    const userRole = isRoleValid ? (String(role).toUpperCase() as ERole) : ERole.VIEWER_CLIENT;
+
+    try {
+      const isUserNameExist = await db.User.findOne({
+        where: {
+          userName,
+        },
+      });
+
+      const isEmailExist = await db.User.findOne({
+        where: {
+          email,
+        },
+      });
+
+      if (isUserNameExist && isUserNameExist.id !== userId) {
+        return getResponse(res, CONFLICT, {
+          message: USERNAME_TAKEN,
+        });
+      }
+
+      if (isEmailExist && isEmailExist.id !== userId) {
+        return getResponse(res, CONFLICT, {
+          message: ACCOUNT_EXIST,
+        });
+      }
+
+      const updatedUser = await db.User.update(
+        {
+          email,
+          userName,
+          role: userRole,
+        },
+        { where: { id: userId }, returning: true },
+      );
+
+      // TODO: should send email to the user to inform him about the change
+
+      return getUserResponse(res, updatedUser[1][0].get(), '', OK, ACCOUNT_UPDATED_SUCCESS);
     } catch (error) {
       return getServerError(res, error.message);
     }

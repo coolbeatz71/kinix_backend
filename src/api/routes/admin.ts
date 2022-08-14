@@ -64,10 +64,11 @@ router.get('/overview', adminsCheck, adminDashboardCtrl.getOverview);
   | Content all users endpoints for the admin or super admin
 */
 router.get('/users', adminsCheck, adminUserCtrl.getAllUsers);
+router.post('/users', adminsCheck, adminUserCtrl.createAccount);
+router.put('/users/:id', adminsCheck, adminUserCtrl.updateAccount);
 router.get('/clients', adminsCheck, adminUserCtrl.getAllClients);
 router.put('/users/block/:id', adminsCheck, adminUserCtrl.block);
 router.put('/users/unblock/:id', adminsCheck, adminUserCtrl.unblock);
-router.post('/users', adminsCheck, adminUserCtrl.createAccount);
 // super admin
 router.delete('/users/:id', superAdminCheck, adminUserCtrl.delete);
 router.get('/admins', superAdminCheck, adminUserCtrl.getAllAdmins);
