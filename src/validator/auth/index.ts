@@ -15,6 +15,13 @@ class AuthValidator {
     await validate.password(this.req, 'password');
   };
 
+  createAccount = async (): Promise<void> => {
+    await validate.email(this.req, 'email');
+    await validate.names(this.req, 'userName', 'username');
+    await validate.password(this.req, 'password');
+    await validate.empty(this.req, 'account type', 'role');
+  };
+
   login = async (): Promise<void> => {
     await validate.empty(this.req, 'credential', 'username or email');
     await validate.password(this.req, 'password');
