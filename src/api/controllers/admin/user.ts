@@ -283,7 +283,7 @@ export class AdminUser {
       : undefined;
 
     const where = {
-      [Op.and]: [...onlyAdmins],
+      [Op.or]: [...onlyAdmins],
     };
 
     try {
