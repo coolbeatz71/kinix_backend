@@ -19,6 +19,11 @@ class AuthValidator {
     await validate.empty(this.req, 'credential', 'username or email');
     await validate.password(this.req, 'password');
   };
+
+  changePassword = async (): Promise<void> => {
+    await validate.empty(this.req, 'oldPassword', 'old password');
+    await validate.password(this.req, 'newPassword');
+  };
 }
 
 export default AuthValidator;

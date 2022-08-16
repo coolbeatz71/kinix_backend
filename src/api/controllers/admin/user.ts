@@ -41,7 +41,7 @@ export class AdminUser {
    * @param req Request
    * @param res Response
    */
-  createAccount = async (req: Request, res: Response): Promise<any> => {
+  createAccount = async (req: Request, res: Response): Promise<Response> => {
     const { userName, email, password, role } = req.body;
 
     await new UserValidator(req).createAccount();
@@ -99,7 +99,7 @@ export class AdminUser {
    * @param req Request
    * @param res Response
    */
-  updateAccount = async (req: Request, res: Response): Promise<any> => {
+  updateAccount = async (req: Request, res: Response): Promise<Response> => {
     const { id } = req.params;
     const userId = Number(id);
     const { userName, email, role } = req.body;
@@ -159,7 +159,7 @@ export class AdminUser {
    * @param req Request
    * @param res Response
    */
-  getAllUsers = async (req: Request, res: Response): Promise<any> => {
+  getAllUsers = async (req: Request, res: Response): Promise<Response> => {
     const { search, page = 1, size = 20 } = req.query;
     const { limit, offset } = getPagination(Number(page), Number(size));
     const where = search
@@ -194,7 +194,7 @@ export class AdminUser {
    * @param req Request
    * @param res Response
    */
-  getAllClients = async (req: Request, res: Response): Promise<any> => {
+  getAllClients = async (req: Request, res: Response): Promise<Response> => {
     const { search, page = 1, size = 20, status, role } = req.query;
     const isRole = !isEmpty(role);
     const isStatus = !isEmpty(status);
@@ -254,7 +254,7 @@ export class AdminUser {
    * @param req Request
    * @param res Response
    */
-  getAllAdmins = async (req: Request, res: Response): Promise<any> => {
+  getAllAdmins = async (req: Request, res: Response): Promise<Response> => {
     const { search, page = 1, size = 20, status } = req.query;
     const isStatus = !isEmpty(status);
     const isActive = status === lowerCase(EnumStatus.ACTIVE);
@@ -309,7 +309,7 @@ export class AdminUser {
    * @param req Request
    * @param res Response
    */
-  unblock = async (req: Request, res: Response): Promise<any> => {
+  unblock = async (req: Request, res: Response): Promise<Response> => {
     const { id } = req.params;
     const { password } = req.body;
     const { email } = req.user as IJwtPayload;
@@ -376,7 +376,7 @@ export class AdminUser {
    * @param req Request
    * @param res Response
    */
-  block = async (req: Request, res: Response): Promise<any> => {
+  block = async (req: Request, res: Response): Promise<Response> => {
     const { id } = req.params;
     const { password } = req.body;
     const { email } = req.user as IJwtPayload;
@@ -443,7 +443,7 @@ export class AdminUser {
    * @param req Request
    * @param res Response
    */
-  delete = async (req: Request, res: Response): Promise<any> => {
+  delete = async (req: Request, res: Response): Promise<Response> => {
     const { id } = req.params;
     const { password } = req.body;
     const { email } = req.user as IJwtPayload;
