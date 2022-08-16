@@ -44,7 +44,7 @@ export const verifyToken = async (
     const jwtPayload: any = jwt.verify(token, secret);
 
     const user = await db.User.findOne({
-      where: { id: jwtPayload.id, userName: jwtPayload.userName, email: jwtPayload.email },
+      where: { id: jwtPayload.id, email: jwtPayload.email },
     });
 
     if (!user) {

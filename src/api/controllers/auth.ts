@@ -29,6 +29,7 @@ import {
   ACCOUNT_UPDATED_SUCCESS,
   AVATAR_UPDATED_SUCCESS,
   CHECK_CONFIRM_EMAIL,
+  EMAIL_TAKEN,
   GET_USER_SUCCESS,
   NEW_PASSWORD_SAME_AS_OLD,
   OLD_PASSWORD_INVALID,
@@ -215,6 +216,7 @@ export class Auth {
    * The controller to update user account info
    * @param req Request
    * @param res Response
+   * TODO: should improve a different phone number validator as the current one can't validate RDC phone numbers
    */
   update = async (req: Request, res: Response): Promise<Response> => {
     const { email: currentEmail, id } = req.user as IJwtPayload;
@@ -233,6 +235,12 @@ export class Auth {
         newValues = { ...newValues, verified: false, isLoggedIn: false };
       }
 
+      const isEmailExist = await db.User.findOne({
+        where: {
+          email,
+        },
+      });
+
       const isUserNameExist = await db.User.findOne({
         where: {
           userName,
@@ -241,7 +249,7 @@ export class Auth {
 
       const isPhoneNumberExist = await db.User.findOne({
         where: {
-          phoneNumber,
+          phoneNumber: phoneNumber || null,
         },
       });
 
@@ -254,6 +262,12 @@ export class Auth {
       if (isPhoneNumberExist && isPhoneNumberExist.id !== id) {
         return getResponse(res, CONFLICT, {
           message: PHONE_NUMBER_TAKEN,
+        });
+      }
+
+      if (isEmailExist && isEmailExist.id !== id) {
+        return getResponse(res, CONFLICT, {
+          message: EMAIL_TAKEN,
         });
       }
 
