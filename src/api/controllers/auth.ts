@@ -27,6 +27,7 @@ import {
   ACCOUNT_CREATED_SUCCESS,
   ACCOUNT_EXIST,
   ACCOUNT_UPDATED_SUCCESS,
+  AVATAR_UPDATED_SUCCESS,
   CHECK_CONFIRM_EMAIL,
   GET_USER_SUCCESS,
   NEW_PASSWORD_SAME_AS_OLD,
@@ -313,6 +314,45 @@ export class Auth {
       );
 
       return getUserResponse(res, update[1][0].get(), '', OK, PASSWORD_CHANGED_SUCCESS);
+    } catch (error) {
+      return getServerError(res, error.message);
+    }
+  };
+
+  /**
+   * The controller to update user avatar
+   * @param req Request
+   * @param res Response
+   */
+  updateAvatar = async (req: Request, res: Response): Promise<Response> => {
+    const { id } = req.user as IJwtPayload;
+    const { avatar } = req.body;
+
+    await new AuthValidator(req).changeAvatar();
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) return getValidationError(res, errors);
+
+    try {
+      const user = await db.User.findOne({
+        where: {
+          id,
+        },
+      });
+
+      if (!user) {
+        return getResponse(res, NOT_FOUND, {
+          message: USER_NOT_FOUND,
+        });
+      }
+
+      const update = await db.User.update(
+        {
+          image: avatar,
+        },
+        { where: { id }, returning: true },
+      );
+
+      return getUserResponse(res, update[1][0].get(), '', OK, AVATAR_UPDATED_SUCCESS);
     } catch (error) {
       return getServerError(res, error.message);
     }

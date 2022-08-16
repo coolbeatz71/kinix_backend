@@ -54,7 +54,7 @@ export class Validator {
    * @returns {void} Promise<void>
    */
   email = async (req: Request, field: string): Promise<void> => {
-    await check(field).trim().not().isEmpty().withMessage('email address cannot be empty').run(req);
+    await this.empty(req, field, 'email address');
     await check(field).trim().isEmail().withMessage('email address is invalid').run(req);
   };
 
@@ -65,7 +65,7 @@ export class Validator {
    * @returns {void} Promise<void>
    */
   phoneNumber = async (req: Request, field: string): Promise<void> => {
-    await check(field).trim().not().isEmpty().withMessage('phone number cannot be empty').run(req);
+    await this.empty(req, field, 'phone number');
     await check(field)
       .trim()
       .isMobilePhone('any', { strictMode: true })
@@ -85,6 +85,18 @@ export class Validator {
       .isFloat({ min: 1, max: 5 })
       .withMessage('rate count must be a number between 1 and 5')
       .run(req);
+  };
+
+  /**
+   * validate URL, (useful to validate avatar URL)
+   * @param req Request
+   * @param field string
+   * @param label string
+   * @returns {void} Promise<void>
+   */
+  url = async (req: Request, field: string, label: string): Promise<void> => {
+    await this.empty(req, field, label);
+    await check(field).trim().isURL().withMessage(`${label} must be a valid URL`).run(req);
   };
 }
 

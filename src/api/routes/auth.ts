@@ -1,14 +1,15 @@
 import express from 'express';
 import authCtrl from '../controllers/auth';
-import { userCheck } from '../middlewares/authorization';
+import { userCheck, verifyToken } from '../middlewares/authorization';
 
 const router = express.Router();
 
-router.post('/signup', authCtrl.signup);
 router.post('/login', authCtrl.login);
-router.get('/user', userCheck, authCtrl.getCurrentUser);
-router.put('/update', userCheck, authCtrl.update);
-router.put('/update/password', userCheck, authCtrl.changePassword);
+router.post('/signup', authCtrl.signup);
+router.put('/update', verifyToken, authCtrl.update);
 router.delete('/signout', userCheck, authCtrl.signout);
+router.get('/user', userCheck, authCtrl.getCurrentUser);
+router.put('/update/avatar', verifyToken, authCtrl.updateAvatar);
+router.put('/update/password', verifyToken, authCtrl.changePassword);
 
 export default router;
