@@ -98,6 +98,22 @@ export class Validator {
     await this.empty(req, field, label);
     await check(field).trim().isURL().withMessage(`${label} must be a valid URL`).run(req);
   };
+
+  /**
+   * validate phone number
+   * @param req Request
+   * @param field string
+   * @param label string
+   * @returns {void} Promise<void>
+   */
+  phone = async (req: Request, field: string, label: string): Promise<void> => {
+    await this.empty(req, field, label);
+    await check(field)
+      .trim()
+      .isMobilePhone('any')
+      .withMessage(`${label} has an invalid format`)
+      .run(req);
+  };
 }
 
 const validate = new Validator();

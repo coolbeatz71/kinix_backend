@@ -20,6 +20,12 @@ class AuthValidator {
     await validate.password(this.req, 'password');
   };
 
+  update = async (isPhoneNumber: boolean): Promise<void> => {
+    await validate.email(this.req, 'email');
+    await validate.names(this.req, 'userName', 'username');
+    if (isPhoneNumber) await validate.phone(this.req, 'phoneNumber', 'telephone');
+  };
+
   changePassword = async (): Promise<void> => {
     await validate.empty(this.req, 'oldPassword', 'old password');
     await validate.password(this.req, 'newPassword');

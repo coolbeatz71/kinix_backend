@@ -221,7 +221,13 @@ export class Auth {
     const { userName, phoneNumber, email } = req.body;
     let newValues: IUnknownObject = { userName, phoneNumber, email };
 
+    const isPhoneNumber = !isEmpty(phoneNumber);
     const isEmailUpdated = !isEmpty(email) && currentEmail !== email;
+
+    await new AuthValidator(req).update(isPhoneNumber);
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) return getValidationError(res, errors);
+
     try {
       if (isEmailUpdated) {
         newValues = { ...newValues, verified: false, isLoggedIn: false };
