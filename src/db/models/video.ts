@@ -12,6 +12,7 @@ export default class Video extends Model<IVideo> implements IVideo {
   active!: boolean;
   shared!: boolean;
   userId!: number;
+  lyrics?: string;
   categoryId!: number;
 
   static associate(models: IModel) {
@@ -114,6 +115,10 @@ export const initVideo = (sequelize: Sequelize) => {
       categoryId: {
         type: DataTypes.INTEGER,
         allowNull: false,
+      },
+      lyrics: {
+        type: DataTypes.STRING,
+        allowNull: true,
       },
     },
     {

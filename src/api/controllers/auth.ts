@@ -195,38 +195,35 @@ export class Auth {
   };
 
   /**
-   * The controller for signing out
-   * @param req Request
-   * @param res Response
-   */
-  signout = async (req: Request, res: Response): Promise<Response> => {
-    try {
-      const { id } = req.user as IJwtPayload;
-      await db.User.update({ isLoggedIn: false }, { where: { id } });
-
-      return getResponse(res, OK, {
-        message: SIGNOUT_SUCCESS,
-      });
-    } catch (error) {
-      return getServerError(res, error.message);
-    }
-  };
-
-  /**
    * The controller to update user account info
    * @param req Request
    * @param res Response
-   * TODO: should improve a different phone number validator as the current one can't validate RDC phone numbers
    */
   update = async (req: Request, res: Response): Promise<Response> => {
     const { email: currentEmail, id } = req.user as IJwtPayload;
-    const { userName, phoneNumber, email } = req.body;
-    let newValues: IUnknownObject = { userName, phoneNumber, email };
+    const { email, userName, countryName, countryFlag, phonePartial, phoneISOCode, phoneDialCode } =
+      req.body;
 
-    const isPhoneNumber = !isEmpty(phoneNumber);
+    let newValues: IUnknownObject = {
+      email,
+      userName,
+      countryName,
+      countryFlag,
+      phonePartial,
+      phoneISOCode,
+      phoneDialCode,
+      phoneNumber: `${phoneDialCode}${phonePartial}`,
+    };
+
+    const isPhonePartial = !isEmpty(phonePartial);
     const isEmailUpdated = !isEmpty(email) && currentEmail !== email;
 
-    await new AuthValidator(req).update(isPhoneNumber);
+    await new AuthValidator(req).update(isPhonePartial, {
+      countryFlag,
+      phonePartial,
+      phoneISOCode,
+      phoneDialCode,
+    });
     const errors = validationResult(req);
     if (!errors.isEmpty()) return getValidationError(res, errors);
 
@@ -249,7 +246,7 @@ export class Auth {
 
       const isPhoneNumberExist = await db.User.findOne({
         where: {
-          phoneNumber: phoneNumber || null,
+          phoneNumber: `${phoneDialCode}${phonePartial}` || null,
         },
       });
 
@@ -373,6 +370,24 @@ export class Auth {
       );
 
       return getUserResponse(res, update[1][0].get(), '', OK, AVATAR_UPDATED_SUCCESS);
+    } catch (error) {
+      return getServerError(res, error.message);
+    }
+  };
+
+  /**
+   * The controller for signing out
+   * @param req Request
+   * @param res Response
+   */
+  signout = async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const { id } = req.user as IJwtPayload;
+      await db.User.update({ isLoggedIn: false }, { where: { id } });
+
+      return getResponse(res, OK, {
+        message: SIGNOUT_SUCCESS,
+      });
     } catch (error) {
       return getServerError(res, error.message);
     }
