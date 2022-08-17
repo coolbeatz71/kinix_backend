@@ -33,6 +33,11 @@ export interface IUser {
   image?: string | null;
   allowEmailNotification?: boolean;
   role?: ERole;
+  countryName?: string;
+  countryFlag?: string;
+  phoneISOCode?: string;
+  phoneDialCode?: string;
+  phonePartial?: string;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -73,6 +78,7 @@ export interface IVideo {
   totalRaters?: number;
   shared?: boolean;
   userId: number;
+  lyrics?: string;
   categoryId: number;
   createdAt?: string;
   updatedAt?: string;

@@ -187,5 +187,10 @@ export const getUserResponse = (
       verified: user.verified,
       isLoggedIn: user.isLoggedIn,
       provider: user.provider,
+      countryName: user.countryName,
+      countryFlag: user.countryFlag,
+      phonePartial: user.phonePartial,
+      phoneISOCode: user.phoneISOCode,
+      phoneDialCode: user.phoneDialCode,
     },
   });

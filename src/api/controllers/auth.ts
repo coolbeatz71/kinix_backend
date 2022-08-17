@@ -11,6 +11,7 @@ import {
   UNAUTHORIZED,
 } from 'http-status';
 import { validationResult } from 'express-validator';
+import { isEmpty } from 'lodash';
 import {
   comparePassword,
   getHashedPassword,
@@ -25,9 +26,16 @@ import db from '../../db/models';
 import {
   ACCOUNT_CREATED_SUCCESS,
   ACCOUNT_EXIST,
+  ACCOUNT_UPDATED_SUCCESS,
+  AVATAR_UPDATED_SUCCESS,
   CHECK_CONFIRM_EMAIL,
+  EMAIL_TAKEN,
   GET_USER_SUCCESS,
+  NEW_PASSWORD_SAME_AS_OLD,
+  OLD_PASSWORD_INVALID,
+  PASSWORD_CHANGED_SUCCESS,
   PASSWORD_INVALID,
+  PHONE_NUMBER_TAKEN,
   SIGNOUT_SUCCESS,
   USERNAME_EMAIL_INVALID,
   USERNAME_TAKEN,
@@ -38,6 +46,7 @@ import {
 import { IJwtPayload } from '../../interfaces/api';
 import ERole from '../../interfaces/role';
 import { getUserById } from '../../helpers/user';
+import { IUnknownObject } from '../../interfaces/unknownObject';
 
 export class Auth {
   /**
@@ -45,7 +54,7 @@ export class Auth {
    * @param req Request
    * @param res Response
    */
-  signup = async (req: Request, res: Response): Promise<any> => {
+  signup = async (req: Request, res: Response): Promise<Response> => {
     const { userName, email, password } = req.body;
 
     await new AuthValidator(req).signup();
@@ -100,7 +109,7 @@ export class Auth {
    * @param req Request
    * @param res Response
    */
-  login = async (req: Request, res: Response): Promise<any> => {
+  login = async (req: Request, res: Response): Promise<Response> => {
     const { credential, password } = req.body;
 
     await new AuthValidator(req).login();
@@ -162,7 +171,7 @@ export class Auth {
    * @param req Request
    * @param res Response
    */
-  getCurrentUser = async (req: Request, res: Response): Promise<any> => {
+  getCurrentUser = async (req: Request, res: Response): Promise<Response> => {
     try {
       const { id } = req.user as IJwtPayload;
       const user = await getUserById(res, id);
@@ -186,12 +195,192 @@ export class Auth {
   };
 
   /**
-   * The controller for signing out
-   * @param {req} req the request
-   * @param {res} res the response
-   * @return {void}
+   * The controller to update user account info
+   * @param req Request
+   * @param res Response
    */
-  signout = async (req: Request, res: Response): Promise<any> => {
+  update = async (req: Request, res: Response): Promise<Response> => {
+    const { email: currentEmail, id } = req.user as IJwtPayload;
+    const { email, userName, countryName, countryFlag, phonePartial, phoneISOCode, phoneDialCode } =
+      req.body;
+
+    let newValues: IUnknownObject = {
+      email,
+      userName,
+      countryName,
+      countryFlag,
+      phonePartial,
+      phoneISOCode,
+      phoneDialCode,
+      phoneNumber: `${phoneDialCode}${phonePartial}`,
+    };
+
+    const isPhonePartial = !isEmpty(phonePartial);
+    const isEmailUpdated = !isEmpty(email) && currentEmail !== email;
+
+    await new AuthValidator(req).update(isPhonePartial, {
+      countryFlag,
+      phonePartial,
+      phoneISOCode,
+      phoneDialCode,
+    });
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) return getValidationError(res, errors);
+
+    try {
+      if (isEmailUpdated) {
+        newValues = { ...newValues, verified: false, isLoggedIn: false };
+      }
+
+      const isEmailExist = await db.User.findOne({
+        where: {
+          email,
+        },
+      });
+
+      const isUserNameExist = await db.User.findOne({
+        where: {
+          userName,
+        },
+      });
+
+      const isPhoneNumberExist = await db.User.findOne({
+        where: {
+          phoneNumber: `${phoneDialCode}${phonePartial}` || null,
+        },
+      });
+
+      if (isUserNameExist && isUserNameExist.id !== id) {
+        return getResponse(res, CONFLICT, {
+          message: USERNAME_TAKEN,
+        });
+      }
+
+      if (isPhoneNumberExist && isPhoneNumberExist.id !== id) {
+        return getResponse(res, CONFLICT, {
+          message: PHONE_NUMBER_TAKEN,
+        });
+      }
+
+      if (isEmailExist && isEmailExist.id !== id) {
+        return getResponse(res, CONFLICT, {
+          message: EMAIL_TAKEN,
+        });
+      }
+
+      const update = await db.User.update(
+        {
+          ...newValues,
+        },
+        { where: { id }, returning: true },
+      );
+
+      return getUserResponse(res, update[1][0].get(), '', OK, ACCOUNT_UPDATED_SUCCESS);
+    } catch (error) {
+      return getServerError(res, error.message);
+    }
+  };
+
+  /**
+   * The controller to change password
+   * @param req Request
+   * @param res Response
+   */
+  changePassword = async (req: Request, res: Response): Promise<Response> => {
+    const { id } = req.user as IJwtPayload;
+    const { oldPassword, newPassword } = req.body;
+
+    await new AuthValidator(req).changePassword();
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) return getValidationError(res, errors);
+
+    try {
+      const user = await db.User.findOne({
+        where: {
+          id,
+        },
+      });
+
+      if (!user) {
+        return getResponse(res, NOT_FOUND, {
+          message: USER_NOT_FOUND,
+        });
+      }
+
+      const isOldPasswordValid = comparePassword(oldPassword, user.get().password);
+      const isNewPasswordSameAsOld = comparePassword(newPassword, user.get().password);
+
+      if (!isOldPasswordValid) {
+        return getResponse(res, BAD_REQUEST, {
+          message: OLD_PASSWORD_INVALID,
+        });
+      }
+
+      if (isNewPasswordSameAsOld) {
+        return getResponse(res, FORBIDDEN, {
+          message: NEW_PASSWORD_SAME_AS_OLD,
+        });
+      }
+
+      const hashPassword = getHashedPassword(newPassword);
+      const update = await db.User.update(
+        {
+          password: hashPassword,
+        },
+        { where: { id }, returning: true },
+      );
+
+      return getUserResponse(res, update[1][0].get(), '', OK, PASSWORD_CHANGED_SUCCESS);
+    } catch (error) {
+      return getServerError(res, error.message);
+    }
+  };
+
+  /**
+   * The controller to update user avatar
+   * @param req Request
+   * @param res Response
+   */
+  updateAvatar = async (req: Request, res: Response): Promise<Response> => {
+    const { id } = req.user as IJwtPayload;
+    const { avatar } = req.body;
+
+    await new AuthValidator(req).changeAvatar();
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) return getValidationError(res, errors);
+
+    try {
+      const user = await db.User.findOne({
+        where: {
+          id,
+        },
+      });
+
+      if (!user) {
+        return getResponse(res, NOT_FOUND, {
+          message: USER_NOT_FOUND,
+        });
+      }
+
+      const update = await db.User.update(
+        {
+          image: avatar,
+        },
+        { where: { id }, returning: true },
+      );
+
+      return getUserResponse(res, update[1][0].get(), '', OK, AVATAR_UPDATED_SUCCESS);
+    } catch (error) {
+      return getServerError(res, error.message);
+    }
+  };
+
+  /**
+   * The controller for signing out
+   * @param req Request
+   * @param res Response
+   */
+  signout = async (req: Request, res: Response): Promise<Response> => {
     try {
       const { id } = req.user as IJwtPayload;
       await db.User.update({ isLoggedIn: false }, { where: { id } });

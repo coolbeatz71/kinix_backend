@@ -16,6 +16,11 @@ export default class User extends Model<IUser> implements IUser {
   image?: string | null;
   allowEmailNotification?: boolean;
   role?: ERole;
+  countryName?: string;
+  countryFlag?: string;
+  phoneISOCode?: string;
+  phoneDialCode?: string;
+  phonePartial?: string;
 
   static associate(models: IModel) {
     /**
@@ -151,6 +156,26 @@ export const initUser = (sequelize: Sequelize) => {
             ],
           ],
         },
+      },
+      countryName: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      countryFlag: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      phoneISOCode: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      phoneDialCode: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      phonePartial: {
+        type: DataTypes.STRING,
+        allowNull: true,
       },
     },
     {
