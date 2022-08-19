@@ -48,7 +48,7 @@ export class AdminVideo {
    * @param res Response
    */
   create = async (req: Request, res: Response): Promise<any> => {
-    const { title, link, tags, categoryId, userId } = req.body;
+    const { title, link, tags, categoryId, userId, lyrics } = req.body;
 
     await new VideoValidator(req).create();
     const errors = validationResult(req);
@@ -73,12 +73,13 @@ export class AdminVideo {
       }
 
       const newVideo = await db.Video.create({
-        title,
         link,
         slug,
         tags,
-        categoryId,
+        title,
+        lyrics,
         userId,
+        categoryId,
       });
 
       const getVideo = await getVideoById(res, newVideo.get().id as number, true);
@@ -99,7 +100,7 @@ export class AdminVideo {
    */
   update = async (req: Request, res: Response): Promise<any> => {
     const { slug } = req.params;
-    const { title, link, tags, categoryId, userId } = req.body;
+    const { title, link, tags, categoryId, userId, lyrics } = req.body;
 
     await new VideoValidator(req).create();
     const errors = validationResult(req);
@@ -132,12 +133,13 @@ export class AdminVideo {
 
       await db.Video.update(
         {
-          title,
           link,
-          slug: newSlug,
           tags,
-          categoryId,
+          title,
           userId,
+          lyrics,
+          categoryId,
+          slug: newSlug,
         },
         { where: { id: video.get().id } },
       );
