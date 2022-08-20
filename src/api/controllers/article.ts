@@ -7,6 +7,7 @@ import { ARTICLE_NOT_FOUND, ARTICLE_TAGS_NOT_FOUND } from '../../constants/messa
 import db from '../../db/models';
 import { contentResponse, getResponse, getServerError } from '../../helpers/api';
 import { getAllArticle, getArticleBySlug } from '../../helpers/article';
+import { IUnknownObject } from '../../interfaces/unknownObject';
 
 export class Article {
   /**
@@ -14,7 +15,7 @@ export class Article {
    * @param req Request
    * @param res Response
    */
-  getAll = async (req: Request, res: Response): Promise<any> => {
+  getAll = async (req: Request, res: Response): Promise<Response> => {
     const { limit = 20, offset = 0 } = req.query;
     try {
       const { count, rows: articles } = await getAllArticle(res, Number(limit), Number(offset));
@@ -32,7 +33,7 @@ export class Article {
    * @param req Request
    * @param res Response
    */
-  get = async (req: Request, res: Response): Promise<any> => {
+  get = async (req: Request, res: Response): Promise<Response> => {
     const { slug } = req.params;
 
     try {
@@ -51,11 +52,59 @@ export class Article {
   };
 
   /**
+   * controller to related articles by tags
+   * @description only returns active articles
+   * @param req Request
+   * @param res Response
+   */
+  getRelated = async (req: Request, res: Response): Promise<Response> => {
+    const { slug } = req.params;
+    const { limit = 5, tags } = req.query;
+    const parsedTags: string[] = String(tags)?.split(',') || [];
+
+    const tagList: Array<IUnknownObject> = [];
+    parsedTags.forEach((tag) =>
+      tagList.push({
+        [Op.contains]: [tag],
+      }),
+    );
+
+    try {
+      const data = await db.Article.findAll({
+        limit: Number(limit),
+        order: [['updatedAt', 'DESC']],
+        where: {
+          active: true,
+          tags: {
+            [Op.or]: tagList,
+          },
+          slug: {
+            [Op.ne]: slug,
+          },
+        },
+        include: [
+          {
+            as: 'user',
+            model: db.User,
+            attributes: ['id', 'userName', 'email', 'phoneNumber', 'image', 'role'],
+          },
+        ],
+      });
+
+      return getResponse(res, OK, {
+        data,
+      });
+    } catch (error) {
+      return getServerError(res, error.message);
+    }
+  };
+
+  /**
    * controller to get all the article tags
    * @param req Request
    * @param res Response
    */
-  getAllTags = async (_req: Request, res: Response): Promise<any> => {
+  getAllTags = async (_req: Request, res: Response): Promise<Response> => {
     try {
       const data = await db.Article.findAll({
         attributes: ['tags'],
@@ -85,7 +134,7 @@ export class Article {
    * @param req Request
    * @param res Response
    */
-  getByTags = async (req: Request, res: Response): Promise<any> => {
+  getByTags = async (req: Request, res: Response): Promise<Response> => {
     const { limit = 20, offset = 0, tag } = req.query;
     const formatted = lowerCase(String(tag));
     const where = tag
