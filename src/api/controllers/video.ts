@@ -14,6 +14,7 @@ import {
 } from '../../helpers/video';
 import ECategory from '../../interfaces/category';
 import db from '../../db/models';
+import { IUnknownObject } from '../../interfaces/unknownObject';
 
 export class Video {
   /**
@@ -21,7 +22,7 @@ export class Video {
    * @param req Request
    * @param res Response
    */
-  getAll = async (req: Request, res: Response): Promise<any> => {
+  getAll = async (req: Request, res: Response): Promise<Response> => {
     const { limit = 20, offset = 0 } = req.query;
 
     try {
@@ -40,7 +41,7 @@ export class Video {
    * @param req Request
    * @param res Response
    */
-  get = async (req: Request, res: Response): Promise<any> => {
+  get = async (req: Request, res: Response): Promise<Response> => {
     const { slug } = req.params;
 
     try {
@@ -59,11 +60,59 @@ export class Video {
   };
 
   /**
+   * controller to related videos by tags
+   * @description only returns active videos
+   * @param req Request
+   * @param res Response
+   */
+  getRelated = async (req: Request, res: Response): Promise<Response> => {
+    const { slug } = req.params;
+    const { limit = 5, tags } = req.query;
+    const parsedTags: string[] = String(tags)?.split(',') || [];
+
+    const tagList: Array<IUnknownObject> = [];
+    parsedTags.forEach((tag) =>
+      tagList.push({
+        [Op.contains]: [tag],
+      }),
+    );
+
+    try {
+      const data = await db.Video.findAll({
+        limit: Number(limit),
+        order: [['updatedAt', 'DESC']],
+        where: {
+          active: true,
+          tags: {
+            [Op.or]: tagList,
+          },
+          slug: {
+            [Op.ne]: slug,
+          },
+        },
+        include: [
+          {
+            as: 'user',
+            model: db.User,
+            attributes: ['id', 'userName', 'email', 'phoneNumber', 'image', 'role'],
+          },
+        ],
+      });
+
+      return getResponse(res, OK, {
+        data,
+      });
+    } catch (error) {
+      return getServerError(res, error.message);
+    }
+  };
+
+  /**
    * controller to get video feed
    * @param req Request
    * @param res Response
    */
-  getFeed = async (_req: Request, res: Response): Promise<any> => {
+  getFeed = async (_req: Request, res: Response): Promise<Response> => {
     try {
       // get discovery by category
       const musicVideoDiscovery = await getVideoDiscovery(res, ECategory.MUSIC_VIDEO);
@@ -113,7 +162,7 @@ export class Video {
    * @param req Request
    * @param res Response
    */
-  getAllCategories = async (_req: Request, res: Response): Promise<any> => {
+  getAllCategories = async (_req: Request, res: Response): Promise<Response> => {
     try {
       const data = await db.Category.findAll();
       return getResponse(res, OK, {
@@ -129,7 +178,7 @@ export class Video {
    * @param req Request
    * @param res Response
    */
-  getAllTags = async (_req: Request, res: Response): Promise<any> => {
+  getAllTags = async (_req: Request, res: Response): Promise<Response> => {
     try {
       const data = await db.Video.findAll({
         attributes: ['tags'],
@@ -158,7 +207,7 @@ export class Video {
    * @param req Request
    * @param res Response
    */
-  getByTags = async (req: Request, res: Response): Promise<any> => {
+  getByTags = async (req: Request, res: Response): Promise<Response> => {
     const { limit = 20, offset = 0, tag } = req.query;
     const formatted = lowerCase(String(tag));
     const where = tag
