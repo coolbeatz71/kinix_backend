@@ -9,5 +9,6 @@ router.get('/tags', videoCtrl.getAllTags);
 router.get('/search', videoCtrl.getByTags);
 router.get('/categories', videoCtrl.getAllCategories);
 router.get('/:slug', videoCtrl.get);
+router.get('/related/:slug', videoCtrl.getRelated);
 
 export default router;
