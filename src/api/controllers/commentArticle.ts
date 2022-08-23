@@ -28,7 +28,7 @@ export class Comment {
    * @param req Request
    * @param res Response
    */
-  create = async (req: Request, res: Response): Promise<any> => {
+  create = async (req: Request, res: Response): Promise<Response> => {
     const { slug } = req.params;
     const { id: userId } = req.user as IJwtPayload;
     const { body } = req.body;
@@ -64,7 +64,7 @@ export class Comment {
    * @param req Request
    * @param res Response
    */
-  getAll = async (req: Request, res: Response): Promise<any> => {
+  getAll = async (req: Request, res: Response): Promise<Response> => {
     const { slug } = req.params;
     const { limit = 20, offset = 0, body, userName } = req.query;
 
@@ -89,7 +89,7 @@ export class Comment {
    * @param req Request
    * @param res Response
    */
-  delete = async (req: Request, res: Response): Promise<any> => {
+  delete = async (req: Request, res: Response): Promise<Response> => {
     const { slug, id } = req.params;
     const { id: userId, role } = req.user as IJwtPayload;
 
@@ -138,7 +138,7 @@ export class Comment {
    * @param req Request
    * @param res Response
    */
-  update = async (req: Request, res: Response): Promise<any> => {
+  update = async (req: Request, res: Response): Promise<Response> => {
     const { body } = req.body;
     const { slug, id } = req.params;
     const { id: userId } = req.user as IJwtPayload;
