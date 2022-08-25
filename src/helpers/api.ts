@@ -36,7 +36,7 @@ export const isFieldInBody = (req: Request, field: string) =>
  * @param size number
  * @returns IUnknownObject
  */
-export const getPagination = (page: number, size: number): IUnknownObject => {
+export const getPagination = (page: number, size: number): { limit: number; offset: number } => {
   const limit = size;
   const offset = (page - 1) * limit;
 

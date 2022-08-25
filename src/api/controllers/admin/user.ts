@@ -160,8 +160,8 @@ export class AdminUser {
    * @param res Response
    */
   getAllUsers = async (req: Request, res: Response): Promise<Response> => {
-    const { search, page = 1, size = 20 } = req.query;
-    const { limit, offset } = getPagination(Number(page), Number(size));
+    const { search, page = 1, limit = 20 } = req.query;
+    const { limit: size, offset } = getPagination(Number(page), Number(limit));
     const where = search
       ? {
           [Op.or]: [
@@ -174,12 +174,12 @@ export class AdminUser {
     try {
       const data = await db.User.findAndCountAll({
         where,
-        limit,
+        limit: size,
         offset,
         order: [['updatedAt', 'DESC']],
         attributes: { exclude: ['password', 'role'] },
       });
-      const result = getPagingData(Number(page), limit, data);
+      const result = getPagingData(Number(page), size, data);
 
       return getResponse(res, OK, {
         data: result,
@@ -195,11 +195,11 @@ export class AdminUser {
    * @param res Response
    */
   getAllClients = async (req: Request, res: Response): Promise<Response> => {
-    const { search, page = 1, size = 20, status, role } = req.query;
+    const { search, page = 1, limit = 20, status, role } = req.query;
     const isRole = !isEmpty(role);
     const isStatus = !isEmpty(status);
     const isActive = status === lowerCase(EnumStatus.ACTIVE);
-    const { limit, offset } = getPagination(Number(page), Number(size));
+    const { limit: size, offset } = getPagination(Number(page), Number(limit));
 
     const values = Object.values(ERoleClient);
     const isRoleValid = values.includes(String(role).toUpperCase() as unknown as ERoleClient);
@@ -233,13 +233,13 @@ export class AdminUser {
 
     try {
       const data = await db.User.findAndCountAll({
-        limit,
+        limit: size,
         offset,
         order: [['updatedAt', 'DESC']],
         attributes: { exclude: ['password'] },
         where: { [Op.and]: [{ ...whereSearch, ...whereStatus, ...whereRole, ...where }] },
       });
-      const result = getPagingData(Number(page), limit, data);
+      const result = getPagingData(Number(page), size, data);
 
       return getResponse(res, OK, {
         data: result,
@@ -255,10 +255,10 @@ export class AdminUser {
    * @param res Response
    */
   getAllAdmins = async (req: Request, res: Response): Promise<Response> => {
-    const { search, page = 1, size = 20, status } = req.query;
+    const { search, page = 1, limit = 20, status } = req.query;
     const isStatus = !isEmpty(status);
     const isActive = status === lowerCase(EnumStatus.ACTIVE);
-    const { limit, offset } = getPagination(Number(page), Number(size));
+    const { limit: size, offset } = getPagination(Number(page), Number(limit));
     const onlyAdmins = [
       {
         role: { [Op.eq]: ERole.ADMIN },
@@ -288,13 +288,13 @@ export class AdminUser {
 
     try {
       const data = await db.User.findAndCountAll({
-        limit,
+        limit: size,
         offset,
         order: [['updatedAt', 'DESC']],
         attributes: { exclude: ['password'] },
         where: { [Op.and]: [{ ...whereSearch, ...whereStatus, ...where }] },
       });
-      const result = getPagingData(Number(page), limit, data);
+      const result = getPagingData(Number(page), size, data);
 
       return getResponse(res, OK, {
         data: result,

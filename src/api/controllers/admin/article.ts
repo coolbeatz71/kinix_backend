@@ -317,10 +317,10 @@ export class AdminArticle {
    * @param res Response
    */
   getAll = async (req: Request, res: Response): Promise<any> => {
-    const { page = 1, size = 20, search, status } = req.query;
+    const { page = 1, limit = 20, search, status } = req.query;
     const isStatus = !isEmpty(status);
     const isActive = status === lowerCase(EnumStatus.ACTIVE);
-    const { limit, offset } = getPagination(Number(page), Number(size));
+    const { limit: size, offset } = getPagination(Number(page), Number(limit));
 
     const whereStatus = isStatus
       ? {
@@ -345,7 +345,7 @@ export class AdminArticle {
 
     try {
       const data = await db.Article.findAndCountAll({
-        limit,
+        limit: size,
         offset,
         order: [['updatedAt', 'DESC']],
         where: { [Op.and]: [{ ...whereSearch, ...whereStatus }] },
@@ -377,7 +377,7 @@ export class AdminArticle {
           },
         ],
       });
-      const result = getPagingData(Number(page), limit, data);
+      const result = getPagingData(Number(page), size, data);
 
       return getResponse(res, OK, {
         data: result,

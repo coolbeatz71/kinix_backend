@@ -344,11 +344,11 @@ export class AdminVideo {
    * @param res Response
    */
   getAll = async (req: Request, res: Response): Promise<any> => {
-    const { page = 1, size = 20, search, status, category } = req.query;
+    const { page = 1, limit = 20, search, status, category } = req.query;
     const isStatus = !isEmpty(status);
     const isCategory = !isEmpty(category);
     const isActive = status === lowerCase(EnumStatus.ACTIVE);
-    const { limit, offset } = getPagination(Number(page), Number(size));
+    const { limit: size, offset } = getPagination(Number(page), Number(limit));
 
     const values = Object.values(ECategory);
     const isCategoryValid = values.includes(String(category).toUpperCase() as unknown as ECategory);
@@ -365,8 +365,8 @@ export class AdminVideo {
 
     try {
       const data = await db.Video.findAndCountAll({
-        limit,
         offset,
+        limit: size,
         order: [['updatedAt', 'DESC']],
         where: { [Op.and]: [{ ...whereSearch, ...whereStatus, ...whereCategory }] },
         attributes: {
@@ -404,7 +404,7 @@ export class AdminVideo {
           },
         ],
       });
-      const result = getPagingData(Number(page), limit, data);
+      const result = getPagingData(Number(page), size, data);
 
       return getResponse(res, OK, {
         data: result,
