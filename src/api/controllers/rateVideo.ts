@@ -104,7 +104,7 @@ export class RateVideo {
    * @param req Request
    * @param res Response
    */
-  getUserRatings = async (req: Request, res: Response): Promise<Response> => {
+  getSingleVideoUserRatings = async (req: Request, res: Response): Promise<Response> => {
     const { slug } = req.params;
     const { id: userId } = req.user as IJwtPayload;
 

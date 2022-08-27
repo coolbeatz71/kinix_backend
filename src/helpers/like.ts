@@ -9,7 +9,7 @@ export const getLikeByUserId = async (res: Response, userId: number): Promise<an
       where: { userId },
       include: [
         {
-          as: 'Article',
+          as: 'article',
           model: db.Article,
         },
       ],

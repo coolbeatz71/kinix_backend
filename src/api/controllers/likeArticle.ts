@@ -19,7 +19,7 @@ export class LikeArticle {
    * @param req Request
    * @param res Response
    */
-  create = async (req: Request, res: Response): Promise<any> => {
+  create = async (req: Request, res: Response): Promise<Response> => {
     const { slug } = req.params;
     const { id: userId } = req.user as IJwtPayload;
 
@@ -62,7 +62,7 @@ export class LikeArticle {
    * @param req Request
    * @param res Response
    */
-  delete = async (req: Request, res: Response): Promise<any> => {
+  delete = async (req: Request, res: Response): Promise<Response> => {
     const { slug } = req.params;
     const { id: userId } = req.user as IJwtPayload;
 
@@ -107,7 +107,7 @@ export class LikeArticle {
    * @param req Request
    * @param res Response
    */
-  getLikeByUserId = async (req: Request, res: Response): Promise<any> => {
+  getLikeByUserId = async (req: Request, res: Response): Promise<Response> => {
     const { id: userId } = req.user as IJwtPayload;
 
     try {
@@ -119,11 +119,44 @@ export class LikeArticle {
   };
 
   /**
+   * controller to get article rated by a user.
+   * @description to check if the user has already rated an article
+   * @param req Request
+   * @param res Response
+   */
+  getSingleVideoUserLike = async (req: Request, res: Response): Promise<Response> => {
+    const { slug } = req.params;
+    const { id: userId } = req.user as IJwtPayload;
+
+    try {
+      const article = await getArticleBySlug(res, slug);
+      if (!article) {
+        return getResponse(res, NOT_FOUND, {
+          message: ARTICLE_NOT_FOUND,
+        });
+      }
+
+      const data = await db.Like.findAll({
+        where: {
+          userId,
+          articleId: article.get().id,
+        },
+      });
+
+      return getResponse(res, OK, {
+        data,
+      });
+    } catch (error) {
+      return getServerError(res, error.message);
+    }
+  };
+
+  /**
    * controller to get and count article likes
    * @param req Request
    * @param res Response
    */
-  getAllLikes = async (req: Request, res: Response): Promise<any> => {
+  getAll = async (req: Request, res: Response): Promise<Response> => {
     const { slug } = req.params;
 
     try {
