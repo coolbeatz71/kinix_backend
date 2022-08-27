@@ -51,7 +51,7 @@ export class RateVideo {
    * @param req Request
    * @param res Response
    */
-  create = async (req: Request, res: Response): Promise<any> => {
+  create = async (req: Request, res: Response): Promise<Response> => {
     const { count } = req.body;
     const { slug } = req.params;
     const { id: userId } = req.user as IJwtPayload;
@@ -93,6 +93,40 @@ export class RateVideo {
 
       const created = await this.updateVideo(res, video.get().id);
       return contentResponse(res, created, CREATED, VIDEO_RATE_CREATED_SUCCESS);
+    } catch (error) {
+      return getServerError(res, error.message);
+    }
+  };
+
+  /**
+   * controller to get video rated by a user.
+   * @description to check if the user has already rated a video
+   * @param req Request
+   * @param res Response
+   */
+  getUserRatings = async (req: Request, res: Response): Promise<Response> => {
+    const { slug } = req.params;
+    const { id: userId } = req.user as IJwtPayload;
+
+    try {
+      const video = await getVideoBySlug(res, slug);
+
+      if (!video) {
+        return getResponse(res, NOT_FOUND, {
+          message: VIDEO_NOT_FOUND,
+        });
+      }
+
+      const data = await db.Rate.findAll({
+        where: {
+          userId,
+          videoId: video.get().id,
+        },
+      });
+
+      return getResponse(res, OK, {
+        data,
+      });
     } catch (error) {
       return getServerError(res, error.message);
     }
