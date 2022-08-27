@@ -5,5 +5,6 @@ import { verifyToken } from '../middlewares/authorization';
 const router = express.Router();
 
 router.post('/:slug', verifyToken, rateVideoCtrl.create);
+router.get('/:slug', verifyToken, rateVideoCtrl.getSingleVideoUserRatings);
 
 export default router;
