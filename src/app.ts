@@ -34,6 +34,9 @@ class App {
         },
         fallbackLng: 'fr',
         preload: ['fr'],
+        interpolation: {
+          escapeValue: false,
+        },
       });
     this.express.use(i18nextMiddleware.handle(i18next));
   }
