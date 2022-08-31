@@ -25,11 +25,10 @@ import { generateToken } from '../../helpers/jwt';
 import db from '../../db/models';
 import {
   ACCOUNT_CREATED_SUCCESS,
-  ACCOUNT_EXIST,
+  EMAIL_TAKEN,
   ACCOUNT_UPDATED_SUCCESS,
   AVATAR_UPDATED_SUCCESS,
   CHECK_CONFIRM_EMAIL,
-  EMAIL_TAKEN,
   GET_USER_SUCCESS,
   NEW_PASSWORD_SAME_AS_OLD,
   OLD_PASSWORD_INVALID,
@@ -76,13 +75,15 @@ export class Auth {
 
       if (isUserNameExist) {
         return getResponse(res, CONFLICT, {
-          message: USERNAME_TAKEN,
+          code: USERNAME_TAKEN,
+          message: req.t('USERNAME_TAKEN'),
         });
       }
 
       if (isEmailExist) {
         return getResponse(res, CONFLICT, {
-          message: ACCOUNT_EXIST,
+          code: EMAIL_TAKEN,
+          message: req.t('EMAIL_TAKEN'),
         });
       }
 
@@ -125,7 +126,8 @@ export class Auth {
 
       if (!user) {
         return getResponse(res, UNAUTHORIZED, {
-          message: USERNAME_EMAIL_INVALID,
+          code: USERNAME_EMAIL_INVALID,
+          message: req.t('USERNAME_EMAIL_INVALID'),
         });
       }
 
@@ -133,7 +135,8 @@ export class Auth {
 
       if (!isPasswordValid) {
         return getResponse(res, FORBIDDEN, {
-          message: PASSWORD_INVALID,
+          code: PASSWORD_INVALID,
+          message: req.t('PASSWORD_INVALID'),
         });
       }
 
@@ -141,13 +144,15 @@ export class Auth {
       if (user.get().verified === false) {
         // TODO should resend email confirmation here
         return getResponse(res, BAD_REQUEST, {
-          message: CHECK_CONFIRM_EMAIL,
+          code: CHECK_CONFIRM_EMAIL,
+          message: req.t('CHECK_CONFIRM_EMAIL'),
         });
       }
 
       if (user.get().active === false) {
         return getResponse(res, FORBIDDEN, {
-          message: USER_BLOCKED,
+          code: USER_BLOCKED,
+          message: req.t('USER_BLOCKED'),
         });
       }
 
@@ -178,13 +183,15 @@ export class Auth {
 
       if (!user) {
         return getResponse(res, NOT_FOUND, {
-          message: USER_NOT_FOUND,
+          code: USER_NOT_FOUND,
+          message: req.t('USER_NOT_FOUND'),
         });
       }
 
       if (user.get().active === false) {
         return getResponse(res, FORBIDDEN, {
-          message: USER_BLOCKED,
+          code: USER_BLOCKED,
+          message: req.t('USER_BLOCKED'),
         });
       }
 
@@ -252,19 +259,22 @@ export class Auth {
 
       if (isUserNameExist && isUserNameExist.id !== id) {
         return getResponse(res, CONFLICT, {
-          message: USERNAME_TAKEN,
+          code: USERNAME_TAKEN,
+          message: req.t('USERNAME_TAKEN'),
         });
       }
 
       if (isPhoneNumberExist && isPhoneNumberExist.id !== id) {
         return getResponse(res, CONFLICT, {
-          message: PHONE_NUMBER_TAKEN,
+          code: PHONE_NUMBER_TAKEN,
+          message: req.t('PHONE_NUMBER_TAKEN'),
         });
       }
 
       if (isEmailExist && isEmailExist.id !== id) {
         return getResponse(res, CONFLICT, {
-          message: EMAIL_TAKEN,
+          code: EMAIL_TAKEN,
+          message: req.t('EMAIL_TAKEN'),
         });
       }
 
@@ -303,7 +313,8 @@ export class Auth {
 
       if (!user) {
         return getResponse(res, NOT_FOUND, {
-          message: USER_NOT_FOUND,
+          code: USER_NOT_FOUND,
+          message: req.t('USER_NOT_FOUND'),
         });
       }
 
@@ -312,13 +323,15 @@ export class Auth {
 
       if (!isOldPasswordValid) {
         return getResponse(res, BAD_REQUEST, {
-          message: OLD_PASSWORD_INVALID,
+          code: OLD_PASSWORD_INVALID,
+          message: req.t('OLD_PASSWORD_INVALID'),
         });
       }
 
       if (isNewPasswordSameAsOld) {
         return getResponse(res, FORBIDDEN, {
-          message: NEW_PASSWORD_SAME_AS_OLD,
+          code: NEW_PASSWORD_SAME_AS_OLD,
+          message: req.t('NEW_PASSWORD_SAME_AS_OLD'),
         });
       }
 
@@ -358,7 +371,8 @@ export class Auth {
 
       if (!user) {
         return getResponse(res, NOT_FOUND, {
-          message: USER_NOT_FOUND,
+          code: USER_NOT_FOUND,
+          message: req.t('USER_NOT_FOUND'),
         });
       }
 
@@ -386,7 +400,8 @@ export class Auth {
       await db.User.update({ isLoggedIn: false }, { where: { id } });
 
       return getResponse(res, OK, {
-        message: SIGNOUT_SUCCESS,
+        code: SIGNOUT_SUCCESS,
+        message: req.t('SIGNOUT_SUCCESS'),
       });
     } catch (error) {
       return getServerError(res, error.message);

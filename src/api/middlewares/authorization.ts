@@ -33,7 +33,8 @@ export const verifyToken = async (
   const { authorization } = req.headers;
   if (!authorization) {
     return getResponse(res, httpStatus.UNAUTHORIZED, {
-      message: AUTHORIZATION_MISSING,
+      code: AUTHORIZATION_MISSING,
+      message: req.t('AUTHORIZATION_MISSING'),
     });
   }
 
@@ -49,13 +50,15 @@ export const verifyToken = async (
 
     if (!user) {
       return getResponse(res, httpStatus.UNAUTHORIZED, {
-        message: TOKEN_INVALID_EXPIRED,
+        code: TOKEN_INVALID_EXPIRED,
+        message: req.t('TOKEN_INVALID_EXPIRED'),
       });
     }
 
     if (user.get().isLoggedIn === false) {
       return getResponse(res, httpStatus.FORBIDDEN, {
-        message: LOGIN_REQUIRED,
+        code: LOGIN_REQUIRED,
+        message: req.t('LOGIN_REQUIRED'),
       });
     }
 
@@ -80,7 +83,8 @@ export const superAdminCheck = (req: Request, res: Response, next: NextFunction)
 
     if (role === ERole.SUPER_ADMIN) return next();
     return getResponse(res, httpStatus.FORBIDDEN, {
-      message: SUPER_ADMIN_FORBIDDEN,
+      code: SUPER_ADMIN_FORBIDDEN,
+      message: req.t('SUPER_ADMIN_FORBIDDEN'),
     });
   });
 };
@@ -98,7 +102,8 @@ export const adminsCheck = (req: Request, res: Response, next: NextFunction): vo
 
     if ([ERole.ADMIN, ERole.SUPER_ADMIN].includes(role)) return next();
     return getResponse(res, httpStatus.FORBIDDEN, {
-      message: ADMIN_FORBIDDEN,
+      code: ADMIN_FORBIDDEN,
+      message: req.t('ADMIN_FORBIDDEN'),
     });
   });
 };
@@ -116,7 +121,8 @@ export const userCheck = (req: Request, res: Response, next: NextFunction): void
 
     if ([ERole.VIEWER_CLIENT, ERole.VIDEO_CLIENT, ERole.ADS_CLIENT].includes(role)) return next();
     return getResponse(res, httpStatus.FORBIDDEN, {
-      message: USER_FORBIDDEN,
+      code: USER_FORBIDDEN,
+      message: req.t('USER_FORBIDDEN'),
     });
   });
 };

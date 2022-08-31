@@ -10,9 +10,9 @@ class ArticleValidator {
   }
 
   create = async (): Promise<void> => {
-    await validate.empty(this.req, 'title', 'article title');
-    await validate.empty(this.req, 'summary', 'article summary');
-    await validate.empty(this.req, 'body', 'article body');
+    await validate.empty(this.req, 'title', this.req.t('LABEL_ARTICLE_TITLE'));
+    await validate.empty(this.req, 'summary', this.req.t('LABEL_ARTICLE_SUMMARY'));
+    await validate.empty(this.req, 'body', this.req.t('LABEL_ARTICLE_BODY'));
   };
 }
 

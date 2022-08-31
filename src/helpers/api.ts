@@ -126,9 +126,10 @@ export const getSanitizedBody = (obj: IUnknownObject): IUnknownObject => {
  * @param res Response
  * @param _next NextFunction
  */
-export const notFoundError = (_req: Request, res: Response, _next: NextFunction) =>
+export const notFoundError = (req: Request, res: Response, _next: NextFunction) =>
   res.status(NOT_FOUND).json({
-    message: RESOURCE_NOT_FOUND,
+    code: RESOURCE_NOT_FOUND,
+    message: req.t('RESOURCE_NOT_FOUND'),
   });
 
 /**

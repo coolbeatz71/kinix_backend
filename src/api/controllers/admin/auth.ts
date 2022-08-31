@@ -42,7 +42,8 @@ export class AdminAuth {
 
       if (!user || ![ERole.ADMIN, ERole.SUPER_ADMIN].includes(user?.role as ERole)) {
         return getResponse(res, UNAUTHORIZED, {
-          message: USERNAME_EMAIL_INVALID,
+          code: USERNAME_EMAIL_INVALID,
+          message: req.t('USERNAME_EMAIL_INVALID'),
         });
       }
 
@@ -50,13 +51,15 @@ export class AdminAuth {
 
       if (!isPasswordValid) {
         return getResponse(res, FORBIDDEN, {
-          message: PASSWORD_INVALID,
+          code: PASSWORD_INVALID,
+          message: req.t('PASSWORD_INVALID'),
         });
       }
 
       if (user.get().active === false) {
         return getResponse(res, FORBIDDEN, {
-          message: USER_BLOCKED,
+          code: USER_BLOCKED,
+          message: req.t('USER_BLOCKED'),
         });
       }
 

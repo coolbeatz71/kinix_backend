@@ -45,7 +45,8 @@ export class ShareVideo {
 
       if (!video) {
         return getResponse(res, NOT_FOUND, {
-          message: VIDEO_NOT_FOUND,
+          code: VIDEO_NOT_FOUND,
+          message: req.t('VIDEO_NOT_FOUND'),
         });
       }
 

@@ -16,10 +16,10 @@ export class Validator {
     await this.empty(req, field, label);
     await check(field)
       .trim()
-      .matches(/^[a-zA-Z\-\s]+$/)
-      .withMessage(`${label} can only contain alphatic characters`)
+      .matches(/^[a-zA-Z0-9\-\s]+$/)
+      .withMessage(req.t('VALIDATOR_ALPHANUMERIC', { label }))
       .isLength({ min: 3 })
-      .withMessage(`${label} must be at least 3 characters long`)
+      .withMessage(req.t('VALIDATOR_MIN', { label }))
       .run(req);
   };
 
@@ -31,7 +31,12 @@ export class Validator {
    * @returns {void} Promise<void>
    */
   empty = async (req: Request, field: string, label: string): Promise<void> => {
-    await check(field).trim().not().isEmpty().withMessage(`${label} cannot be empty`).run(req);
+    await check(field)
+      .trim()
+      .not()
+      .isEmpty()
+      .withMessage(req.t('VALIDATOR_EMPTY', { label }))
+      .run(req);
   };
 
   /**
@@ -41,12 +46,10 @@ export class Validator {
    * @returns {void} Promise<void>
    */
   password = async (req: Request, field: string): Promise<void> => {
-    await this.empty(req, field, 'password');
+    await this.empty(req, field, req.t('LABEL_PASSWORD'));
     await check(field)
       .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{6,})/)
-      .withMessage(
-        'password must have at least 6 digits and contain 1 Uppercase, 1 Lowercase, 1 number',
-      )
+      .withMessage(req.t('VALIDATOR_PASSWORD'))
       .run(req);
   };
 
@@ -57,8 +60,8 @@ export class Validator {
    * @returns {void} Promise<void>
    */
   email = async (req: Request, field: string): Promise<void> => {
-    await this.empty(req, field, 'email address');
-    await check(field).trim().isEmail().withMessage('email address is invalid').run(req);
+    await this.empty(req, field, req.t('LABEL_EMAIL'));
+    await check(field).trim().isEmail().withMessage(req.t('VALIDATOR_EMAIL')).run(req);
   };
 
   /**
@@ -68,11 +71,11 @@ export class Validator {
    * @returns {void} Promise<void>
    */
   phoneNumber = async (req: Request, field: string): Promise<void> => {
-    await this.empty(req, field, 'phone number');
+    await this.empty(req, field, req.t('LABEL_TELEPHONE'));
     await check(field)
       .trim()
       .isMobilePhone('any', { strictMode: true })
-      .withMessage('phone number is invalid')
+      .withMessage(req.t('VALIDATOR_TELEPHONE'))
       .run(req);
   };
 
@@ -83,10 +86,10 @@ export class Validator {
    * @returns {void} Promise<void>
    */
   rate = async (req: Request, field: string): Promise<void> => {
-    await this.empty(req, field, 'rate count');
+    await this.empty(req, field, req.t('LABEL_RATE_COUNT'));
     await check(field)
       .isFloat({ min: 1, max: 5 })
-      .withMessage('rate count must be a number between 1 and 5')
+      .withMessage(req.t('VALIDATOR_RATE_COUNT'))
       .run(req);
   };
 
@@ -97,9 +100,9 @@ export class Validator {
    * @param label string
    * @returns {void} Promise<void>
    */
-  url = async (req: Request, field: string, label: string): Promise<void> => {
+  url = async (req: Request, field: string, label: string): Promise<any> => {
     await this.empty(req, field, label);
-    await check(field).trim().isURL().withMessage(`${label} must be a valid URL`).run(req);
+    await check(field).trim().isURL().withMessage(req.t('VALIDATOR_URL', { label })).run(req);
   };
 
   /**
@@ -120,15 +123,15 @@ export class Validator {
         const { phoneISOCode, phoneDialCode, phonePartial } = params;
 
         if (!phoneISOCode || !phoneISOCode.match(regexISOCode)) {
-          return Promise.reject(new Error('country ISO code has an invalid format'));
+          return Promise.reject(new Error(req.t('VALIDATOR_COUNTRY_ISO')));
         }
 
         if (!phonePartial || !phonePartial.match(regexPhone)) {
-          return Promise.reject(new Error('partial telephone has an invalid format'));
+          return Promise.reject(new Error(req.t('VALIDATOR_PARTIAL_TELEPHONE')));
         }
 
         if (!phoneDialCode || !phoneDialCode.match(regexDialCode)) {
-          return Promise.reject(new Error('phone dial code has an invalid format'));
+          return Promise.reject(new Error(req.t('VALIDATOR_PHONE_DIAL_CODE')));
         }
 
         const fullPhoneNumber = `${phoneDialCode}${phonePartial}`;
@@ -137,14 +140,14 @@ export class Validator {
         );
         const isoCode = country?.isoCode;
 
-        if (!country) return Promise.reject(new Error('telephone has missing information'));
+        if (!country) return Promise.reject(new Error(req.t('VALIDATOR_TELEPHONE_BROKEN')));
 
         return PhoneNumberUtil.getInstance().isValidNumberForRegion(
           PhoneNumberUtil.getInstance().parse(fullPhoneNumber, isoCode),
           isoCode,
         )
           ? Promise.resolve()
-          : Promise.reject(new Error('telephone has an invalid format'));
+          : Promise.reject(new Error(req.t('VALIDATOR_TELEPHONE_FORMAT')));
       })
       .run(req);
   };

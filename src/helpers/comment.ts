@@ -2,6 +2,7 @@
 import { Op } from 'sequelize';
 import { Response } from 'express';
 import { NOT_FOUND, OK } from 'http-status';
+import i18next from 'i18next';
 import { getResponse, getServerError } from './api';
 import db from '../db/models';
 import { getUserByName } from './user';
@@ -42,7 +43,8 @@ export const getAllComment = async (
   try {
     if (!article) {
       return getResponse(res, NOT_FOUND, {
-        message: ARTICLE_NOT_FOUND,
+        code: ARTICLE_NOT_FOUND,
+        message: i18next.t('ARTICLE_NOT_FOUND'),
       });
     }
 
@@ -51,7 +53,8 @@ export const getAllComment = async (
 
       if (!user) {
         return getResponse(res, NOT_FOUND, {
-          message: USER_NOT_FOUND,
+          code: USER_NOT_FOUND,
+          message: i18next.t('USER_NOT_FOUND'),
         });
       }
 

@@ -41,7 +41,8 @@ export class Comment {
       const article = await getArticleBySlug(res, slug, true);
       if (!article) {
         return getResponse(res, NOT_FOUND, {
-          message: ARTICLE_NOT_FOUND,
+          code: ARTICLE_NOT_FOUND,
+          message: req.t('ARTICLE_NOT_FOUND'),
         });
       }
 
@@ -99,19 +100,22 @@ export class Comment {
 
       if (!comment) {
         return getResponse(res, NOT_FOUND, {
-          message: COMMENT_NOT_FOUND,
+          code: COMMENT_NOT_FOUND,
+          message: req.t('COMMENT_NOT_FOUND'),
         });
       }
 
       if (!article) {
         return getResponse(res, NOT_FOUND, {
-          message: ARTICLE_NOT_FOUND,
+          code: ARTICLE_NOT_FOUND,
+          message: req.t('ARTICLE_NOT_FOUND'),
         });
       }
 
       if (![ERole.ADMIN, ERole.SUPER_ADMIN].includes(role) && comment.get().userId !== userId) {
         return getResponse(res, UNAUTHORIZED, {
-          message: COMMENT_NOT_OWNER,
+          code: COMMENT_NOT_OWNER,
+          message: req.t('COMMENT_NOT_OWNER'),
         });
       }
 
@@ -121,12 +125,14 @@ export class Comment {
 
       if (result > 0) {
         return getResponse(res, OK, {
-          message: COMMENT_DELETED_SUCCESS,
+          code: COMMENT_DELETED_SUCCESS,
+          message: req.t('COMMENT_DELETED_SUCCESS'),
         });
       }
 
       return getResponse(res, NOT_FOUND, {
-        message: COMMENT_NOT_FOUND,
+        code: COMMENT_NOT_FOUND,
+        message: req.t('COMMENT_NOT_FOUND'),
       });
     } catch (error) {
       return getServerError(res, error.message);
@@ -149,19 +155,22 @@ export class Comment {
 
       if (!comment) {
         return getResponse(res, NOT_FOUND, {
-          message: COMMENT_NOT_FOUND,
+          code: COMMENT_NOT_FOUND,
+          message: req.t('COMMENT_NOT_FOUND'),
         });
       }
 
       if (!article) {
         return getResponse(res, NOT_FOUND, {
-          message: ARTICLE_NOT_FOUND,
+          code: ARTICLE_NOT_FOUND,
+          message: req.t('ARTICLE_NOT_FOUND'),
         });
       }
 
       if (comment.get().userId !== userId) {
         return getResponse(res, UNAUTHORIZED, {
-          message: COMMENT_NOT_OWNER,
+          code: COMMENT_NOT_OWNER,
+          message: req.t('COMMENT_NOT_OWNER'),
         });
       }
 

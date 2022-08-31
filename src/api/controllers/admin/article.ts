@@ -59,7 +59,8 @@ export class AdminArticle {
 
       if (article) {
         return getResponse(res, CONFLICT, {
-          message: ARTICLE_EXIST,
+          code: ARTICLE_EXIST,
+          message: req.t('ARTICLE_EXIST'),
         });
       }
 
@@ -103,7 +104,8 @@ export class AdminArticle {
 
       if (!article) {
         return getResponse(res, NOT_FOUND, {
-          message: ARTICLE_NOT_FOUND,
+          code: ARTICLE_NOT_FOUND,
+          message: req.t('ARTICLE_NOT_FOUND'),
         });
       }
 
@@ -144,7 +146,8 @@ export class AdminArticle {
 
     if (!password) {
       return getResponse(res, UNAUTHORIZED, {
-        message: PASSWORD_REQUIRED,
+        code: PASSWORD_REQUIRED,
+        message: req.t('PASSWORD_REQUIRED'),
       });
     }
 
@@ -156,7 +159,8 @@ export class AdminArticle {
       });
       if (!admin) {
         return getResponse(res, UNAUTHORIZED, {
-          message: USERNAME_EMAIL_INVALID,
+          code: USERNAME_EMAIL_INVALID,
+          message: req.t('USERNAME_EMAIL_INVALID'),
         });
       }
 
@@ -164,7 +168,8 @@ export class AdminArticle {
 
       if (!isPasswordValid) {
         return getResponse(res, FORBIDDEN, {
-          message: PASSWORD_INVALID,
+          code: PASSWORD_INVALID,
+          message: req.t('PASSWORD_INVALID'),
         });
       }
 
@@ -172,13 +177,15 @@ export class AdminArticle {
 
       if (!article) {
         return getResponse(res, NOT_FOUND, {
-          message: ARTICLE_NOT_FOUND,
+          code: ARTICLE_NOT_FOUND,
+          message: req.t('ARTICLE_NOT_FOUND'),
         });
       }
 
       if (article.get().active) {
         return getResponse(res, CONFLICT, {
-          message: ARTICLE_ALREADY_ACTIVE,
+          code: ARTICLE_ALREADY_ACTIVE,
+          message: req.t('ARTICLE_ALREADY_ACTIVE'),
         });
       }
 
@@ -207,7 +214,8 @@ export class AdminArticle {
 
     if (!password) {
       return getResponse(res, UNAUTHORIZED, {
-        message: PASSWORD_REQUIRED,
+        code: PASSWORD_REQUIRED,
+        message: req.t('PASSWORD_REQUIRED'),
       });
     }
 
@@ -219,7 +227,8 @@ export class AdminArticle {
       });
       if (!admin) {
         return getResponse(res, UNAUTHORIZED, {
-          message: USERNAME_EMAIL_INVALID,
+          code: USERNAME_EMAIL_INVALID,
+          message: req.t('USERNAME_EMAIL_INVALID'),
         });
       }
 
@@ -227,7 +236,8 @@ export class AdminArticle {
 
       if (!isPasswordValid) {
         return getResponse(res, FORBIDDEN, {
-          message: PASSWORD_INVALID,
+          code: PASSWORD_INVALID,
+          message: req.t('PASSWORD_INVALID'),
         });
       }
 
@@ -235,13 +245,15 @@ export class AdminArticle {
 
       if (!article) {
         return getResponse(res, NOT_FOUND, {
-          message: ARTICLE_NOT_FOUND,
+          code: ARTICLE_NOT_FOUND,
+          message: req.t('ARTICLE_NOT_FOUND'),
         });
       }
 
       if (!article.get().active) {
         return getResponse(res, CONFLICT, {
-          message: ARTICLE_ALREADY_INACTIVE,
+          code: ARTICLE_ALREADY_INACTIVE,
+          message: req.t('ARTICLE_ALREADY_INACTIVE'),
         });
       }
 
@@ -270,7 +282,8 @@ export class AdminArticle {
 
     if (!password) {
       return getResponse(res, UNAUTHORIZED, {
-        message: PASSWORD_REQUIRED,
+        code: PASSWORD_REQUIRED,
+        message: req.t('PASSWORD_REQUIRED'),
       });
     }
 
@@ -282,7 +295,8 @@ export class AdminArticle {
       });
       if (!admin) {
         return getResponse(res, UNAUTHORIZED, {
-          message: USERNAME_EMAIL_INVALID,
+          code: USERNAME_EMAIL_INVALID,
+          message: req.t('USERNAME_EMAIL_INVALID'),
         });
       }
 
@@ -290,7 +304,8 @@ export class AdminArticle {
 
       if (!isPasswordValid) {
         return getResponse(res, FORBIDDEN, {
-          message: PASSWORD_INVALID,
+          code: PASSWORD_INVALID,
+          message: req.t('PASSWORD_INVALID'),
         });
       }
 
@@ -298,13 +313,15 @@ export class AdminArticle {
 
       if (!article) {
         return getResponse(res, NOT_FOUND, {
-          message: ARTICLE_NOT_FOUND,
+          code: ARTICLE_NOT_FOUND,
+          message: req.t('ARTICLE_NOT_FOUND'),
         });
       }
 
       await db.Article.destroy({ where: { id: article.get().id } });
       return getResponse(res, OK, {
-        message: ARTICLE_DELETED_SUCCESS,
+        code: ARTICLE_DELETED_SUCCESS,
+        message: req.t('ARTICLE_DELETED_SUCCESS'),
       });
     } catch (error) {
       return getServerError(res, error.message);
@@ -401,7 +418,8 @@ export class AdminArticle {
 
       if (!article) {
         return getResponse(res, NOT_FOUND, {
-          message: ARTICLE_NOT_FOUND,
+          code: ARTICLE_NOT_FOUND,
+          message: req.t('ARTICLE_NOT_FOUND'),
         });
       }
 
