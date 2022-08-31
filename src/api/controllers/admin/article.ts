@@ -79,7 +79,13 @@ export class AdminArticle {
 
       // TODO: send email/notification to all user in the app
 
-      return contentResponse(res, getArticle.get(), CREATED, ARTICLE_CREATED_SUCCESS);
+      return contentResponse(
+        res,
+        getArticle.get(),
+        CREATED,
+        req.t('ARTICLE_CREATED_SUCCESS'),
+        ARTICLE_CREATED_SUCCESS,
+      );
     } catch (error) {
       return getServerError(res, error.message);
     }
@@ -128,7 +134,13 @@ export class AdminArticle {
 
       const getArticle = await getArticleBySlug(res, newSlug, true);
 
-      return contentResponse(res, getArticle.get(), OK, ARTICLE_UPDATED_SUCCESS);
+      return contentResponse(
+        res,
+        getArticle.get(),
+        OK,
+        req.t('ARTICLE_UPDATED_SUCCESS'),
+        ARTICLE_UPDATED_SUCCESS,
+      );
     } catch (error) {
       return getServerError(res, error.message);
     }
@@ -196,7 +208,13 @@ export class AdminArticle {
         { where: { id: article.get().id }, returning: true },
       );
 
-      return contentResponse(res, update[1][0], OK, ARTICLE_APPROVED_SUCCESS);
+      return contentResponse(
+        res,
+        update[1][0],
+        OK,
+        req.t('ARTICLE_APPROVED_SUCCESS'),
+        ARTICLE_APPROVED_SUCCESS,
+      );
     } catch (error) {
       return getServerError(res, error.message);
     }
@@ -264,7 +282,13 @@ export class AdminArticle {
         { where: { id: article.get().id }, returning: true },
       );
 
-      return contentResponse(res, update[1][0], OK, ARTICLE_DISABLED_SUCCESS);
+      return contentResponse(
+        res,
+        update[1][0],
+        OK,
+        req.t('ARTICLE_DISABLED_SUCCESS'),
+        ARTICLE_DISABLED_SUCCESS,
+      );
     } catch (error) {
       return getServerError(res, error.message);
     }

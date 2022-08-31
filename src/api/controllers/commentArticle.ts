@@ -54,7 +54,13 @@ export class Comment {
 
       const comment = await getCommentById(res, result.get().id as number);
 
-      return contentResponse(res, comment, CREATED, COMMENT_CREATED_SUCCESS);
+      return contentResponse(
+        res,
+        comment,
+        CREATED,
+        req.t('COMMENT_CREATED_SUCCESS'),
+        COMMENT_CREATED_SUCCESS,
+      );
     } catch (error) {
       return getServerError(res, error.message);
     }
@@ -182,7 +188,13 @@ export class Comment {
         },
       );
 
-      return contentResponse(res, update[1][0], OK, COMMENT_UPDATED_SUCCESS);
+      return contentResponse(
+        res,
+        update[1][0],
+        OK,
+        req.t('COMMENT_UPDATED_SUCCESS'),
+        COMMENT_UPDATED_SUCCESS,
+      );
     } catch (error) {
       return getServerError(res, error.message);
     }

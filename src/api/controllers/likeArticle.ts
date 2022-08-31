@@ -53,7 +53,13 @@ export class LikeArticle {
 
       const result = await getArticleBySlug(res, slug as string);
 
-      return contentResponse(res, result, CREATED, ARTICLE_LIKED_SUCCESS);
+      return contentResponse(
+        res,
+        result,
+        CREATED,
+        req.t('ARTICLE_LIKED_SUCCESS'),
+        ARTICLE_LIKED_SUCCESS,
+      );
     } catch (error) {
       return getServerError(res, error.message);
     }
@@ -100,7 +106,13 @@ export class LikeArticle {
 
       const result = await getArticleBySlug(res, slug as string);
 
-      return contentResponse(res, result, OK, ARTICLE_UNLIKED_SUCCESS);
+      return contentResponse(
+        res,
+        result,
+        OK,
+        req.t('ARTICLE_UNLIKED_SUCCESS'),
+        ARTICLE_UNLIKED_SUCCESS,
+      );
     } catch (error) {
       return getServerError(res, error.message);
     }

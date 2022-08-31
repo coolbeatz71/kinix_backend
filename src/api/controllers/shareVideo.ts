@@ -58,7 +58,7 @@ export class ShareVideo {
       });
 
       const share = await this.updateVideo(res, video.get().id);
-      return contentResponse(res, share, OK, VIDEO_SHARED_SUCCESS);
+      return contentResponse(res, share, OK, req.t('VIDEO_SHARED_SUCCESS'), VIDEO_SHARED_SUCCESS);
     } catch (error) {
       return getServerError(res, error.message);
     }

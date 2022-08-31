@@ -79,10 +79,11 @@ export const getResponse = (res: Response, status: number, body: IResponseBody):
 /**
  * return the content response to the user
  *
- * @param res
+ * @param res Response
  * @param data article|video
- * @param status
- * @param message
+ * @param status number
+ * @param message string
+ * @param code string
  * @returns Response
  */
 export const contentResponse = (
@@ -90,10 +91,12 @@ export const contentResponse = (
   data: IVideo | IArticle | IComment | IRate | ILike | IOverview | IUser,
   status: number,
   message?: string,
+  code?: string,
 ) =>
   getResponse(res, status, {
-    message,
     data,
+    code,
+    message,
   });
 
 /**
@@ -166,6 +169,7 @@ export const comparePassword = (password: string, hashedPassword: string) =>
  * @param token string
  * @param status number
  * @param message string
+ * @param code string
  * @returns
  */
 export const getUserResponse = (
@@ -174,9 +178,11 @@ export const getUserResponse = (
   token: string,
   status: number,
   message: string,
+  code: string,
 ) =>
   getResponse(res, status, {
     token,
+    code,
     message,
     data: {
       id: user.id,

@@ -90,7 +90,14 @@ export class AdminUser {
 
       // TODO: should send email here for email confirmation with the user default email
 
-      return getUserResponse(res, newUser.get(), '', CREATED, ACCOUNT_CREATED_SUCCESS);
+      return getUserResponse(
+        res,
+        newUser.get(),
+        '',
+        CREATED,
+        req.t('ACCOUNT_CREATED_SUCCESS'),
+        ACCOUNT_CREATED_SUCCESS,
+      );
     } catch (error) {
       return getServerError(res, error.message);
     }
@@ -152,7 +159,14 @@ export class AdminUser {
 
       // TODO: should send email to the user to inform him about the change
 
-      return getUserResponse(res, updatedUser[1][0].get(), '', OK, ACCOUNT_UPDATED_SUCCESS);
+      return getUserResponse(
+        res,
+        updatedUser[1][0].get(),
+        '',
+        OK,
+        req.t('ACCOUNT_UPDATED_SUCCESS'),
+        ACCOUNT_UPDATED_SUCCESS,
+      );
     } catch (error) {
       return getServerError(res, error.message);
     }

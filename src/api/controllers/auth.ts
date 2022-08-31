@@ -99,7 +99,14 @@ export class Auth {
 
       // TODO: should send email here for email confirmation
 
-      return getUserResponse(res, newUser.get(), token, CREATED, ACCOUNT_CREATED_SUCCESS);
+      return getUserResponse(
+        res,
+        newUser.get(),
+        token,
+        CREATED,
+        req.t('CREATED, ACCOUNT_CREATED_SUCCESS'),
+        ACCOUNT_CREATED_SUCCESS,
+      );
     } catch (error) {
       return getServerError(res, error.message);
     }
@@ -165,7 +172,14 @@ export class Auth {
         user.get(),
         user.get().role === ERole.ADMIN || user.get().role === ERole.SUPER_ADMIN,
       );
-      return getUserResponse(res, update[1][0], token, OK, USER_LOGIN_SUCCESS);
+      return getUserResponse(
+        res,
+        update[1][0],
+        token,
+        OK,
+        req.t('USER_LOGIN_SUCCESS'),
+        USER_LOGIN_SUCCESS,
+      );
     } catch (error) {
       return getServerError(res, error.message);
     }
@@ -195,7 +209,7 @@ export class Auth {
         });
       }
 
-      return getUserResponse(res, user, '', OK, GET_USER_SUCCESS);
+      return getUserResponse(res, user, '', OK, req.t('GET_USER_SUCCESS'), GET_USER_SUCCESS);
     } catch (error) {
       return getServerError(res, error.message);
     }
@@ -285,7 +299,14 @@ export class Auth {
         { where: { id }, returning: true },
       );
 
-      return getUserResponse(res, update[1][0].get(), '', OK, ACCOUNT_UPDATED_SUCCESS);
+      return getUserResponse(
+        res,
+        update[1][0].get(),
+        '',
+        OK,
+        req.t('ACCOUNT_UPDATED_SUCCESS'),
+        ACCOUNT_UPDATED_SUCCESS,
+      );
     } catch (error) {
       return getServerError(res, error.message);
     }
@@ -343,7 +364,14 @@ export class Auth {
         { where: { id }, returning: true },
       );
 
-      return getUserResponse(res, update[1][0].get(), '', OK, PASSWORD_CHANGED_SUCCESS);
+      return getUserResponse(
+        res,
+        update[1][0].get(),
+        '',
+        OK,
+        req.t('PASSWORD_CHANGED_SUCCESS'),
+        PASSWORD_CHANGED_SUCCESS,
+      );
     } catch (error) {
       return getServerError(res, error.message);
     }
@@ -383,7 +411,14 @@ export class Auth {
         { where: { id }, returning: true },
       );
 
-      return getUserResponse(res, update[1][0].get(), '', OK, AVATAR_UPDATED_SUCCESS);
+      return getUserResponse(
+        res,
+        update[1][0].get(),
+        '',
+        OK,
+        req.t('AVATAR_UPDATED_SUCCESS'),
+        AVATAR_UPDATED_SUCCESS,
+      );
     } catch (error) {
       return getServerError(res, error.message);
     }

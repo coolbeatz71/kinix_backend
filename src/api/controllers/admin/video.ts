@@ -99,7 +99,13 @@ export class AdminVideo {
       // TODO: should send email/notification to the video owner
       // TODO: send email/notification to all user in the app
 
-      return contentResponse(res, getVideo.get(), CREATED, VIDEO_CREATED_SUCCESS);
+      return contentResponse(
+        res,
+        getVideo.get(),
+        CREATED,
+        req.t('VIDEO_CREATED_SUCCESS'),
+        VIDEO_CREATED_SUCCESS,
+      );
     } catch (error) {
       return getServerError(res, error.message);
     }
@@ -163,7 +169,13 @@ export class AdminVideo {
 
       // TODO: should send email/notification to the video owner
 
-      return contentResponse(res, getVideo.get(), OK, VIDEO_UPDATED_SUCCESS);
+      return contentResponse(
+        res,
+        getVideo.get(),
+        OK,
+        req.t('VIDEO_UPDATED_SUCCESS'),
+        VIDEO_UPDATED_SUCCESS,
+      );
     } catch (error) {
       return getServerError(res, error.message);
     }
@@ -234,7 +246,13 @@ export class AdminVideo {
 
       // TODO: should send email/notification to the video owner
 
-      return contentResponse(res, update[1][0], OK, VIDEO_APPROVED_SUCCESS);
+      return contentResponse(
+        res,
+        update[1][0],
+        OK,
+        req.t('VIDEO_APPROVED_SUCCESS'),
+        VIDEO_APPROVED_SUCCESS,
+      );
     } catch (error) {
       return getServerError(res, error.message);
     }
@@ -303,7 +321,13 @@ export class AdminVideo {
       );
       // TODO: should send email/notification to the video owner
 
-      return contentResponse(res, update[1][0], OK, VIDEO_DISABLED_SUCCESS);
+      return contentResponse(
+        res,
+        update[1][0],
+        OK,
+        req.t('VIDEO_DISABLED_SUCCESS'),
+        VIDEO_DISABLED_SUCCESS,
+      );
     } catch (error) {
       return getServerError(res, error.message);
     }

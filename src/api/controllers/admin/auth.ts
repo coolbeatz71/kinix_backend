@@ -72,7 +72,14 @@ export class AdminAuth {
         user.get(),
         user.get().role === ERole.ADMIN || user.get().role === ERole.SUPER_ADMIN,
       );
-      return getUserResponse(res, update[1][0], token, OK, USER_LOGIN_SUCCESS);
+      return getUserResponse(
+        res,
+        update[1][0],
+        token,
+        OK,
+        req.t('USER_LOGIN_SUCCESS'),
+        USER_LOGIN_SUCCESS,
+      );
     } catch (error) {
       return getServerError(res, error.message);
     }
