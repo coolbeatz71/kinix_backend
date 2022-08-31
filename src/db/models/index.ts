@@ -39,7 +39,7 @@ const db = {
   PromotionPlan: initPromotionPlan(sequelize),
 };
 
-Object.values(db).forEach((model: any) => {
+Object.values(db).forEach((model) => {
   if (model.associate) model.associate(db);
 });
 

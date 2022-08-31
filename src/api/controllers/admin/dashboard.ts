@@ -53,7 +53,7 @@ export class AdminDashboard {
    * @param req Request
    * @param res Response
    */
-  getOverview = async (req: Request, res: Response): Promise<any> => {
+  getOverview = async (req: Request, res: Response): Promise<Response> => {
     try {
       // users overview
       const allUsers = await countTotalUsers(res, EUserStatus.ALL);

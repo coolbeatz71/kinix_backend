@@ -44,7 +44,7 @@ export class AdminArticle {
    * @param req Request
    * @param res Response
    */
-  create = async (req: Request, res: Response): Promise<any> => {
+  create = async (req: Request, res: Response): Promise<Response> => {
     const { title, summary, body, images, tags } = req.body;
     const { id: userId } = req.user as IJwtPayload;
 
@@ -96,7 +96,7 @@ export class AdminArticle {
    * @param req Request
    * @param res Response
    */
-  update = async (req: Request, res: Response): Promise<any> => {
+  update = async (req: Request, res: Response): Promise<Response> => {
     const { slug } = req.params;
     const { id: userId } = req.user as IJwtPayload;
     const { title, summary, body, images, tags } = req.body;
@@ -151,7 +151,7 @@ export class AdminArticle {
    * @param req Request
    * @param res Response
    */
-  approve = async (req: Request, res: Response): Promise<any> => {
+  approve = async (req: Request, res: Response): Promise<Response> => {
     const { slug } = req.params;
     const { password } = req.body;
     const { email } = req.user as IJwtPayload;
@@ -225,7 +225,7 @@ export class AdminArticle {
    * @param req Request
    * @param res Response
    */
-  disable = async (req: Request, res: Response): Promise<any> => {
+  disable = async (req: Request, res: Response): Promise<Response> => {
     const { slug } = req.params;
     const { password } = req.body;
     const { email } = req.user as IJwtPayload;
@@ -299,7 +299,7 @@ export class AdminArticle {
    * @param req Request
    * @param res Response
    */
-  delete = async (req: Request, res: Response): Promise<any> => {
+  delete = async (req: Request, res: Response): Promise<Response> => {
     const { slug } = req.params;
     const { password } = req.body;
     const { email } = req.user as IJwtPayload;
@@ -357,7 +357,7 @@ export class AdminArticle {
    * @param req Request
    * @param res Response
    */
-  getAll = async (req: Request, res: Response): Promise<any> => {
+  getAll = async (req: Request, res: Response): Promise<Response> => {
     const { page = 1, limit = 20, search, status } = req.query;
     const isStatus = !isEmpty(status);
     const isActive = status === lowerCase(EnumStatus.ACTIVE);
@@ -434,7 +434,7 @@ export class AdminArticle {
    * @param req Request
    * @param res Response
    */
-  get = async (req: Request, res: Response): Promise<any> => {
+  get = async (req: Request, res: Response): Promise<Response> => {
     const { slug } = req.params;
 
     try {

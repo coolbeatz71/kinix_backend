@@ -26,7 +26,7 @@ export class AdminAuth {
    * @param req Request
    * @param res Response
    */
-  login = async (req: Request, res: Response): Promise<any> => {
+  login = async (req: Request, res: Response): Promise<Response> => {
     const { credential, password } = req.body;
 
     await new AuthValidator(req).login();

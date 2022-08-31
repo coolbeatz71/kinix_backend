@@ -141,9 +141,9 @@ export const notFoundError = (req: Request, res: Response, _next: NextFunction) 
  * @param error
  * @returns
  */
-export const getServerError = (res: Response, error: any) =>
+export const getServerError = (res: Response, message: string) =>
   getResponse(res, INTERNAL_SERVER_ERROR, {
-    message: error,
+    message,
   });
 
 /**

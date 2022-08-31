@@ -36,7 +36,7 @@ export class ShareVideo {
    * @param req Request
    * @param res Response
    */
-  create = async (req: Request, res: Response): Promise<any> => {
+  create = async (req: Request, res: Response): Promise<Response> => {
     const { slug } = req.params;
     const { id: userId } = req.user as IJwtPayload;
 

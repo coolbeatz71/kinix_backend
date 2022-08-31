@@ -100,7 +100,7 @@ export class Validator {
    * @param label string
    * @returns {void} Promise<void>
    */
-  url = async (req: Request, field: string, label: string): Promise<any> => {
+  url = async (req: Request, field: string, label: string): Promise<void> => {
     await this.empty(req, field, label);
     await check(field).trim().isURL().withMessage(req.t('VALIDATOR_URL', { label })).run(req);
   };

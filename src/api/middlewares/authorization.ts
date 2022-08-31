@@ -1,6 +1,6 @@
 /* eslint-disable consistent-return */
 import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import httpStatus from 'http-status';
 import { config } from 'dotenv';
 import { getResponse } from '../../helpers/api';
@@ -29,7 +29,7 @@ export const verifyToken = async (
   req: Request,
   res: Response,
   next: NextFunction,
-): Promise<any> => {
+): Promise<Response | undefined | void> => {
   const { authorization } = req.headers;
   if (!authorization) {
     return getResponse(res, httpStatus.UNAUTHORIZED, {
@@ -42,7 +42,7 @@ export const verifyToken = async (
 
   try {
     const secret = process.env.JWT_SECRET as string;
-    const jwtPayload: any = jwt.verify(token, secret);
+    const jwtPayload = jwt.verify(token, secret) as JwtPayload;
 
     const user = await db.User.findOne({
       where: { id: jwtPayload.id, email: jwtPayload.email },

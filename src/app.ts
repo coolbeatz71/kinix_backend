@@ -29,11 +29,11 @@ class App {
       .use(backend)
       .use(i18nextMiddleware.LanguageDetector)
       .init({
+        preload: ['fr'],
+        fallbackLng: 'fr',
         backend: {
           loadPath: `${__dirname}/locales/{{lng}}/{{ns}}.json`,
         },
-        fallbackLng: 'fr',
-        preload: ['fr'],
         interpolation: {
           escapeValue: false,
         },
