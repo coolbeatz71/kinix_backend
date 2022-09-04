@@ -1,5 +1,6 @@
 /* eslint-disable consistent-return */
 import { Request } from 'express';
+import i18next from 'i18next';
 import validate from '..';
 
 class ArticleValidator {
@@ -10,9 +11,9 @@ class ArticleValidator {
   }
 
   create = async (): Promise<void> => {
-    await validate.empty(this.req, 'title', this.req.t('LABEL_ARTICLE_TITLE'));
-    await validate.empty(this.req, 'summary', this.req.t('LABEL_ARTICLE_SUMMARY'));
-    await validate.empty(this.req, 'body', this.req.t('LABEL_ARTICLE_BODY'));
+    await validate.empty(this.req, 'title', i18next.t('LABEL_ARTICLE_TITLE'));
+    await validate.empty(this.req, 'summary', i18next.t('LABEL_ARTICLE_SUMMARY'));
+    await validate.empty(this.req, 'body', i18next.t('LABEL_ARTICLE_BODY'));
   };
 }
 

@@ -31,6 +31,7 @@ class App {
       .init({
         preload: ['fr'],
         fallbackLng: 'fr',
+        lowerCaseLng: true,
         backend: {
           loadPath: `${__dirname}/locales/{{lng}}/{{ns}}.json`,
         },
