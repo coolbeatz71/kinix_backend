@@ -1,6 +1,5 @@
 /* eslint-disable consistent-return */
 import { Request } from 'express';
-import i18next from 'i18next';
 import validate from '..';
 
 class CommentValidator {
@@ -11,7 +10,7 @@ class CommentValidator {
   }
 
   create = async (): Promise<void> => {
-    await validate.empty(this.req, 'body', i18next.t('LABEL_COMMENT'));
+    await validate.empty(this.req, 'body', this.req.t('LABEL_COMMENT'));
   };
 }
 
