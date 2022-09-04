@@ -421,7 +421,7 @@ export class AdminVideo {
       const data = await db.Video.findAndCountAll({
         offset,
         limit: size,
-        order: [['updatedAt', 'DESC']],
+        order: [['createdAt', 'DESC']],
         where: { [Op.and]: [{ ...whereSearch, ...whereStatus, ...whereCategory }] },
         attributes: {
           include: [

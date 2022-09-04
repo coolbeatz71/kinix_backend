@@ -194,7 +194,7 @@ export class AdminUser {
         where,
         limit: size,
         offset,
-        order: [['updatedAt', 'DESC']],
+        order: [['createdAt', 'DESC']],
         attributes: { exclude: ['password', 'role'] },
       });
       const result = getPagingData(Number(page), size, data);
@@ -253,7 +253,7 @@ export class AdminUser {
       const data = await db.User.findAndCountAll({
         limit: size,
         offset,
-        order: [['updatedAt', 'DESC']],
+        order: [['createdAt', 'DESC']],
         attributes: { exclude: ['password'] },
         where: { [Op.and]: [{ ...whereSearch, ...whereStatus, ...whereRole, ...where }] },
       });
@@ -308,7 +308,7 @@ export class AdminUser {
       const data = await db.User.findAndCountAll({
         limit: size,
         offset,
-        order: [['updatedAt', 'DESC']],
+        order: [['createdAt', 'DESC']],
         attributes: { exclude: ['password'] },
         where: { [Op.and]: [{ ...whereSearch, ...whereStatus, ...where }] },
       });
