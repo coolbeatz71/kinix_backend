@@ -50,12 +50,20 @@ export class LikeArticle {
         userId,
         articleId: article.get().id,
       });
-
-      const result = await getArticleBySlug(res, slug as string);
+      // updated liked
+      const update = await db.Article.update(
+        {
+          liked: true,
+        },
+        {
+          where: { slug },
+          returning: true,
+        },
+      );
 
       return contentResponse(
         res,
-        result,
+        update[1][0],
         CREATED,
         req.t('ARTICLE_LIKED_SUCCESS'),
         ARTICLE_LIKED_SUCCESS,
@@ -103,12 +111,21 @@ export class LikeArticle {
           articleId: article.get().id,
         },
       });
-
+      // updated liked
       const result = await getArticleBySlug(res, slug as string);
+      const update = await db.Article.update(
+        {
+          liked: result.get().like?.length > 0,
+        },
+        {
+          where: { slug },
+          returning: true,
+        },
+      );
 
       return contentResponse(
         res,
-        result,
+        update[1][0],
         OK,
         req.t('ARTICLE_UNLIKED_SUCCESS'),
         ARTICLE_UNLIKED_SUCCESS,
