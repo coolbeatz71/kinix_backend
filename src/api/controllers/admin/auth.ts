@@ -26,7 +26,7 @@ export class AdminAuth {
    * @param req Request
    * @param res Response
    */
-  login = async (req: Request, res: Response): Promise<any> => {
+  login = async (req: Request, res: Response): Promise<Response> => {
     const { credential, password } = req.body;
 
     await new AuthValidator(req).login();
@@ -42,7 +42,8 @@ export class AdminAuth {
 
       if (!user || ![ERole.ADMIN, ERole.SUPER_ADMIN].includes(user?.role as ERole)) {
         return getResponse(res, UNAUTHORIZED, {
-          message: USERNAME_EMAIL_INVALID,
+          code: USERNAME_EMAIL_INVALID,
+          message: req.t('USERNAME_EMAIL_INVALID'),
         });
       }
 
@@ -50,13 +51,15 @@ export class AdminAuth {
 
       if (!isPasswordValid) {
         return getResponse(res, FORBIDDEN, {
-          message: PASSWORD_INVALID,
+          code: PASSWORD_INVALID,
+          message: req.t('PASSWORD_INVALID'),
         });
       }
 
       if (user.get().active === false) {
         return getResponse(res, FORBIDDEN, {
-          message: USER_BLOCKED,
+          code: USER_BLOCKED,
+          message: req.t('USER_BLOCKED'),
         });
       }
 
@@ -69,7 +72,14 @@ export class AdminAuth {
         user.get(),
         user.get().role === ERole.ADMIN || user.get().role === ERole.SUPER_ADMIN,
       );
-      return getUserResponse(res, update[1][0], token, OK, USER_LOGIN_SUCCESS);
+      return getUserResponse(
+        res,
+        update[1][0],
+        token,
+        OK,
+        req.t('USER_LOGIN_SUCCESS'),
+        USER_LOGIN_SUCCESS,
+      );
     } catch (error) {
       return getServerError(res, error.message);
     }

@@ -65,7 +65,8 @@ export class RateVideo {
 
       if (!video) {
         return getResponse(res, NOT_FOUND, {
-          message: VIDEO_NOT_FOUND,
+          code: VIDEO_NOT_FOUND,
+          message: req.t('VIDEO_NOT_FOUND'),
         });
       }
 
@@ -82,7 +83,13 @@ export class RateVideo {
         });
 
         const updated = await this.updateVideo(res, video.get().id);
-        return contentResponse(res, updated, OK, VIDEO_RATE_UPDATED_SUCCESS);
+        return contentResponse(
+          res,
+          updated,
+          OK,
+          req.t('VIDEO_RATE_UPDATED_SUCCESS'),
+          VIDEO_RATE_UPDATED_SUCCESS,
+        );
       }
 
       await db.Rate.create({
@@ -92,7 +99,13 @@ export class RateVideo {
       });
 
       const created = await this.updateVideo(res, video.get().id);
-      return contentResponse(res, created, CREATED, VIDEO_RATE_CREATED_SUCCESS);
+      return contentResponse(
+        res,
+        created,
+        CREATED,
+        req.t('VIDEO_RATE_CREATED_SUCCESS'),
+        VIDEO_RATE_CREATED_SUCCESS,
+      );
     } catch (error) {
       return getServerError(res, error.message);
     }
@@ -113,7 +126,8 @@ export class RateVideo {
 
       if (!video) {
         return getResponse(res, NOT_FOUND, {
-          message: VIDEO_NOT_FOUND,
+          code: VIDEO_NOT_FOUND,
+          message: req.t('VIDEO_NOT_FOUND'),
         });
       }
 

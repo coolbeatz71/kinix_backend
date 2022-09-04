@@ -79,10 +79,11 @@ export const getResponse = (res: Response, status: number, body: IResponseBody):
 /**
  * return the content response to the user
  *
- * @param res
+ * @param res Response
  * @param data article|video
- * @param status
- * @param message
+ * @param status number
+ * @param message string
+ * @param code string
  * @returns Response
  */
 export const contentResponse = (
@@ -90,10 +91,12 @@ export const contentResponse = (
   data: IVideo | IArticle | IComment | IRate | ILike | IOverview | IUser,
   status: number,
   message?: string,
+  code?: string,
 ) =>
   getResponse(res, status, {
-    message,
     data,
+    code,
+    message,
   });
 
 /**
@@ -126,9 +129,10 @@ export const getSanitizedBody = (obj: IUnknownObject): IUnknownObject => {
  * @param res Response
  * @param _next NextFunction
  */
-export const notFoundError = (_req: Request, res: Response, _next: NextFunction) =>
+export const notFoundError = (req: Request, res: Response, _next: NextFunction) =>
   res.status(NOT_FOUND).json({
-    message: RESOURCE_NOT_FOUND,
+    code: RESOURCE_NOT_FOUND,
+    message: req.t('RESOURCE_NOT_FOUND'),
   });
 
 /**
@@ -137,9 +141,9 @@ export const notFoundError = (_req: Request, res: Response, _next: NextFunction)
  * @param error
  * @returns
  */
-export const getServerError = (res: Response, error: any) =>
+export const getServerError = (res: Response, message: string) =>
   getResponse(res, INTERNAL_SERVER_ERROR, {
-    message: error,
+    message,
   });
 
 /**
@@ -165,6 +169,7 @@ export const comparePassword = (password: string, hashedPassword: string) =>
  * @param token string
  * @param status number
  * @param message string
+ * @param code string
  * @returns
  */
 export const getUserResponse = (
@@ -173,9 +178,11 @@ export const getUserResponse = (
   token: string,
   status: number,
   message: string,
+  code: string,
 ) =>
   getResponse(res, status, {
     token,
+    code,
     message,
     data: {
       id: user.id,

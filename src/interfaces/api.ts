@@ -2,6 +2,7 @@ import ERole from './role';
 
 export interface IResponseBody {
   token?: string;
+  code?: string;
   message?: any;
   data?: any;
 }

@@ -49,7 +49,8 @@ export class Video {
 
       if (!video) {
         return getResponse(res, NOT_FOUND, {
-          message: VIDEO_NOT_FOUND,
+          code: VIDEO_NOT_FOUND,
+          message: req.t('VIDEO_NOT_FOUND'),
         });
       }
 
@@ -178,7 +179,7 @@ export class Video {
    * @param req Request
    * @param res Response
    */
-  getAllTags = async (_req: Request, res: Response): Promise<Response> => {
+  getAllTags = async (req: Request, res: Response): Promise<Response> => {
     try {
       const data = await db.Video.findAll({
         attributes: ['tags'],
@@ -186,7 +187,8 @@ export class Video {
 
       if (!data) {
         return getResponse(res, NOT_FOUND, {
-          message: VIDEO_TAGS_NOT_FOUND,
+          code: VIDEO_TAGS_NOT_FOUND,
+          message: req.t('VIDEO_TAGS_NOT_FOUND'),
         });
       }
 

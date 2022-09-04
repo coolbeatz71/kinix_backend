@@ -6,7 +6,7 @@ import { isEmpty, lowerCase } from 'lodash';
 import { Op } from 'sequelize';
 import {
   ACCOUNT_CREATED_SUCCESS,
-  ACCOUNT_EXIST,
+  EMAIL_TAKEN,
   ACCOUNT_UPDATED_SUCCESS,
   PASSWORD_INVALID,
   PASSWORD_REQUIRED,
@@ -67,13 +67,15 @@ export class AdminUser {
 
       if (isUserNameExist) {
         return getResponse(res, CONFLICT, {
-          message: USERNAME_TAKEN,
+          code: USERNAME_TAKEN,
+          message: req.t('USERNAME_TAKEN'),
         });
       }
 
       if (isEmailExist) {
         return getResponse(res, CONFLICT, {
-          message: ACCOUNT_EXIST,
+          code: EMAIL_TAKEN,
+          message: req.t('EMAIL_TAKEN'),
         });
       }
 
@@ -88,7 +90,14 @@ export class AdminUser {
 
       // TODO: should send email here for email confirmation with the user default email
 
-      return getUserResponse(res, newUser.get(), '', CREATED, ACCOUNT_CREATED_SUCCESS);
+      return getUserResponse(
+        res,
+        newUser.get(),
+        '',
+        CREATED,
+        req.t('ACCOUNT_CREATED_SUCCESS'),
+        ACCOUNT_CREATED_SUCCESS,
+      );
     } catch (error) {
       return getServerError(res, error.message);
     }
@@ -127,13 +136,15 @@ export class AdminUser {
 
       if (isUserNameExist && isUserNameExist.id !== userId) {
         return getResponse(res, CONFLICT, {
-          message: USERNAME_TAKEN,
+          code: USERNAME_TAKEN,
+          message: req.t('USERNAME_TAKEN'),
         });
       }
 
       if (isEmailExist && isEmailExist.id !== userId) {
         return getResponse(res, CONFLICT, {
-          message: ACCOUNT_EXIST,
+          code: EMAIL_TAKEN,
+          message: req.t('EMAIL_TAKEN'),
         });
       }
 
@@ -148,7 +159,14 @@ export class AdminUser {
 
       // TODO: should send email to the user to inform him about the change
 
-      return getUserResponse(res, updatedUser[1][0].get(), '', OK, ACCOUNT_UPDATED_SUCCESS);
+      return getUserResponse(
+        res,
+        updatedUser[1][0].get(),
+        '',
+        OK,
+        req.t('ACCOUNT_UPDATED_SUCCESS'),
+        ACCOUNT_UPDATED_SUCCESS,
+      );
     } catch (error) {
       return getServerError(res, error.message);
     }
@@ -316,7 +334,8 @@ export class AdminUser {
 
     if (!password) {
       return getResponse(res, UNAUTHORIZED, {
-        message: PASSWORD_REQUIRED,
+        code: PASSWORD_REQUIRED,
+        message: req.t('PASSWORD_REQUIRED'),
       });
     }
 
@@ -328,7 +347,8 @@ export class AdminUser {
       });
       if (!admin) {
         return getResponse(res, UNAUTHORIZED, {
-          message: USERNAME_EMAIL_INVALID,
+          code: USERNAME_EMAIL_INVALID,
+          message: req.t('USERNAME_EMAIL_INVALID'),
         });
       }
 
@@ -336,7 +356,8 @@ export class AdminUser {
 
       if (!isPasswordValid) {
         return getResponse(res, FORBIDDEN, {
-          message: PASSWORD_INVALID,
+          code: PASSWORD_INVALID,
+          message: req.t('PASSWORD_INVALID'),
         });
       }
 
@@ -348,13 +369,15 @@ export class AdminUser {
 
       if (!user) {
         return getResponse(res, NOT_FOUND, {
-          message: USER_NOT_FOUND,
+          code: USER_NOT_FOUND,
+          message: req.t('USER_NOT_FOUND'),
         });
       }
 
       if (user.get().active) {
         return getResponse(res, CONFLICT, {
-          message: USER_ALREADY_ACTIVE,
+          code: USER_ALREADY_ACTIVE,
+          message: req.t('USER_ALREADY_ACTIVE'),
         });
       }
 
@@ -383,7 +406,8 @@ export class AdminUser {
 
     if (!password) {
       return getResponse(res, UNAUTHORIZED, {
-        message: PASSWORD_REQUIRED,
+        code: PASSWORD_REQUIRED,
+        message: req.t('PASSWORD_REQUIRED'),
       });
     }
 
@@ -395,7 +419,8 @@ export class AdminUser {
       });
       if (!admin) {
         return getResponse(res, UNAUTHORIZED, {
-          message: USERNAME_EMAIL_INVALID,
+          code: USERNAME_EMAIL_INVALID,
+          message: req.t('USERNAME_EMAIL_INVALID'),
         });
       }
 
@@ -403,7 +428,8 @@ export class AdminUser {
 
       if (!isPasswordValid) {
         return getResponse(res, FORBIDDEN, {
-          message: PASSWORD_INVALID,
+          code: PASSWORD_INVALID,
+          message: req.t('PASSWORD_INVALID'),
         });
       }
 
@@ -415,13 +441,15 @@ export class AdminUser {
 
       if (!user) {
         return getResponse(res, NOT_FOUND, {
-          message: USER_NOT_FOUND,
+          code: USER_NOT_FOUND,
+          message: req.t('USER_NOT_FOUND'),
         });
       }
 
       if (!user.get().active) {
         return getResponse(res, CONFLICT, {
-          message: USER_ALREADY_BLOCKED,
+          code: USER_ALREADY_BLOCKED,
+          message: req.t('USER_ALREADY_BLOCKED'),
         });
       }
 
@@ -450,7 +478,8 @@ export class AdminUser {
 
     if (!password) {
       return getResponse(res, UNAUTHORIZED, {
-        message: PASSWORD_REQUIRED,
+        code: PASSWORD_REQUIRED,
+        message: req.t('PASSWORD_REQUIRED'),
       });
     }
 
@@ -462,7 +491,8 @@ export class AdminUser {
       });
       if (!admin) {
         return getResponse(res, UNAUTHORIZED, {
-          message: USERNAME_EMAIL_INVALID,
+          code: USERNAME_EMAIL_INVALID,
+          message: req.t('USERNAME_EMAIL_INVALID'),
         });
       }
 
@@ -470,7 +500,8 @@ export class AdminUser {
 
       if (!isPasswordValid) {
         return getResponse(res, FORBIDDEN, {
-          message: PASSWORD_INVALID,
+          code: PASSWORD_INVALID,
+          message: req.t('PASSWORD_INVALID'),
         });
       }
 
@@ -482,13 +513,15 @@ export class AdminUser {
 
       if (!user) {
         return getResponse(res, NOT_FOUND, {
-          message: USER_NOT_FOUND,
+          code: USER_NOT_FOUND,
+          message: req.t('USER_NOT_FOUND'),
         });
       }
 
       await db.User.destroy({ where: { id } });
       return getResponse(res, OK, {
-        message: USER_DELETED_SUCCESS,
+        code: USER_DELETED_SUCCESS,
+        message: req.t('USER_DELETED_SUCCESS'),
       });
     } catch (error) {
       return getServerError(res, error.message);

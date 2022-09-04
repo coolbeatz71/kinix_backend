@@ -10,10 +10,10 @@ class VideoValidator {
   }
 
   create = async (): Promise<void> => {
-    await validate.empty(this.req, 'title', 'video title');
-    await validate.empty(this.req, 'link', 'video link');
-    await validate.empty(this.req, 'userId', 'user id');
-    await validate.empty(this.req, 'categoryId', 'category id');
+    await validate.empty(this.req, 'title', this.req.t('LABEL_VIDEO_TITLE'));
+    await validate.empty(this.req, 'link', this.req.t('LABEL_VIDEO_LINK'));
+    await validate.empty(this.req, 'userId', this.req.t('LABEL_USER_ID'));
+    await validate.empty(this.req, 'categoryId', this.req.t('LABEL_CATEGORY_USER_ID'));
   };
 }
 

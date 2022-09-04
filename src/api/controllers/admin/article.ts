@@ -44,7 +44,7 @@ export class AdminArticle {
    * @param req Request
    * @param res Response
    */
-  create = async (req: Request, res: Response): Promise<any> => {
+  create = async (req: Request, res: Response): Promise<Response> => {
     const { title, summary, body, images, tags } = req.body;
     const { id: userId } = req.user as IJwtPayload;
 
@@ -59,7 +59,8 @@ export class AdminArticle {
 
       if (article) {
         return getResponse(res, CONFLICT, {
-          message: ARTICLE_EXIST,
+          code: ARTICLE_EXIST,
+          message: req.t('ARTICLE_EXIST'),
         });
       }
 
@@ -78,7 +79,13 @@ export class AdminArticle {
 
       // TODO: send email/notification to all user in the app
 
-      return contentResponse(res, getArticle.get(), CREATED, ARTICLE_CREATED_SUCCESS);
+      return contentResponse(
+        res,
+        getArticle.get(),
+        CREATED,
+        req.t('ARTICLE_CREATED_SUCCESS'),
+        ARTICLE_CREATED_SUCCESS,
+      );
     } catch (error) {
       return getServerError(res, error.message);
     }
@@ -89,7 +96,7 @@ export class AdminArticle {
    * @param req Request
    * @param res Response
    */
-  update = async (req: Request, res: Response): Promise<any> => {
+  update = async (req: Request, res: Response): Promise<Response> => {
     const { slug } = req.params;
     const { id: userId } = req.user as IJwtPayload;
     const { title, summary, body, images, tags } = req.body;
@@ -103,7 +110,8 @@ export class AdminArticle {
 
       if (!article) {
         return getResponse(res, NOT_FOUND, {
-          message: ARTICLE_NOT_FOUND,
+          code: ARTICLE_NOT_FOUND,
+          message: req.t('ARTICLE_NOT_FOUND'),
         });
       }
 
@@ -126,7 +134,13 @@ export class AdminArticle {
 
       const getArticle = await getArticleBySlug(res, newSlug, true);
 
-      return contentResponse(res, getArticle.get(), OK, ARTICLE_UPDATED_SUCCESS);
+      return contentResponse(
+        res,
+        getArticle.get(),
+        OK,
+        req.t('ARTICLE_UPDATED_SUCCESS'),
+        ARTICLE_UPDATED_SUCCESS,
+      );
     } catch (error) {
       return getServerError(res, error.message);
     }
@@ -137,14 +151,15 @@ export class AdminArticle {
    * @param req Request
    * @param res Response
    */
-  approve = async (req: Request, res: Response): Promise<any> => {
+  approve = async (req: Request, res: Response): Promise<Response> => {
     const { slug } = req.params;
     const { password } = req.body;
     const { email } = req.user as IJwtPayload;
 
     if (!password) {
       return getResponse(res, UNAUTHORIZED, {
-        message: PASSWORD_REQUIRED,
+        code: PASSWORD_REQUIRED,
+        message: req.t('PASSWORD_REQUIRED'),
       });
     }
 
@@ -156,7 +171,8 @@ export class AdminArticle {
       });
       if (!admin) {
         return getResponse(res, UNAUTHORIZED, {
-          message: USERNAME_EMAIL_INVALID,
+          code: USERNAME_EMAIL_INVALID,
+          message: req.t('USERNAME_EMAIL_INVALID'),
         });
       }
 
@@ -164,7 +180,8 @@ export class AdminArticle {
 
       if (!isPasswordValid) {
         return getResponse(res, FORBIDDEN, {
-          message: PASSWORD_INVALID,
+          code: PASSWORD_INVALID,
+          message: req.t('PASSWORD_INVALID'),
         });
       }
 
@@ -172,13 +189,15 @@ export class AdminArticle {
 
       if (!article) {
         return getResponse(res, NOT_FOUND, {
-          message: ARTICLE_NOT_FOUND,
+          code: ARTICLE_NOT_FOUND,
+          message: req.t('ARTICLE_NOT_FOUND'),
         });
       }
 
       if (article.get().active) {
         return getResponse(res, CONFLICT, {
-          message: ARTICLE_ALREADY_ACTIVE,
+          code: ARTICLE_ALREADY_ACTIVE,
+          message: req.t('ARTICLE_ALREADY_ACTIVE'),
         });
       }
 
@@ -189,7 +208,13 @@ export class AdminArticle {
         { where: { id: article.get().id }, returning: true },
       );
 
-      return contentResponse(res, update[1][0], OK, ARTICLE_APPROVED_SUCCESS);
+      return contentResponse(
+        res,
+        update[1][0],
+        OK,
+        req.t('ARTICLE_APPROVED_SUCCESS'),
+        ARTICLE_APPROVED_SUCCESS,
+      );
     } catch (error) {
       return getServerError(res, error.message);
     }
@@ -200,14 +225,15 @@ export class AdminArticle {
    * @param req Request
    * @param res Response
    */
-  disable = async (req: Request, res: Response): Promise<any> => {
+  disable = async (req: Request, res: Response): Promise<Response> => {
     const { slug } = req.params;
     const { password } = req.body;
     const { email } = req.user as IJwtPayload;
 
     if (!password) {
       return getResponse(res, UNAUTHORIZED, {
-        message: PASSWORD_REQUIRED,
+        code: PASSWORD_REQUIRED,
+        message: req.t('PASSWORD_REQUIRED'),
       });
     }
 
@@ -219,7 +245,8 @@ export class AdminArticle {
       });
       if (!admin) {
         return getResponse(res, UNAUTHORIZED, {
-          message: USERNAME_EMAIL_INVALID,
+          code: USERNAME_EMAIL_INVALID,
+          message: req.t('USERNAME_EMAIL_INVALID'),
         });
       }
 
@@ -227,7 +254,8 @@ export class AdminArticle {
 
       if (!isPasswordValid) {
         return getResponse(res, FORBIDDEN, {
-          message: PASSWORD_INVALID,
+          code: PASSWORD_INVALID,
+          message: req.t('PASSWORD_INVALID'),
         });
       }
 
@@ -235,13 +263,15 @@ export class AdminArticle {
 
       if (!article) {
         return getResponse(res, NOT_FOUND, {
-          message: ARTICLE_NOT_FOUND,
+          code: ARTICLE_NOT_FOUND,
+          message: req.t('ARTICLE_NOT_FOUND'),
         });
       }
 
       if (!article.get().active) {
         return getResponse(res, CONFLICT, {
-          message: ARTICLE_ALREADY_INACTIVE,
+          code: ARTICLE_ALREADY_INACTIVE,
+          message: req.t('ARTICLE_ALREADY_INACTIVE'),
         });
       }
 
@@ -252,7 +282,13 @@ export class AdminArticle {
         { where: { id: article.get().id }, returning: true },
       );
 
-      return contentResponse(res, update[1][0], OK, ARTICLE_DISABLED_SUCCESS);
+      return contentResponse(
+        res,
+        update[1][0],
+        OK,
+        req.t('ARTICLE_DISABLED_SUCCESS'),
+        ARTICLE_DISABLED_SUCCESS,
+      );
     } catch (error) {
       return getServerError(res, error.message);
     }
@@ -263,14 +299,15 @@ export class AdminArticle {
    * @param req Request
    * @param res Response
    */
-  delete = async (req: Request, res: Response): Promise<any> => {
+  delete = async (req: Request, res: Response): Promise<Response> => {
     const { slug } = req.params;
     const { password } = req.body;
     const { email } = req.user as IJwtPayload;
 
     if (!password) {
       return getResponse(res, UNAUTHORIZED, {
-        message: PASSWORD_REQUIRED,
+        code: PASSWORD_REQUIRED,
+        message: req.t('PASSWORD_REQUIRED'),
       });
     }
 
@@ -282,7 +319,8 @@ export class AdminArticle {
       });
       if (!admin) {
         return getResponse(res, UNAUTHORIZED, {
-          message: USERNAME_EMAIL_INVALID,
+          code: USERNAME_EMAIL_INVALID,
+          message: req.t('USERNAME_EMAIL_INVALID'),
         });
       }
 
@@ -290,7 +328,8 @@ export class AdminArticle {
 
       if (!isPasswordValid) {
         return getResponse(res, FORBIDDEN, {
-          message: PASSWORD_INVALID,
+          code: PASSWORD_INVALID,
+          message: req.t('PASSWORD_INVALID'),
         });
       }
 
@@ -298,13 +337,15 @@ export class AdminArticle {
 
       if (!article) {
         return getResponse(res, NOT_FOUND, {
-          message: ARTICLE_NOT_FOUND,
+          code: ARTICLE_NOT_FOUND,
+          message: req.t('ARTICLE_NOT_FOUND'),
         });
       }
 
       await db.Article.destroy({ where: { id: article.get().id } });
       return getResponse(res, OK, {
-        message: ARTICLE_DELETED_SUCCESS,
+        code: ARTICLE_DELETED_SUCCESS,
+        message: req.t('ARTICLE_DELETED_SUCCESS'),
       });
     } catch (error) {
       return getServerError(res, error.message);
@@ -316,7 +357,7 @@ export class AdminArticle {
    * @param req Request
    * @param res Response
    */
-  getAll = async (req: Request, res: Response): Promise<any> => {
+  getAll = async (req: Request, res: Response): Promise<Response> => {
     const { page = 1, limit = 20, search, status } = req.query;
     const isStatus = !isEmpty(status);
     const isActive = status === lowerCase(EnumStatus.ACTIVE);
@@ -393,7 +434,7 @@ export class AdminArticle {
    * @param req Request
    * @param res Response
    */
-  get = async (req: Request, res: Response): Promise<any> => {
+  get = async (req: Request, res: Response): Promise<Response> => {
     const { slug } = req.params;
 
     try {
@@ -401,7 +442,8 @@ export class AdminArticle {
 
       if (!article) {
         return getResponse(res, NOT_FOUND, {
-          message: ARTICLE_NOT_FOUND,
+          code: ARTICLE_NOT_FOUND,
+          message: req.t('ARTICLE_NOT_FOUND'),
         });
       }
 

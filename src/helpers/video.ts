@@ -129,6 +129,14 @@ export const getVideoById = async (res: Response, id: number, isAdmin = false): 
   return video(res, 'id', id, isAdmin);
 };
 
+export const getVideoByTitle = async (
+  res: Response,
+  title: string,
+  isAdmin = false,
+): Promise<any> => {
+  return video(res, 'title', title, isAdmin);
+};
+
 export const getVideoBySlug = async (
   res: Response,
   slug: string,

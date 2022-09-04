@@ -10,7 +10,7 @@ class CommentValidator {
   }
 
   create = async (): Promise<void> => {
-    await validate.empty(this.req, 'body', 'comment');
+    await validate.empty(this.req, 'body', this.req.t('LABEL_COMMENT'));
   };
 }
 

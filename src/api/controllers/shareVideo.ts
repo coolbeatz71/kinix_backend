@@ -36,7 +36,7 @@ export class ShareVideo {
    * @param req Request
    * @param res Response
    */
-  create = async (req: Request, res: Response): Promise<any> => {
+  create = async (req: Request, res: Response): Promise<Response> => {
     const { slug } = req.params;
     const { id: userId } = req.user as IJwtPayload;
 
@@ -45,7 +45,8 @@ export class ShareVideo {
 
       if (!video) {
         return getResponse(res, NOT_FOUND, {
-          message: VIDEO_NOT_FOUND,
+          code: VIDEO_NOT_FOUND,
+          message: req.t('VIDEO_NOT_FOUND'),
         });
       }
 
@@ -57,7 +58,7 @@ export class ShareVideo {
       });
 
       const share = await this.updateVideo(res, video.get().id);
-      return contentResponse(res, share, OK, VIDEO_SHARED_SUCCESS);
+      return contentResponse(res, share, OK, req.t('VIDEO_SHARED_SUCCESS'), VIDEO_SHARED_SUCCESS);
     } catch (error) {
       return getServerError(res, error.message);
     }

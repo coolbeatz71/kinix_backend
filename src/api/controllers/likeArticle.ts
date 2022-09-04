@@ -27,7 +27,8 @@ export class LikeArticle {
       const article = await getArticleBySlug(res, slug);
       if (!article) {
         return getResponse(res, NOT_FOUND, {
-          message: ARTICLE_NOT_FOUND,
+          code: ARTICLE_NOT_FOUND,
+          message: req.t('ARTICLE_NOT_FOUND'),
         });
       }
 
@@ -40,7 +41,8 @@ export class LikeArticle {
 
       if (like) {
         return getResponse(res, CONFLICT, {
-          message: ARTICLE_ALREADY_LIKED,
+          code: ARTICLE_ALREADY_LIKED,
+          message: req.t('ARTICLE_ALREADY_LIKED'),
         });
       }
 
@@ -51,7 +53,13 @@ export class LikeArticle {
 
       const result = await getArticleBySlug(res, slug as string);
 
-      return contentResponse(res, result, CREATED, ARTICLE_LIKED_SUCCESS);
+      return contentResponse(
+        res,
+        result,
+        CREATED,
+        req.t('ARTICLE_LIKED_SUCCESS'),
+        ARTICLE_LIKED_SUCCESS,
+      );
     } catch (error) {
       return getServerError(res, error.message);
     }
@@ -70,7 +78,8 @@ export class LikeArticle {
       const article = await getArticleBySlug(res, slug);
       if (!article) {
         return getResponse(res, NOT_FOUND, {
-          message: ARTICLE_NOT_FOUND,
+          code: ARTICLE_NOT_FOUND,
+          message: req.t('ARTICLE_NOT_FOUND'),
         });
       }
 
@@ -83,7 +92,8 @@ export class LikeArticle {
 
       if (!like) {
         return getResponse(res, CONFLICT, {
-          message: ARTICLE_NOT_LIKED,
+          code: ARTICLE_NOT_LIKED,
+          message: req.t('ARTICLE_NOT_LIKED'),
         });
       }
 
@@ -96,7 +106,13 @@ export class LikeArticle {
 
       const result = await getArticleBySlug(res, slug as string);
 
-      return contentResponse(res, result, OK, ARTICLE_UNLIKED_SUCCESS);
+      return contentResponse(
+        res,
+        result,
+        OK,
+        req.t('ARTICLE_UNLIKED_SUCCESS'),
+        ARTICLE_UNLIKED_SUCCESS,
+      );
     } catch (error) {
       return getServerError(res, error.message);
     }
@@ -132,7 +148,8 @@ export class LikeArticle {
       const article = await getArticleBySlug(res, slug);
       if (!article) {
         return getResponse(res, NOT_FOUND, {
-          message: ARTICLE_NOT_FOUND,
+          code: ARTICLE_NOT_FOUND,
+          message: req.t('ARTICLE_NOT_FOUND'),
         });
       }
 
@@ -163,7 +180,8 @@ export class LikeArticle {
       const article = await getArticleBySlug(res, slug);
       if (!article) {
         return getResponse(res, NOT_FOUND, {
-          message: ARTICLE_NOT_FOUND,
+          code: ARTICLE_NOT_FOUND,
+          message: req.t('ARTICLE_NOT_FOUND'),
         });
       }
       const likes = await getAllLikes(res, article.get().id);
