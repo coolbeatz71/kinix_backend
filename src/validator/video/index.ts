@@ -1,6 +1,5 @@
 /* eslint-disable consistent-return */
 import { Request } from 'express';
-import i18next from 'i18next';
 import validate from '..';
 
 class VideoValidator {
@@ -11,10 +10,10 @@ class VideoValidator {
   }
 
   create = async (): Promise<void> => {
-    await validate.empty(this.req, 'title', i18next.t('LABEL_VIDEO_TITLE'));
-    await validate.empty(this.req, 'link', i18next.t('LABEL_VIDEO_LINK'));
-    await validate.empty(this.req, 'userId', i18next.t('LABEL_USER_ID'));
-    await validate.empty(this.req, 'categoryId', i18next.t('LABEL_CATEGORY_USER_ID'));
+    await validate.empty(this.req, 'title', this.req.t('LABEL_VIDEO_TITLE'));
+    await validate.empty(this.req, 'link', this.req.t('LABEL_VIDEO_LINK'));
+    await validate.empty(this.req, 'userId', this.req.t('LABEL_USER_ID'));
+    await validate.empty(this.req, 'categoryId', this.req.t('LABEL_CATEGORY_USER_ID'));
   };
 }
 
