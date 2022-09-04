@@ -6,7 +6,6 @@ import morgan from 'morgan';
 import i18next from 'i18next';
 import backend from 'i18next-fs-backend';
 import i18nextMiddleware from 'i18next-http-middleware';
-import path from 'path';
 import apiV1 from './api';
 import { notFoundError } from './helpers/api';
 
@@ -34,7 +33,7 @@ class App {
         fallbackLng: 'fr',
         lowerCaseLng: true,
         backend: {
-          loadPath: path.resolve(__dirname, './locales/{{lng}}/translation.json'),
+          loadPath: `${__dirname}/locales/{{lng}}/{{ns}}.json`,
         },
         interpolation: {
           escapeValue: false,
