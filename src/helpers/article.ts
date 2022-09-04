@@ -80,7 +80,7 @@ export const getAllArticle = async (
       offset,
       distinct: true,
       where: { active },
-      order: [['updatedAt', 'DESC']],
+      order: [['createdAt', 'DESC']],
       attributes: {
         include: [
           [

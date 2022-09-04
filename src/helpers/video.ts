@@ -76,7 +76,7 @@ export const getAllVideo = async (
       offset,
       distinct: true,
       where: { active },
-      order: [['updatedAt', 'DESC']],
+      order: [['createdAt', 'DESC']],
       attributes: {
         include: [
           [
@@ -152,7 +152,7 @@ export const getVideoDiscovery = async (res: Response, categoryName: ECategory):
     const result = await db.Video.findAll({
       limit: 3,
       where: { active: true, categoryId: cat.get().id },
-      order: [['updatedAt', 'DESC']],
+      order: [['createdAt', 'DESC']],
       attributes: {
         include: [
           [

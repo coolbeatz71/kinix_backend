@@ -81,7 +81,7 @@ export class Video {
     try {
       const data = await db.Video.findAll({
         limit: Number(limit),
-        order: [['updatedAt', 'DESC']],
+        order: [['createdAt', 'DESC']],
         where: {
           active: true,
           tags: {
@@ -225,7 +225,7 @@ export class Video {
         distinct: true,
         limit: Number(limit),
         offset: Number(offset),
-        order: [['updatedAt', 'DESC']],
+        order: [['createdAt', 'DESC']],
         include: [
           {
             as: 'category',
