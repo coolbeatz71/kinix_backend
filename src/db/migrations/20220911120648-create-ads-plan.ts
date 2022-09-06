@@ -1,5 +1,5 @@
 import { QueryInterface, DataTypes } from 'sequelize';
-import EPromotionPlan from '../../interfaces/promotionPlan';
+import EPromotionPlan from '../../interfaces/promotion';
 
 export const up = async (queryInterface: QueryInterface) => {
   await queryInterface.createTable('ads-plan', {

@@ -1,5 +1,5 @@
 import { Model, Sequelize, DataTypes } from 'sequelize';
-import EPromotionPlan from '../../interfaces/promotionPlan';
+import EPromotionPlan from '../../interfaces/promotion';
 import { IStoryPlan, IModel } from '../../interfaces/model';
 
 export default class StoryPlan extends Model<IStoryPlan> implements IStoryPlan {

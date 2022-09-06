@@ -24,6 +24,18 @@ export class Validator {
   };
 
   /**
+   * validate dates (startDate)
+   * @param req Request
+   * @param field string
+   * @param label string
+   * @returns {void} Promise<void>
+   */
+  date = async (req: Request, field: string, label: string): Promise<void> => {
+    await this.empty(req, field, label);
+    await check(field).isDate().withMessage(req.t('VALIDATOR_DATE', { label })).run(req);
+  };
+
+  /**
    * validate empty fields
    * @param req Request
    * @param field string

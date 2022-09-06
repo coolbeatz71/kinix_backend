@@ -1,5 +1,5 @@
 import { QueryInterface, DataTypes } from 'sequelize';
-import EPromotionPlan from '../../interfaces/promotionPlan';
+import EPromotionPlan from '../../interfaces/promotion';
 
 export const up = async (queryInterface: QueryInterface) => {
   await queryInterface.createTable('story-plan', {
@@ -17,6 +17,7 @@ export const up = async (queryInterface: QueryInterface) => {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    // number of days
     duration: {
       type: DataTypes.INTEGER,
       allowNull: false,

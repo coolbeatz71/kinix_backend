@@ -13,6 +13,8 @@ import {
   IUser,
   IAdsPlan,
   IStoryPlan,
+  IAds,
+  IStory,
 } from '../interfaces/model';
 import { IUnknownObject } from '../interfaces/unknownObject';
 import { RESOURCE_NOT_FOUND } from '../constants/message';
@@ -97,7 +99,18 @@ export const getResponse = (res: Response, status: number, body: IResponseBody):
  */
 export const contentResponse = (
   res: Response,
-  data: IVideo | IArticle | IComment | IRate | ILike | IOverview | IUser | IAdsPlan | IStoryPlan,
+  data:
+    | IVideo
+    | IArticle
+    | IComment
+    | IRate
+    | ILike
+    | IOverview
+    | IUser
+    | IAdsPlan
+    | IStoryPlan
+    | IAds
+    | IStory,
   status: number,
   message?: string,
   code?: string,

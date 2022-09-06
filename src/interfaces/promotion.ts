@@ -5,4 +5,9 @@ enum EPromotionPlan {
   PREMIUM = 'PREMIUM',
 }
 
+export enum EPromotionType {
+  ADS = 'ADS',
+  STORY = 'STORY',
+}
+
 export default EPromotionPlan;

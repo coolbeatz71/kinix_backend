@@ -1,5 +1,5 @@
 import { Model, Sequelize, DataTypes } from 'sequelize';
-import EPromotionPlan from '../../interfaces/promotionPlan';
+import EPromotionPlan from '../../interfaces/promotion';
 import { IAdsPlan, IModel } from '../../interfaces/model';
 
 export default class AdsPlan extends Model<IAdsPlan> implements IAdsPlan {

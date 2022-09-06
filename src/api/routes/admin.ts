@@ -80,9 +80,15 @@ router.get('/admins', superAdminCheck, adminUserCtrl.getAllAdmins);
   |--------------------------------------------------------------------------
   | Content all promotions endpoints for super admin
 */
-router.post('/promotion/ads', superAdminCheck, adminPromotionCtrl.createAdsPlan);
-router.post('/promotion/story', superAdminCheck, adminPromotionCtrl.createStoryPlan);
-router.put('/promotion/ads/:id', superAdminCheck, adminPromotionCtrl.updateAdsPlan);
-router.put('/promotion/story/:id', superAdminCheck, adminPromotionCtrl.updateStoryPlan);
+// subscription plan
+router.post('/promotion/plan/ads', superAdminCheck, adminPromotionCtrl.createAdsPlan);
+router.post('/promotion/plan/story', superAdminCheck, adminPromotionCtrl.createStoryPlan);
+router.put('/promotion/plan/ads/:id', superAdminCheck, adminPromotionCtrl.updateAdsPlan);
+router.put('/promotion/plan/story/:id', superAdminCheck, adminPromotionCtrl.updateStoryPlan);
+// ads and story
+router.post('/promotion/ads', superAdminCheck, adminPromotionCtrl.createAds);
+router.post('/promotion/story', superAdminCheck, adminPromotionCtrl.createStory);
+router.post('/promotion/ads/:id', superAdminCheck, adminPromotionCtrl.updateAds);
+router.post('/promotion/story/:id', superAdminCheck, adminPromotionCtrl.updateStory);
 
 export default router;

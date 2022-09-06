@@ -2,7 +2,7 @@
 import { ModelStatic, Model } from 'sequelize';
 import EProvider from './provider';
 import ERole from './role';
-import EPromotionPlan from './promotionPlan';
+import EPromotionPlan from './promotion';
 import ECategory from './category';
 
 export interface IModel {
@@ -148,8 +148,8 @@ export interface IAds {
   redirectUrl?: string | null;
   image: string;
   active: boolean;
-  startDate?: string;
-  endDate?: string;
+  startDate: string;
+  endDate: string;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -166,8 +166,8 @@ export interface IStory {
   media: string;
   mediaType: string;
   active: boolean;
-  startDate?: string;
-  endDate?: string;
+  startDate: string;
+  endDate: string;
   createdAt?: string;
   updatedAt?: string;
 }
