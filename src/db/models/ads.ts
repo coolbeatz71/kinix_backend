@@ -13,6 +13,8 @@ export default class Ads extends Model<IAds> implements IAds {
   redirectUrl?: string | null;
   image!: string;
   active!: boolean;
+  startDate!: string;
+  endDate!: string;
 
   static associate(models: IModel) {
     /**
@@ -91,6 +93,14 @@ export const initAds = (sequelize: Sequelize) => {
       active: {
         type: DataTypes.BOOLEAN,
         defaultValue: true,
+      },
+      startDate: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      endDate: {
+        type: DataTypes.STRING,
+        allowNull: false,
       },
     },
     {

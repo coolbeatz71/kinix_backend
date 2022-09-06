@@ -173,7 +173,7 @@ export interface IStory {
 }
 
 export interface IAdsPlan {
-  readonly id: number;
+  readonly id?: number;
   name: EPromotionPlan;
   price: number;
   duration: number;

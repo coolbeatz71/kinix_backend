@@ -40,6 +40,28 @@ export class Validator {
   };
 
   /**
+   * validate price (promotion)
+   * @param req Request
+   * @param field string
+   * @returns {void} Promise<void>
+   */
+  price = async (req: Request, field: string): Promise<void> => {
+    await this.empty(req, field, req.t('LABEL_PRICE'));
+    await check(field).isFloat({ min: 0 }).withMessage(req.t('VALIDATOR_PRICE')).run(req);
+  };
+
+  /**
+   * validate duration (promotion)
+   * @param req Request
+   * @param field string
+   * @returns {void} Promise<void>
+   */
+  duration = async (req: Request, field: string): Promise<void> => {
+    await this.empty(req, field, req.t('LABEL_DURATION'));
+    await check(field).isInt({ min: 0 }).withMessage(req.t('VALIDATOR_DURATION')).run(req);
+  };
+
+  /**
    * validate password
    * @param req Request
    * @param field string
@@ -88,7 +110,7 @@ export class Validator {
   rate = async (req: Request, field: string): Promise<void> => {
     await this.empty(req, field, req.t('LABEL_RATE_COUNT'));
     await check(field)
-      .isFloat({ min: 1, max: 5 })
+      .isInt({ min: 1, max: 5 })
       .withMessage(req.t('VALIDATOR_RATE_COUNT'))
       .run(req);
   };

@@ -14,6 +14,8 @@ export default class Story extends Model<IStory> implements IStory {
   media!: string;
   mediaType!: string;
   active!: boolean;
+  startDate!: string;
+  endDate!: string;
 
   static associate(models: IModel) {
     /**
@@ -96,6 +98,14 @@ export const initStory = (sequelize: Sequelize) => {
       active: {
         type: DataTypes.BOOLEAN,
         defaultValue: true,
+      },
+      startDate: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      endDate: {
+        type: DataTypes.STRING,
+        allowNull: false,
       },
     },
     {
