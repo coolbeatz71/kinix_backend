@@ -2,7 +2,7 @@ import { QueryInterface, DataTypes } from 'sequelize';
 import EPromotionPlan from '../../interfaces/promotionPlan';
 
 export const up = async (queryInterface: QueryInterface) => {
-  await queryInterface.createTable('promotionPlan', {
+  await queryInterface.createTable('story-plan', {
     id: {
       allowNull: false,
       autoIncrement: true,
@@ -17,13 +17,9 @@ export const up = async (queryInterface: QueryInterface) => {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    startDate: {
+    duration: {
+      type: DataTypes.INTEGER,
       allowNull: false,
-      type: DataTypes.DATE,
-    },
-    endDate: {
-      allowNull: false,
-      type: DataTypes.DATE,
     },
     createdAt: {
       allowNull: false,
@@ -37,5 +33,5 @@ export const up = async (queryInterface: QueryInterface) => {
 };
 
 export const down = async (queryInterface: QueryInterface) => {
-  await queryInterface.dropTable('promotionPlan');
+  await queryInterface.dropTable('story-plan');
 };

@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+npx enforce-branch-name '^(feat|chore|bug)-[a-z]+(-[a-z]+)*$'

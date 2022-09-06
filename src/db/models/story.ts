@@ -1,17 +1,16 @@
 import { Model, Sequelize, DataTypes } from 'sequelize';
-import { IPromotion, IModel } from '../../interfaces/model';
+import { IStory, IModel } from '../../interfaces/model';
 
-export default class Promotion extends Model<IPromotion> implements IPromotion {
+export default class Story extends Model<IStory> implements IStory {
   readonly id?: number;
   userId!: number | null;
-  categoryId!: number;
-  promotionPlanId!: number;
+  planId!: number;
   slug!: string;
   legend!: string;
   title!: string;
   subTitle!: string;
   body!: string;
-  url?: string | null;
+  redirectUrl?: string | null;
   media!: string;
   mediaType!: string;
   active!: boolean;
@@ -20,34 +19,25 @@ export default class Promotion extends Model<IPromotion> implements IPromotion {
     /**
      * user association
      */
-    Promotion.belongsTo(models.User, {
+    Story.belongsTo(models.User, {
       as: 'user',
       foreignKey: 'userId',
       targetKey: 'id',
     });
 
     /**
-     * category association
+     * story plan association
      */
-    Promotion.belongsTo(models.Category, {
-      as: 'category',
-      foreignKey: 'categoryId',
-      targetKey: 'id',
-    });
-
-    /**
-     * promotion plan association
-     */
-    Promotion.belongsTo(models.PromotionPlan, {
-      as: 'promotionPlan',
-      foreignKey: 'promotionPlanId',
+    Story.belongsTo(models.StoryPlan, {
+      as: 'story-plan',
+      foreignKey: 'planId',
       targetKey: 'id',
     });
   }
 }
 
-export const initPromotion = (sequelize: Sequelize) => {
-  Promotion.init(
+export const initStory = (sequelize: Sequelize) => {
+  Story.init(
     {
       id: {
         type: DataTypes.INTEGER,
@@ -85,7 +75,7 @@ export const initPromotion = (sequelize: Sequelize) => {
         type: DataTypes.TEXT,
         allowNull: false,
       },
-      url: {
+      redirectUrl: {
         type: DataTypes.STRING,
         allowNull: true,
       },
@@ -97,13 +87,10 @@ export const initPromotion = (sequelize: Sequelize) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      categoryId: {
-        type: DataTypes.INTEGER,
-      },
       userId: {
         type: DataTypes.INTEGER,
       },
-      promotionPlanId: {
+      planId: {
         type: DataTypes.INTEGER,
       },
       active: {
@@ -114,9 +101,9 @@ export const initPromotion = (sequelize: Sequelize) => {
     {
       sequelize,
       timestamps: true,
-      tableName: 'promotion',
-      modelName: 'Promotion',
+      tableName: 'story',
+      modelName: 'Story',
     },
   );
-  return Promotion;
+  return Story;
 };

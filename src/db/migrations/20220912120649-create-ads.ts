@@ -1,7 +1,7 @@
 import { QueryInterface, DataTypes } from 'sequelize';
 
 export const up = async (queryInterface: QueryInterface) => {
-  await queryInterface.createTable('promotion', {
+  await queryInterface.createTable('ads', {
     id: {
       primaryKey: true,
       autoIncrement: true,
@@ -38,43 +38,28 @@ export const up = async (queryInterface: QueryInterface) => {
       type: DataTypes.TEXT,
       allowNull: false,
     },
-    url: {
+    redirectUrl: {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    media: {
+    image: {
       type: DataTypes.STRING,
       allowNull: false,
-    },
-    mediaType: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    categoryId: {
-      type: DataTypes.INTEGER,
     },
     userId: {
       type: DataTypes.INTEGER,
-    },
-    from: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    till: {
-      type: DataTypes.STRING,
-      allowNull: false,
     },
     active: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
     },
-    totalPrice: {
-      type: DataTypes.INTEGER,
+    startDate: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
-    paid: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false,
+    endDate: {
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     createdAt: {
       type: DataTypes.DATE,
@@ -88,5 +73,5 @@ export const up = async (queryInterface: QueryInterface) => {
 };
 
 export const down = async (queryInterface: QueryInterface) => {
-  await queryInterface.dropTable('promotion');
+  await queryInterface.dropTable('ads');
 };
