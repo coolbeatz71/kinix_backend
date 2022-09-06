@@ -12,8 +12,10 @@ const countAllPromotions = async (res: Response, status: EPromotionStatus): Prom
             active: status === EPromotionStatus.ACTIVE,
           };
 
-    const result = await db.Promotion.count({ where });
-    return result;
+    const ads = await db.Ads.count({ where });
+    const story = await db.Story.count({ where });
+    const total = ads + story;
+    return total;
   } catch (err) {
     return getServerError(res, err.message);
   }

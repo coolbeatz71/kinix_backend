@@ -2,6 +2,7 @@ import express from 'express';
 import adminArticleCtrl from '../controllers/admin/article';
 import adminAuthCtrl from '../controllers/admin/auth';
 import adminDashboardCtrl from '../controllers/admin/dashboard';
+import adminPromotionCtrl from '../controllers/admin/promotion';
 import adminUserCtrl from '../controllers/admin/user';
 import adminVideoCtrl from '../controllers/admin/video';
 import authCtrl from '../controllers/auth';
@@ -72,5 +73,16 @@ router.put('/users/unblock/:id', adminsCheck, adminUserCtrl.unblock);
 // super admin
 router.delete('/users/:id', superAdminCheck, adminUserCtrl.delete);
 router.get('/admins', superAdminCheck, adminUserCtrl.getAllAdmins);
+
+/*
+  |--------------------------------------------------------------------------
+  | Promotion ENDPOINTS
+  |--------------------------------------------------------------------------
+  | Content all promotions endpoints for super admin
+*/
+router.post('/promotion/ads', superAdminCheck, adminPromotionCtrl.createAdsPlan);
+router.post('/promotion/story', superAdminCheck, adminPromotionCtrl.createStoryPlan);
+router.put('/promotion/ads/:id', superAdminCheck, adminPromotionCtrl.updateAdsPlan);
+router.put('/promotion/story/:id', superAdminCheck, adminPromotionCtrl.updateStoryPlan);
 
 export default router;

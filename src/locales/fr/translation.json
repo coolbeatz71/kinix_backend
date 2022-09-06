@@ -75,6 +75,12 @@
 
   "DASHBOARD_OVERVIEW_SUCCESS": "Le rapport a été chargé avec succès.",
 
+  "PLAN_TAKEN": "Une formule d'abonnement avec ce nom existe déjà.",
+  "ADS_PLAN_CREATED_SUCCESS": "La formule d'abonnement Ads a été créé avec succès.",
+  "STORY_PLAN_CREATED_SUCCESS": "La formule d'abonnement Story a été créé avec succès.",
+  "ADS_PLAN_UPDATED_SUCCESS": "La formule d'abonnement Story a été modifié avec succès.",
+  "STORY_PLAN_UPDATED_SUCCESS": "La formule d'abonnement Ads a été modifié avec succès.",
+
   "VALIDATOR_ALPHANUMERIC": "{{ label }} ne peut contenir que des caractères alphanumériques",
   "VALIDATOR_MIN": "{{ label }} doit comporter au moins 3 caractères",
   "VALIDATOR_EMPTY": "{{ label }} ne doit pas être vide",
@@ -88,6 +94,8 @@
   "VALIDATOR_PHONE_DIAL_CODE": "L'indicatif téléphonique a un format invalide",
   "VALIDATOR_TELEPHONE_BROKEN": "Le téléphone a des informations manquantes",
   "VALIDATOR_TELEPHONE_FORMAT": "Le téléphone a un format invalide",
+  "VALIDATOR_PRICE": "Le prix doit être un nombre. Les valeurs négatives ne sont pas autorisées",
+  "VALIDATOR_DURATION": "Le durée doit être un nombre. Les valeurs négatives ne sont pas autorisées",
 
   "LABEL_PASSWORD": "Le mot de passe",
   "LABEL_EMAIL": "L'adresse e-mail",
@@ -107,5 +115,7 @@
   "LABEL_VIDEO_TITLE": "Le titre de la video",
   "LABEL_VIDEO_LINK": "Le lien de la video",
   "LABEL_USER_ID": "L'identifiant d'utilisateur",
-  "LABEL_CATEGORY_USER_ID": "L'identifiant de catégorie"
+  "LABEL_CATEGORY_USER_ID": "L'identifiant de catégorie",
+  "LABEL_PRICE": "Le prix",
+  "LABEL_DURATION": "La durée"
 }

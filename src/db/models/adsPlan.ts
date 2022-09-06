@@ -1,28 +1,27 @@
 import { Model, Sequelize, DataTypes } from 'sequelize';
 import EPromotionPlan from '../../interfaces/promotionPlan';
-import { IPromotionPlan, IModel } from '../../interfaces/model';
+import { IAdsPlan, IModel } from '../../interfaces/model';
 
-export default class PromotionPlan extends Model<IPromotionPlan> implements IPromotionPlan {
+export default class AdsPlan extends Model<IAdsPlan> implements IAdsPlan {
   readonly id!: number;
   name!: EPromotionPlan;
   price!: number;
-  startDate!: string;
-  endDate!: string;
+  duration!: number;
 
   static associate(models: IModel) {
     /**
-     * promotion association
+     * ads association
      */
-    PromotionPlan.hasMany(models.Promotion, {
-      as: 'promotion',
-      foreignKey: 'promotionId',
+    AdsPlan.hasMany(models.Ads, {
+      as: 'ads',
+      foreignKey: 'planId',
       sourceKey: 'id',
     });
   }
 }
 
-export const initPromotionPlan = (sequelize: Sequelize) => {
-  PromotionPlan.init(
+export const initAdsPlan = (sequelize: Sequelize) => {
+  AdsPlan.init(
     {
       id: {
         type: DataTypes.INTEGER,
@@ -39,21 +38,17 @@ export const initPromotionPlan = (sequelize: Sequelize) => {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
-      startDate: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      endDate: {
-        type: DataTypes.STRING,
+      duration: {
+        type: DataTypes.INTEGER,
         allowNull: false,
       },
     },
     {
       sequelize,
       timestamps: true,
-      tableName: 'promotionPlan',
-      modelName: 'PromotionPlan',
+      tableName: 'ads-plan',
+      modelName: 'AdsPlan',
     },
   );
-  return PromotionPlan;
+  return AdsPlan;
 };

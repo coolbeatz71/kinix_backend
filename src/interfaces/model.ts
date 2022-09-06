@@ -16,8 +16,10 @@ export interface IModel {
   Category: ModelStatic<Model<ICategory, any>>;
   Share: ModelStatic<Model<IShare, any>>;
   Rate: ModelStatic<Model<IRate, any>>;
-  Promotion: ModelStatic<Model<IPromotion, any>>;
-  PromotionPlan: ModelStatic<Model<IPromotionPlan, any>>;
+  Ads: ModelStatic<Model<IAds, any>>;
+  AdsPlan: ModelStatic<Model<IAdsPlan, any>>;
+  Story: ModelStatic<Model<IStory, any>>;
+  StoryPlan: ModelStatic<Model<IStoryPlan, any>>;
 }
 
 export interface IUser {
@@ -134,30 +136,48 @@ export interface IShare {
   updatedAt?: string;
 }
 
-export interface IPromotion {
+export interface IAds {
   readonly id?: number;
   userId: number | null;
-  categoryId: number;
-  promotionPlanId: number;
+  planId: number;
   slug: string;
   legend: string;
   title: string;
   subTitle: string;
   body: string;
-  url?: string | null;
+  redirectUrl?: string | null;
+  image: string;
+  active: boolean;
+  startDate?: string;
+  endDate?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+export interface IStory {
+  readonly id?: number;
+  userId: number | null;
+  planId: number;
+  slug: string;
+  legend: string;
+  title: string;
+  subTitle: string;
+  body: string;
+  redirectUrl?: string | null;
   media: string;
   mediaType: string;
   active: boolean;
+  startDate?: string;
+  endDate?: string;
   createdAt?: string;
   updatedAt?: string;
 }
 
-export interface IPromotionPlan {
-  readonly id: number;
+export interface IAdsPlan {
+  readonly id?: number;
   name: EPromotionPlan;
   price: number;
-  startDate: string;
-  endDate: string;
+  duration: number;
   createdAt?: string;
   updatedAt?: string;
 }
+export type IStoryPlan = IAdsPlan;

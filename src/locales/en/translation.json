@@ -73,6 +73,12 @@
 
   "VIDEO_SHARED_SUCCESS": "Thank you for sharing the video. We appreciate your support",
 
+  "PLAN_TAKEN": "A subscription plan with this name already exists.",
+  "ADS_PLAN_CREATED_SUCCESS": "Ads subscription plan has been created successfully.",
+  "STORY_PLAN_CREATED_SUCCESS": "Story subscription plan has been created successfully.",
+  "ADS_PLAN_UPDATED_SUCCESS": "Ads subscription plan has been updated successfully.",
+  "STORY_PLAN_UPDATED_SUCCESS": "Story subscription plan has been updated successfully.",
+
   "DASHBOARD_OVERVIEW_SUCCESS": "The report has been loaded successfully.",
 
   "VALIDATOR_ALPHANUMERIC": "{{ label }} can only contain alphanumeric characters",
@@ -88,6 +94,8 @@
   "VALIDATOR_PHONE_DIAL_CODE": "Phone dial code has an invalid format",
   "VALIDATOR_TELEPHONE_BROKEN": "Telephone has missing information",
   "VALIDATOR_TELEPHONE_FORMAT": "Telephone has an invalid format",
+  "VALIDATOR_PRICE": "Price must be a number. Negative values are not allowed",
+  "VALIDATOR_DURATION": "Duration must be a number. Negative values are not allowed",
 
   "LABEL_PASSWORD": "Password",
   "LABEL_EMAIL": "Email address",
@@ -107,5 +115,7 @@
   "LABEL_VIDEO_TITLE": "Video title",
   "LABEL_VIDEO_LINK": "Video link",
   "LABEL_USER_ID": "User ID",
-  "LABEL_CATEGORY_USER_ID": "Category ID"
+  "LABEL_CATEGORY_USER_ID": "Category ID",
+  "LABEL_PRICE": "Price",
+  "LABEL_DURATION": "Duration"
 }

@@ -155,6 +155,10 @@ export class Comment {
     const { slug, id } = req.params;
     const { id: userId } = req.user as IJwtPayload;
 
+    await new CommentValidator(req).create();
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) return getValidationError(res, errors);
+
     try {
       const article = await getArticleBySlug(res, slug);
       const comment = await getCommentById(res, Number(id));

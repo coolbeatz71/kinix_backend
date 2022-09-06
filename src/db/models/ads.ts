@@ -1,53 +1,44 @@
 import { Model, Sequelize, DataTypes } from 'sequelize';
-import { IPromotion, IModel } from '../../interfaces/model';
+import { IAds, IModel } from '../../interfaces/model';
 
-export default class Promotion extends Model<IPromotion> implements IPromotion {
+export default class Ads extends Model<IAds> implements IAds {
   readonly id?: number;
   userId!: number | null;
-  categoryId!: number;
-  promotionPlanId!: number;
+  planId!: number;
   slug!: string;
   legend!: string;
   title!: string;
   subTitle!: string;
   body!: string;
-  url?: string | null;
-  media!: string;
-  mediaType!: string;
+  redirectUrl?: string | null;
+  image!: string;
   active!: boolean;
+  startDate!: string;
+  endDate!: string;
 
   static associate(models: IModel) {
     /**
      * user association
      */
-    Promotion.belongsTo(models.User, {
+    Ads.belongsTo(models.User, {
       as: 'user',
       foreignKey: 'userId',
       targetKey: 'id',
     });
 
     /**
-     * category association
+     * ads plan association
      */
-    Promotion.belongsTo(models.Category, {
-      as: 'category',
-      foreignKey: 'categoryId',
-      targetKey: 'id',
-    });
-
-    /**
-     * promotion plan association
-     */
-    Promotion.belongsTo(models.PromotionPlan, {
-      as: 'promotionPlan',
-      foreignKey: 'promotionPlanId',
+    Ads.belongsTo(models.AdsPlan, {
+      as: 'ads-plan',
+      foreignKey: 'planId',
       targetKey: 'id',
     });
   }
 }
 
-export const initPromotion = (sequelize: Sequelize) => {
-  Promotion.init(
+export const initAds = (sequelize: Sequelize) => {
+  Ads.init(
     {
       id: {
         type: DataTypes.INTEGER,
@@ -85,38 +76,39 @@ export const initPromotion = (sequelize: Sequelize) => {
         type: DataTypes.TEXT,
         allowNull: false,
       },
-      url: {
+      redirectUrl: {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      media: {
+      image: {
         type: DataTypes.STRING,
         allowNull: false,
-      },
-      mediaType: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      categoryId: {
-        type: DataTypes.INTEGER,
       },
       userId: {
         type: DataTypes.INTEGER,
       },
-      promotionPlanId: {
+      planId: {
         type: DataTypes.INTEGER,
       },
       active: {
         type: DataTypes.BOOLEAN,
         defaultValue: true,
       },
+      startDate: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      endDate: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
     },
     {
       sequelize,
       timestamps: true,
-      tableName: 'promotion',
-      modelName: 'Promotion',
+      tableName: 'ads',
+      modelName: 'Ads',
     },
   );
-  return Promotion;
+  return Ads;
 };

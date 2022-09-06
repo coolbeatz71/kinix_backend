@@ -4,7 +4,16 @@ import { NextFunction, Request, Response } from 'express';
 import slugify from '@sindresorhus/slugify';
 import { config } from 'dotenv';
 import { IResponseBody } from '../interfaces/api';
-import { IVideo, IArticle, IComment, IRate, ILike, IUser } from '../interfaces/model';
+import {
+  IVideo,
+  IArticle,
+  IComment,
+  IRate,
+  ILike,
+  IUser,
+  IAdsPlan,
+  IStoryPlan,
+} from '../interfaces/model';
 import { IUnknownObject } from '../interfaces/unknownObject';
 import { RESOURCE_NOT_FOUND } from '../constants/message';
 import Video from '../db/models/video';
@@ -88,7 +97,7 @@ export const getResponse = (res: Response, status: number, body: IResponseBody):
  */
 export const contentResponse = (
   res: Response,
-  data: IVideo | IArticle | IComment | IRate | ILike | IOverview | IUser,
+  data: IVideo | IArticle | IComment | IRate | ILike | IOverview | IUser | IAdsPlan | IStoryPlan,
   status: number,
   message?: string,
   code?: string,
