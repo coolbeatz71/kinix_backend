@@ -1,5 +1,5 @@
 import { Model, Sequelize, DataTypes } from 'sequelize';
-import EPromotionPlan from '../../interfaces/promotionPlan';
+import EPromotionPlan from '../../interfaces/promotion';
 import { IStoryPlan, IModel } from '../../interfaces/model';
 
 export default class StoryPlan extends Model<IStoryPlan> implements IStoryPlan {
@@ -46,7 +46,7 @@ export const initStoryPlan = (sequelize: Sequelize) => {
     {
       sequelize,
       timestamps: true,
-      tableName: 'story-plan',
+      tableName: 'story_plan',
       modelName: 'StoryPlan',
     },
   );

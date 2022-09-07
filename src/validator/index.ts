@@ -1,6 +1,8 @@
+import dayjs from 'dayjs';
 import { Request } from 'express';
 import { check } from 'express-validator';
 import { PhoneNumberUtil } from 'google-libphonenumber';
+import { isDate } from 'lodash';
 import countryList from '../constants/countries';
 import { ICountryObject, ICountryParams } from '../interfaces/countryObject';
 
@@ -20,6 +22,25 @@ export class Validator {
       .withMessage(req.t('VALIDATOR_ALPHANUMERIC', { label }))
       .isLength({ min: 3 })
       .withMessage(req.t('VALIDATOR_MIN', { label }))
+      .run(req);
+  };
+
+  /**
+   * validate dates (startDate)
+   * @param req Request
+   * @param field string
+   * @param label string
+   * @returns {void} Promise<void>
+   */
+  date = async (req: Request, field: string, label: string): Promise<void> => {
+    await this.empty(req, field, label);
+    await check(field)
+      .custom((value) => {
+        const date = dayjs(value).toDate();
+        return isDate(date)
+          ? Promise.resolve()
+          : Promise.reject(new Error(req.t('VALIDATOR_DATE', { label })));
+      })
       .run(req);
   };
 

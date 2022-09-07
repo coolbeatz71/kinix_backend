@@ -30,7 +30,7 @@ export default class Ads extends Model<IAds> implements IAds {
      * ads plan association
      */
     Ads.belongsTo(models.AdsPlan, {
-      as: 'ads-plan',
+      as: 'ads_plan',
       foreignKey: 'planId',
       targetKey: 'id',
     });

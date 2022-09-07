@@ -74,10 +74,27 @@
   "VIDEO_SHARED_SUCCESS": "Thank you for sharing the video. We appreciate your support",
 
   "PLAN_TAKEN": "A subscription plan with this name already exists.",
+  "PLAN_NOT_FOUND": "The subscription plan cannot be found. Please verify your information.",
+  "ADS_NOT_FOUND": "This ads cannot be found. Please verify your information.",
+  "STORY_NOT_FOUND": "This story cannot be found. Please verify your information.",
   "ADS_PLAN_CREATED_SUCCESS": "Ads subscription plan has been created successfully.",
   "STORY_PLAN_CREATED_SUCCESS": "Story subscription plan has been created successfully.",
   "ADS_PLAN_UPDATED_SUCCESS": "Ads subscription plan has been updated successfully.",
   "STORY_PLAN_UPDATED_SUCCESS": "Story subscription plan has been updated successfully.",
+  "ADS_CREATED_SUCCESS": "Ads has been created successfully.",
+  "STORY_CREATED_SUCCESS": "Story has been created successfully.",
+  "ADS_UPDATED_SUCCESS": "Ads has been updated successfully.",
+  "STORY_UPDATED_SUCCESS": "Story has been updated successfully.",
+  "ADS_DELETED_SUCCESS": "This ads has been successfully deleted.",
+  "STORY_DELETED_SUCCESS": "This story has been successfully deleted.",
+  "ADS_DISABLED_SUCCESS": "This ads has been successfully disabled.",
+  "STORY_DISABLED_SUCCESS": "This story has been successfully disabled.",
+  "ADS_ACTIVATED_SUCCESS": "This ads has been successfully enabled.",
+  "STORY_ACTIVATED_SUCCESS": "This story has been successfully enabled.",
+  "ADS_ALREADY_INACTIVE": "Oops! This ads is already disabled.",
+  "ADS_ALREADY_ACTIVE": "Oops! This ads is already enabled.",
+  "STORY_ALREADY_INACTIVE": "Oops! This story is already disabled.",
+  "STORY_ALREADY_ACTIVE": "Oops! This story is already enabled.",
 
   "DASHBOARD_OVERVIEW_SUCCESS": "The report has been loaded successfully.",
 
@@ -96,6 +113,7 @@
   "VALIDATOR_TELEPHONE_FORMAT": "Telephone has an invalid format",
   "VALIDATOR_PRICE": "Price must be a number. Negative values are not allowed",
   "VALIDATOR_DURATION": "Duration must be a number. Negative values are not allowed",
+  "VALIDATOR_DATE": "{{ label }} must be a valid date",
 
   "LABEL_PASSWORD": "Password",
   "LABEL_EMAIL": "Email address",
@@ -117,5 +135,14 @@
   "LABEL_USER_ID": "User ID",
   "LABEL_CATEGORY_USER_ID": "Category ID",
   "LABEL_PRICE": "Price",
-  "LABEL_DURATION": "Duration"
+  "LABEL_DURATION": "Duration",
+  "LABEL_PROMOTION_TITLE": "Title",
+  "LABEL_PROMOTION_LEGEND": "Legend",
+  "LABEL_PROMOTION_SUBTITLE": "Sub title",
+  "LABEL_PROMOTION_BODY": "Body",
+  "LABEL_PROMOTION_URL": "Redirect URL",
+  "LABEL_ADS_IMAGE": "Picture URL",
+  "LABEL_PROMOTION_STARTDATE": "Start date",
+  "LABEL_STORY_MEDIA": "Media",
+  "LABEL_STORY_MEDIA_TYPE": "Media type"
 }

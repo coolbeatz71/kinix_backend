@@ -1,8 +1,8 @@
 import { QueryInterface, DataTypes } from 'sequelize';
-import EPromotionPlan from '../../interfaces/promotionPlan';
+import EPromotionPlan from '../../interfaces/promotion';
 
 export const up = async (queryInterface: QueryInterface) => {
-  await queryInterface.createTable('ads-plan', {
+  await queryInterface.createTable('ads_plan', {
     id: {
       allowNull: false,
       autoIncrement: true,
@@ -34,5 +34,5 @@ export const up = async (queryInterface: QueryInterface) => {
 };
 
 export const down = async (queryInterface: QueryInterface) => {
-  await queryInterface.dropTable('ads-plan');
+  await queryInterface.dropTable('ads_plan');
 };

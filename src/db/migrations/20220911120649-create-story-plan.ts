@@ -1,8 +1,8 @@
 import { QueryInterface, DataTypes } from 'sequelize';
-import EPromotionPlan from '../../interfaces/promotionPlan';
+import EPromotionPlan from '../../interfaces/promotion';
 
 export const up = async (queryInterface: QueryInterface) => {
-  await queryInterface.createTable('story-plan', {
+  await queryInterface.createTable('story_plan', {
     id: {
       allowNull: false,
       autoIncrement: true,
@@ -17,6 +17,7 @@ export const up = async (queryInterface: QueryInterface) => {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    // number of days
     duration: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -33,5 +34,5 @@ export const up = async (queryInterface: QueryInterface) => {
 };
 
 export const down = async (queryInterface: QueryInterface) => {
-  await queryInterface.dropTable('story-plan');
+  await queryInterface.dropTable('story_plan');
 };

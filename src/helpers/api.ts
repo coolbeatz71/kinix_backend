@@ -13,6 +13,8 @@ import {
   IUser,
   IAdsPlan,
   IStoryPlan,
+  IAds,
+  IStory,
 } from '../interfaces/model';
 import { IUnknownObject } from '../interfaces/unknownObject';
 import { RESOURCE_NOT_FOUND } from '../constants/message';
@@ -20,6 +22,10 @@ import Video from '../db/models/video';
 import Article from '../db/models/article';
 import IOverview from '../interfaces/overview';
 import User from '../db/models/user';
+import Ads from '../db/models/ads';
+import Story from '../db/models/story';
+import AdsPlan from '../db/models/adsPlan';
+import StoryPlan from '../db/models/storyPlan';
 
 config();
 
@@ -64,7 +70,7 @@ export const getPagingData = (
   page: number,
   limit: number,
   data: {
-    rows: Video[] | Article[] | User[];
+    rows: Video[] | Article[] | User[] | Ads[] | Story[] | AdsPlan[] | StoryPlan[];
     count: number | any;
   },
 ): IUnknownObject => {
@@ -97,7 +103,18 @@ export const getResponse = (res: Response, status: number, body: IResponseBody):
  */
 export const contentResponse = (
   res: Response,
-  data: IVideo | IArticle | IComment | IRate | ILike | IOverview | IUser | IAdsPlan | IStoryPlan,
+  data:
+    | IVideo
+    | IArticle
+    | IComment
+    | IRate
+    | ILike
+    | IOverview
+    | IUser
+    | IAdsPlan
+    | IStoryPlan
+    | IAds
+    | IStory,
   status: number,
   message?: string,
   code?: string,

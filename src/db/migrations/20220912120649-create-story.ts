@@ -53,6 +53,9 @@ export const up = async (queryInterface: QueryInterface) => {
     userId: {
       type: DataTypes.INTEGER,
     },
+    planId: {
+      type: DataTypes.INTEGER,
+    },
     active: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
