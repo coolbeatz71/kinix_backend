@@ -4,18 +4,16 @@ import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import { CONFLICT, CREATED, FORBIDDEN, NOT_FOUND, OK, UNAUTHORIZED } from 'http-status';
 import {
-  ADS_CREATED_SUCCESS,
-  ADS_DELETED_SUCCESS,
-  ADS_NOT_FOUND,
-  ADS_PLAN_CREATED_SUCCESS,
-  ADS_PLAN_UPDATED_SUCCESS,
-  ADS_UPDATED_SUCCESS,
   PASSWORD_INVALID,
   PASSWORD_REQUIRED,
   PLAN_NOT_FOUND,
   PLAN_TAKEN,
+  STORY_ACTIVATED_SUCCESS,
+  STORY_ALREADY_ACTIVE,
+  STORY_ALREADY_INACTIVE,
   STORY_CREATED_SUCCESS,
   STORY_DELETED_SUCCESS,
+  STORY_DISABLED_SUCCESS,
   STORY_NOT_FOUND,
   STORY_PLAN_CREATED_SUCCESS,
   STORY_PLAN_UPDATED_SUCCESS,
@@ -32,62 +30,18 @@ import {
   getServerError,
   getValidationError,
 } from '../../../helpers/api';
-import { getAdsPlanById, getStoryPlanById } from '../../../helpers/promotion';
+import { getStoryPlanById } from '../../../helpers/promotion';
 import { getUserById } from '../../../helpers/user';
 import { IJwtPayload } from '../../../interfaces/api';
 import PromotionValidator from '../../../validator/promotion';
 
-export class AdminPromotion {
-  /**
-   * controller to create ads plan
-   * @param req Request
-   * @param res Response
-   */
-  createAdsPlan = async (req: Request, res: Response): Promise<Response> => {
-    const { name, price, duration } = req.body;
-
-    await new PromotionValidator(req).createPlan();
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) return getValidationError(res, errors);
-
-    try {
-      const plan = await db.AdsPlan.findOne({
-        where: {
-          name,
-        },
-      });
-
-      if (plan) {
-        return getResponse(res, CONFLICT, {
-          code: PLAN_TAKEN,
-          message: req.t('PLAN_TAKEN'),
-        });
-      }
-
-      const newAdsPlan = await db.AdsPlan.create({
-        name,
-        price,
-        duration,
-      });
-
-      return contentResponse(
-        res,
-        newAdsPlan,
-        CREATED,
-        req.t('ADS_PLAN_CREATED_SUCCESS'),
-        ADS_PLAN_CREATED_SUCCESS,
-      );
-    } catch (error) {
-      return getServerError(res, error.message);
-    }
-  };
-
+export class AdminStory {
   /**
    * controller to create story plan
    * @param req Request
    * @param res Response
    */
-  createStoryPlan = async (req: Request, res: Response): Promise<Response> => {
+  createPlan = async (req: Request, res: Response): Promise<Response> => {
     const { name, price, duration } = req.body;
 
     await new PromotionValidator(req).createPlan();
@@ -127,62 +81,11 @@ export class AdminPromotion {
   };
 
   /**
-   * controller to update ads plan
-   * @param req Request
-   * @param res Response
-   */
-  updateAdsPlan = async (req: Request, res: Response): Promise<Response> => {
-    const { id } = req.params;
-    const { name, price, duration } = req.body;
-
-    await new PromotionValidator(req).createPlan();
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) return getValidationError(res, errors);
-
-    try {
-      const plan = await db.AdsPlan.findOne({
-        where: {
-          id,
-        },
-      });
-
-      if (!plan) {
-        return getResponse(res, NOT_FOUND, {
-          code: PLAN_NOT_FOUND,
-          message: req.t('PLAN_NOT_FOUND'),
-        });
-      }
-
-      const updated = await db.AdsPlan.update(
-        {
-          name,
-          price,
-          duration,
-        },
-        {
-          where: { id },
-          returning: true,
-        },
-      );
-
-      return contentResponse(
-        res,
-        updated[1][0],
-        OK,
-        req.t('ADS_PLAN_UPDATED_SUCCESS'),
-        ADS_PLAN_UPDATED_SUCCESS,
-      );
-    } catch (error) {
-      return getServerError(res, error.message);
-    }
-  };
-
-  /**
    * controller to update story plan
    * @param req Request
    * @param res Response
    */
-  updateStoryPlan = async (req: Request, res: Response): Promise<Response> => {
+  updatePlan = async (req: Request, res: Response): Promise<Response> => {
     const { id } = req.params;
     const { name, price, duration } = req.body;
 
@@ -229,72 +132,11 @@ export class AdminPromotion {
   };
 
   /**
-   * controller to create an ads
-   * @param req Request
-   * @param res Response
-   */
-  createAds = async (req: Request, res: Response): Promise<Response> => {
-    const { userId, planId, legend, title, subTitle, body, redirectUrl, image, startDate } =
-      req.body;
-
-    await new PromotionValidator(req).createAds();
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) return getValidationError(res, errors);
-
-    try {
-      const user = await getUserById(res, userId);
-      const plan = await getAdsPlanById(res, planId);
-
-      if (!user) {
-        return getResponse(res, NOT_FOUND, {
-          code: USER_NOT_FOUND,
-          message: req.t('USER_NOT_FOUND'),
-        });
-      }
-
-      if (!plan) {
-        return getResponse(res, NOT_FOUND, {
-          code: PLAN_NOT_FOUND,
-          message: req.t('PLAN_NOT_FOUND'),
-        });
-      }
-
-      const endDate = dayjs(startDate).add(plan.get().duration, 'day').format();
-
-      const slug = await generateSlug(title);
-      const newAds = await db.Ads.create({
-        slug,
-        body,
-        title,
-        image,
-        userId,
-        planId,
-        legend,
-        endDate,
-        subTitle,
-        startDate,
-        redirectUrl,
-        active: true,
-      });
-
-      return contentResponse(
-        res,
-        newAds,
-        CREATED,
-        req.t('ADS_CREATED_SUCCESS'),
-        ADS_CREATED_SUCCESS,
-      );
-    } catch (error) {
-      return getServerError(res, error.message);
-    }
-  };
-
-  /**
    * controller to create a story
    * @param req Request
    * @param res Response
    */
-  createStory = async (req: Request, res: Response): Promise<Response> => {
+  create = async (req: Request, res: Response): Promise<Response> => {
     const {
       userId,
       planId,
@@ -362,88 +204,11 @@ export class AdminPromotion {
   };
 
   /**
-   * controller to update an ads
-   * @param req Request
-   * @param res Response
-   */
-  updateAds = async (req: Request, res: Response): Promise<Response> => {
-    const { id } = req.params;
-    const { userId, planId, legend, title, subTitle, body, redirectUrl, image } = req.body;
-
-    await new PromotionValidator(req).updateAds();
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) return getValidationError(res, errors);
-
-    try {
-      const user = await getUserById(res, userId);
-      const plan = await getAdsPlanById(res, planId);
-
-      const ads = await db.Ads.findOne({
-        where: {
-          id,
-        },
-      });
-
-      if (!ads) {
-        return getResponse(res, NOT_FOUND, {
-          code: ADS_NOT_FOUND,
-          message: req.t('ADS_NOT_FOUND'),
-        });
-      }
-
-      if (!user) {
-        return getResponse(res, NOT_FOUND, {
-          code: USER_NOT_FOUND,
-          message: req.t('USER_NOT_FOUND'),
-        });
-      }
-
-      if (!plan) {
-        return getResponse(res, NOT_FOUND, {
-          code: PLAN_NOT_FOUND,
-          message: req.t('PLAN_NOT_FOUND'),
-        });
-      }
-
-      const slug = await generateSlug(title);
-      const updated = await db.Ads.update(
-        {
-          slug,
-          body,
-          title,
-          image,
-          userId,
-          planId,
-          legend,
-          subTitle,
-          redirectUrl,
-        },
-        {
-          where: {
-            id,
-          },
-          returning: true,
-        },
-      );
-
-      return contentResponse(
-        res,
-        updated[1][0],
-        OK,
-        req.t('ADS_UPDATED_SUCCESS'),
-        ADS_UPDATED_SUCCESS,
-      );
-    } catch (error) {
-      return getServerError(res, error.message);
-    }
-  };
-
-  /**
    * controller to update a story
    * @param req Request
    * @param res Response
    */
-  updateStory = async (req: Request, res: Response): Promise<Response> => {
+  update = async (req: Request, res: Response): Promise<Response> => {
     const { id } = req.params;
     const { userId, planId, legend, title, subTitle, body, redirectUrl, media, mediaType } =
       req.body;
@@ -456,13 +221,13 @@ export class AdminPromotion {
       const user = await getUserById(res, userId);
       const plan = await getStoryPlanById(res, planId);
 
-      const ads = await db.Story.findOne({
+      const story = await db.Story.findOne({
         where: {
           id,
         },
       });
 
-      if (!ads) {
+      if (!story) {
         return getResponse(res, NOT_FOUND, {
           code: STORY_NOT_FOUND,
           message: req.t('STORY_NOT_FOUND'),
@@ -518,74 +283,11 @@ export class AdminPromotion {
   };
 
   /**
-   * controller to delete an ads
-   * @param req Request
-   * @param res Response
-   */
-  deleteAds = async (req: Request, res: Response): Promise<Response> => {
-    const { id } = req.params;
-    const { password } = req.body;
-    const { email } = req.user as IJwtPayload;
-
-    if (!password) {
-      return getResponse(res, UNAUTHORIZED, {
-        code: PASSWORD_REQUIRED,
-        message: req.t('PASSWORD_REQUIRED'),
-      });
-    }
-
-    try {
-      const admin = await db.User.findOne({
-        where: {
-          email,
-        },
-      });
-
-      if (!admin) {
-        return getResponse(res, UNAUTHORIZED, {
-          code: USERNAME_EMAIL_INVALID,
-          message: req.t('USERNAME_EMAIL_INVALID'),
-        });
-      }
-
-      const isPasswordValid = comparePassword(password, admin.get().password);
-
-      if (!isPasswordValid) {
-        return getResponse(res, FORBIDDEN, {
-          code: PASSWORD_INVALID,
-          message: req.t('PASSWORD_INVALID'),
-        });
-      }
-
-      const ads = await db.Ads.findOne({
-        where: {
-          id,
-        },
-      });
-
-      if (!ads) {
-        return getResponse(res, NOT_FOUND, {
-          code: ADS_NOT_FOUND,
-          message: req.t('ADS_NOT_FOUND'),
-        });
-      }
-
-      await db.Ads.destroy({ where: { id: ads.get().id } });
-      return getResponse(res, OK, {
-        code: ADS_DELETED_SUCCESS,
-        message: req.t('ADS_DELETED_SUCCESS'),
-      });
-    } catch (error) {
-      return getServerError(res, error.message);
-    }
-  };
-
-  /**
    * controller to delete a story
    * @param req Request
    * @param res Response
    */
-  deleteStory = async (req: Request, res: Response): Promise<Response> => {
+  delete = async (req: Request, res: Response): Promise<Response> => {
     const { id } = req.params;
     const { password } = req.body;
     const { email } = req.user as IJwtPayload;
@@ -642,7 +344,182 @@ export class AdminPromotion {
       return getServerError(res, error.message);
     }
   };
+
+  /**
+   * controller to disable a story
+   * @param req Request
+   * @param res Response
+   */
+  disable = async (req: Request, res: Response): Promise<Response> => {
+    const { id } = req.params;
+    const { password } = req.body;
+    const { email } = req.user as IJwtPayload;
+
+    if (!password) {
+      return getResponse(res, UNAUTHORIZED, {
+        code: PASSWORD_REQUIRED,
+        message: req.t('PASSWORD_REQUIRED'),
+      });
+    }
+
+    try {
+      const admin = await db.User.findOne({
+        where: {
+          email,
+        },
+      });
+
+      if (!admin) {
+        return getResponse(res, UNAUTHORIZED, {
+          code: USERNAME_EMAIL_INVALID,
+          message: req.t('USERNAME_EMAIL_INVALID'),
+        });
+      }
+
+      const isPasswordValid = comparePassword(password, admin.get().password);
+
+      if (!isPasswordValid) {
+        return getResponse(res, FORBIDDEN, {
+          code: PASSWORD_INVALID,
+          message: req.t('PASSWORD_INVALID'),
+        });
+      }
+
+      const story = await db.Story.findOne({
+        where: {
+          id,
+        },
+      });
+
+      if (!story) {
+        return getResponse(res, NOT_FOUND, {
+          code: STORY_NOT_FOUND,
+          message: req.t('STORY_NOT_FOUND'),
+        });
+      }
+
+      if (story.active === false) {
+        return getResponse(res, CONFLICT, {
+          code: STORY_ALREADY_INACTIVE,
+          message: req.t('STORY_ALREADY_INACTIVE'),
+        });
+      }
+
+      const updated = await db.Story.update(
+        {
+          active: false,
+        },
+        {
+          where: { id: story.get().id },
+          returning: true,
+        },
+      );
+
+      return contentResponse(
+        res,
+        updated[1][0],
+        OK,
+        req.t('STORY_DISABLED_SUCCESS'),
+        STORY_DISABLED_SUCCESS,
+      );
+    } catch (error) {
+      return getServerError(res, error.message);
+    }
+  };
+
+  /**
+   * controller to enable a story
+   * @param req Request
+   * @param res Response
+   */
+  enable = async (req: Request, res: Response): Promise<Response> => {
+    const { id } = req.params;
+    const { password, startDate } = req.body;
+    const { email } = req.user as IJwtPayload;
+
+    if (!password) {
+      return getResponse(res, UNAUTHORIZED, {
+        code: PASSWORD_REQUIRED,
+        message: req.t('PASSWORD_REQUIRED'),
+      });
+    }
+
+    try {
+      const admin = await db.User.findOne({
+        where: {
+          email,
+        },
+      });
+
+      if (!admin) {
+        return getResponse(res, UNAUTHORIZED, {
+          code: USERNAME_EMAIL_INVALID,
+          message: req.t('USERNAME_EMAIL_INVALID'),
+        });
+      }
+
+      const isPasswordValid = comparePassword(password, admin.get().password);
+
+      if (!isPasswordValid) {
+        return getResponse(res, FORBIDDEN, {
+          code: PASSWORD_INVALID,
+          message: req.t('PASSWORD_INVALID'),
+        });
+      }
+
+      const story = await db.Story.findOne({
+        where: {
+          id,
+        },
+      });
+
+      if (!story) {
+        return getResponse(res, NOT_FOUND, {
+          code: STORY_NOT_FOUND,
+          message: req.t('STORY_NOT_FOUND'),
+        });
+      }
+
+      if (story.active === true) {
+        return getResponse(res, CONFLICT, {
+          code: STORY_ALREADY_ACTIVE,
+          message: req.t('STORY_ALREADY_ACTIVE'),
+        });
+      }
+
+      const plan = await getStoryPlanById(res, story.planId);
+      if (!plan) {
+        return getResponse(res, NOT_FOUND, {
+          code: PLAN_NOT_FOUND,
+          message: req.t('PLAN_NOT_FOUND'),
+        });
+      }
+
+      const endDate = dayjs(startDate).add(plan.get().duration, 'day').format();
+      const updated = await db.Story.update(
+        {
+          endDate,
+          startDate,
+          active: true,
+        },
+        {
+          where: { id: story.get().id },
+          returning: true,
+        },
+      );
+
+      return contentResponse(
+        res,
+        updated[1][0],
+        OK,
+        req.t('STORY_ACTIVATED_SUCCESS'),
+        STORY_ACTIVATED_SUCCESS,
+      );
+    } catch (error) {
+      return getServerError(res, error.message);
+    }
+  };
 }
 
-const adminPromotionCtrl = new AdminPromotion();
-export default adminPromotionCtrl;
+const adminStoryCtrl = new AdminStory();
+export default adminStoryCtrl;

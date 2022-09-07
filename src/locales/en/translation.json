@@ -87,6 +87,14 @@
   "STORY_UPDATED_SUCCESS": "Story has been updated successfully.",
   "ADS_DELETED_SUCCESS": "This ads has been successfully deleted.",
   "STORY_DELETED_SUCCESS": "This story has been successfully deleted.",
+  "ADS_DISABLED_SUCCESS": "This ads has been successfully disabled.",
+  "STORY_DISABLED_SUCCESS": "This story has been successfully disabled.",
+  "ADS_ACTIVATED_SUCCESS": "This ads has been successfully enabled.",
+  "STORY_ACTIVATED_SUCCESS": "This story has been successfully enabled.",
+  "ADS_ALREADY_INACTIVE": "Oops! This ads is already disabled.",
+  "ADS_ALREADY_ACTIVE": "Oops! This ads is already enabled.",
+  "STORY_ALREADY_INACTIVE": "Oops! This story is already disabled.",
+  "STORY_ALREADY_ACTIVE": "Oops! This story is already enabled.",
 
   "DASHBOARD_OVERVIEW_SUCCESS": "The report has been loaded successfully.",
 

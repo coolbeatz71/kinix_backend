@@ -1,8 +1,9 @@
 import express from 'express';
+import adminAdsCtrl from '../controllers/admin/ads';
 import adminArticleCtrl from '../controllers/admin/article';
 import adminAuthCtrl from '../controllers/admin/auth';
 import adminDashboardCtrl from '../controllers/admin/dashboard';
-import adminPromotionCtrl from '../controllers/admin/promotion';
+import adminStoryCtrl from '../controllers/admin/story';
 import adminUserCtrl from '../controllers/admin/user';
 import adminVideoCtrl from '../controllers/admin/video';
 import authCtrl from '../controllers/auth';
@@ -81,14 +82,24 @@ router.get('/admins', superAdminCheck, adminUserCtrl.getAllAdmins);
   | Content all promotions endpoints for super admin
 */
 // subscription plan
-router.post('/promotion/plan/ads', superAdminCheck, adminPromotionCtrl.createAdsPlan);
-router.post('/promotion/plan/story', superAdminCheck, adminPromotionCtrl.createStoryPlan);
-router.put('/promotion/plan/ads/:id', superAdminCheck, adminPromotionCtrl.updateAdsPlan);
-router.put('/promotion/plan/story/:id', superAdminCheck, adminPromotionCtrl.updateStoryPlan);
+router.post('/promotion/plan/ads', superAdminCheck, adminAdsCtrl.createPlan);
+router.put('/promotion/plan/ads/:id', superAdminCheck, adminAdsCtrl.updatePlan);
+
+router.post('/promotion/plan/story', superAdminCheck, adminStoryCtrl.createPlan);
+router.put('/promotion/plan/story/:id', superAdminCheck, adminStoryCtrl.updatePlan);
 // ads and story
-router.post('/promotion/ads', superAdminCheck, adminPromotionCtrl.createAds);
-router.post('/promotion/story', superAdminCheck, adminPromotionCtrl.createStory);
-router.post('/promotion/ads/:id', superAdminCheck, adminPromotionCtrl.updateAds);
-router.post('/promotion/story/:id', superAdminCheck, adminPromotionCtrl.updateStory);
+router.post('/promotion/ads', superAdminCheck, adminAdsCtrl.create);
+router.put('/promotion/ads/:id', superAdminCheck, adminAdsCtrl.update);
+router.delete('/promotion/ads/:id', superAdminCheck, adminAdsCtrl.delete);
+
+router.post('/promotion/story', superAdminCheck, adminStoryCtrl.create);
+router.put('/promotion/story/:id', superAdminCheck, adminStoryCtrl.update);
+router.delete('/promotion/story/:id', superAdminCheck, adminStoryCtrl.delete);
+
+router.put('/promotion/ads/enable/:id', superAdminCheck, adminAdsCtrl.enable);
+router.put('/promotion/ads/disable/:id', superAdminCheck, adminAdsCtrl.disable);
+
+router.put('/promotion/story/enable/:id', superAdminCheck, adminStoryCtrl.enable);
+router.put('/promotion/story/disable/:id', superAdminCheck, adminStoryCtrl.disable);
 
 export default router;
