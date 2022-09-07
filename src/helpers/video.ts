@@ -151,7 +151,7 @@ export const getVideoDiscovery = async (res: Response, categoryName: ECategory):
 
     const result = await db.Video.findAll({
       limit: 3,
-      where: { active: true, categoryId: cat.get().id },
+      where: { active: true, categoryId: cat?.get().id },
       order: [['createdAt', 'DESC']],
       attributes: {
         include: [
@@ -247,7 +247,7 @@ export const getVideoByCategory = async (res: Response, name: ECategory): Promis
     const cat = await getCategoryByName(res, name);
     const result = await db.Video.findAll({
       limit: 15,
-      where: { active: true, categoryId: cat.get().id },
+      where: { active: true, categoryId: cat?.get().id },
       order: [['avgRate', 'DESC']],
       attributes: {
         include: [
@@ -414,7 +414,7 @@ export const countVideoByCategory = async (res: Response, name: ECategory) => {
   try {
     const cat = await getCategoryByName(res, name);
     const result = await db.Video.count({
-      where: { categoryId: cat.get().id },
+      where: { categoryId: cat?.get().id },
     });
     return result;
   } catch (err) {

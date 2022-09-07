@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 import dayjs from 'dayjs';
-import { name, internet, phone, image } from 'faker';
+import { name, internet, image } from 'faker';
 import ERole from '../../../interfaces/role';
 import { IUser } from '../../../interfaces/model';
 
@@ -24,7 +24,6 @@ const UserData: IUser[] = [
   {
     userName: name.firstName(),
     email: internet.email(),
-    phoneNumber: phone.phoneNumber(),
     password,
     image: image.avatar(),
     role: ERole.VIDEO_CLIENT,
@@ -35,7 +34,6 @@ const UserData: IUser[] = [
   {
     userName: name.firstName(),
     email: internet.email(),
-    phoneNumber: phone.phoneNumber(),
     password,
     image: image.avatar(),
     role: ERole.VIEWER_CLIENT,
@@ -45,7 +43,6 @@ const UserData: IUser[] = [
   {
     userName: name.firstName(),
     email: internet.email(),
-    phoneNumber: phone.phoneNumber(),
     password,
     image: image.avatar(),
     role: ERole.ADS_CLIENT,
@@ -55,7 +52,6 @@ const UserData: IUser[] = [
   {
     userName: adminUserName,
     email: adminEmail,
-    phoneNumber: phone.phoneNumber(),
     password,
     image: image.avatar(),
     role: ERole.ADMIN,
@@ -65,7 +61,6 @@ const UserData: IUser[] = [
   {
     userName: superAdminUserName,
     email: superAdminEmail,
-    phoneNumber: phone.phoneNumber(),
     password,
     image: image.avatar(),
     role: ERole.SUPER_ADMIN,

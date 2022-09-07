@@ -75,13 +75,13 @@ export class AdminArticle {
         reads,
       });
 
-      const getArticle = await getArticleById(res, newArticle.get().id as number, true);
+      const getArticle = await getArticleById(res, newArticle?.get().id as number, true);
 
       // TODO: send email/notification to all user in the app
 
       return contentResponse(
         res,
-        getArticle.get(),
+        getArticle?.get(),
         CREATED,
         req.t('ARTICLE_CREATED_SUCCESS'),
         ARTICLE_CREATED_SUCCESS,
@@ -129,14 +129,14 @@ export class AdminArticle {
           userId,
           reads,
         },
-        { where: { id: article.get().id } },
+        { where: { id: article?.get().id } },
       );
 
       const getArticle = await getArticleBySlug(res, newSlug, true);
 
       return contentResponse(
         res,
-        getArticle.get(),
+        getArticle?.get(),
         OK,
         req.t('ARTICLE_UPDATED_SUCCESS'),
         ARTICLE_UPDATED_SUCCESS,
@@ -176,7 +176,7 @@ export class AdminArticle {
         });
       }
 
-      const isPasswordValid = comparePassword(password, admin.get().password);
+      const isPasswordValid = comparePassword(password, admin?.get().password);
 
       if (!isPasswordValid) {
         return getResponse(res, FORBIDDEN, {
@@ -194,7 +194,7 @@ export class AdminArticle {
         });
       }
 
-      if (article.get().active) {
+      if (article?.get().active) {
         return getResponse(res, CONFLICT, {
           code: ARTICLE_ALREADY_ACTIVE,
           message: req.t('ARTICLE_ALREADY_ACTIVE'),
@@ -205,7 +205,7 @@ export class AdminArticle {
         {
           active: true,
         },
-        { where: { id: article.get().id }, returning: true },
+        { where: { id: article?.get().id }, returning: true },
       );
 
       return contentResponse(
@@ -250,7 +250,7 @@ export class AdminArticle {
         });
       }
 
-      const isPasswordValid = comparePassword(password, admin.get().password);
+      const isPasswordValid = comparePassword(password, admin?.get().password);
 
       if (!isPasswordValid) {
         return getResponse(res, FORBIDDEN, {
@@ -268,7 +268,7 @@ export class AdminArticle {
         });
       }
 
-      if (!article.get().active) {
+      if (!article?.get().active) {
         return getResponse(res, CONFLICT, {
           code: ARTICLE_ALREADY_INACTIVE,
           message: req.t('ARTICLE_ALREADY_INACTIVE'),
@@ -279,7 +279,7 @@ export class AdminArticle {
         {
           active: false,
         },
-        { where: { id: article.get().id }, returning: true },
+        { where: { id: article?.get().id }, returning: true },
       );
 
       return contentResponse(
@@ -324,7 +324,7 @@ export class AdminArticle {
         });
       }
 
-      const isPasswordValid = comparePassword(password, admin.get().password);
+      const isPasswordValid = comparePassword(password, admin?.get().password);
 
       if (!isPasswordValid) {
         return getResponse(res, FORBIDDEN, {
@@ -342,7 +342,7 @@ export class AdminArticle {
         });
       }
 
-      await db.Article.destroy({ where: { id: article.get().id } });
+      await db.Article.destroy({ where: { id: article?.get().id } });
       return getResponse(res, OK, {
         code: ARTICLE_DELETED_SUCCESS,
         message: req.t('ARTICLE_DELETED_SUCCESS'),

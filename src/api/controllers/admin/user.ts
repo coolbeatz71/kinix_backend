@@ -92,7 +92,7 @@ export class AdminUser {
 
       return getUserResponse(
         res,
-        newUser.get(),
+        newUser?.get(),
         '',
         CREATED,
         req.t('ACCOUNT_CREATED_SUCCESS'),
@@ -161,7 +161,7 @@ export class AdminUser {
 
       return getUserResponse(
         res,
-        updatedUser[1][0].get(),
+        updatedUser[1][0]?.get(),
         '',
         OK,
         req.t('ACCOUNT_UPDATED_SUCCESS'),
@@ -352,7 +352,7 @@ export class AdminUser {
         });
       }
 
-      const isPasswordValid = comparePassword(password, admin.get().password);
+      const isPasswordValid = comparePassword(password, admin?.get().password);
 
       if (!isPasswordValid) {
         return getResponse(res, FORBIDDEN, {
@@ -374,7 +374,7 @@ export class AdminUser {
         });
       }
 
-      if (user.get().active) {
+      if (user?.get().active) {
         return getResponse(res, CONFLICT, {
           code: USER_ALREADY_ACTIVE,
           message: req.t('USER_ALREADY_ACTIVE'),
@@ -424,7 +424,7 @@ export class AdminUser {
         });
       }
 
-      const isPasswordValid = comparePassword(password, admin.get().password);
+      const isPasswordValid = comparePassword(password, admin?.get().password);
 
       if (!isPasswordValid) {
         return getResponse(res, FORBIDDEN, {
@@ -446,7 +446,7 @@ export class AdminUser {
         });
       }
 
-      if (!user.get().active) {
+      if (!user?.get().active) {
         return getResponse(res, CONFLICT, {
           code: USER_ALREADY_BLOCKED,
           message: req.t('USER_ALREADY_BLOCKED'),
@@ -496,7 +496,7 @@ export class AdminUser {
         });
       }
 
-      const isPasswordValid = comparePassword(password, admin.get().password);
+      const isPasswordValid = comparePassword(password, admin?.get().password);
 
       if (!isPasswordValid) {
         return getResponse(res, FORBIDDEN, {

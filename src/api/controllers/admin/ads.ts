@@ -166,7 +166,7 @@ export class AdminAds {
         });
       }
 
-      const endDate = dayjs(startDate).add(plan.get().duration, 'day').format();
+      const endDate = dayjs(startDate).add(plan?.get().duration, 'day').format();
 
       const slug = await generateSlug(title);
       const newAds = await db.Ads.create({
@@ -304,7 +304,7 @@ export class AdminAds {
         });
       }
 
-      const isPasswordValid = comparePassword(password, admin.get().password);
+      const isPasswordValid = comparePassword(password, admin?.get().password);
 
       if (!isPasswordValid) {
         return getResponse(res, FORBIDDEN, {
@@ -326,7 +326,7 @@ export class AdminAds {
         });
       }
 
-      await db.Ads.destroy({ where: { id: ads.get().id } });
+      await db.Ads.destroy({ where: { id: ads?.get().id } });
       return getResponse(res, OK, {
         code: ADS_DELETED_SUCCESS,
         message: req.t('ADS_DELETED_SUCCESS'),
@@ -367,7 +367,7 @@ export class AdminAds {
         });
       }
 
-      const isPasswordValid = comparePassword(password, admin.get().password);
+      const isPasswordValid = comparePassword(password, admin?.get().password);
 
       if (!isPasswordValid) {
         return getResponse(res, FORBIDDEN, {
@@ -401,7 +401,7 @@ export class AdminAds {
           active: false,
         },
         {
-          where: { id: ads.get().id },
+          where: { id: ads?.get().id },
           returning: true,
         },
       );
@@ -449,7 +449,7 @@ export class AdminAds {
         });
       }
 
-      const isPasswordValid = comparePassword(password, admin.get().password);
+      const isPasswordValid = comparePassword(password, admin?.get().password);
 
       if (!isPasswordValid) {
         return getResponse(res, FORBIDDEN, {
@@ -486,7 +486,7 @@ export class AdminAds {
         });
       }
 
-      const endDate = dayjs(startDate).add(plan.get().duration, 'day').format();
+      const endDate = dayjs(startDate).add(plan?.get().duration, 'day').format();
       const updated = await db.Ads.update(
         {
           endDate,
@@ -494,7 +494,7 @@ export class AdminAds {
           active: true,
         },
         {
-          where: { id: ads.get().id },
+          where: { id: ads?.get().id },
           returning: true,
         },
       );

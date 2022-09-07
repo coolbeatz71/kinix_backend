@@ -55,7 +55,7 @@ export const verifyToken = async (
       });
     }
 
-    if (user.get().isLoggedIn === false) {
+    if (user?.get().isLoggedIn === false) {
       return getResponse(res, httpStatus.FORBIDDEN, {
         code: LOGIN_REQUIRED,
         message: req.t('LOGIN_REQUIRED'),

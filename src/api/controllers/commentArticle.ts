@@ -49,10 +49,10 @@ export class Comment {
       const result = await db.Comment.create({
         body,
         userId,
-        articleId: article.get().id,
+        articleId: article?.get().id,
       });
 
-      const comment = await getCommentById(res, result.get().id as number);
+      const comment = await getCommentById(res, result?.get().id as number);
 
       return contentResponse(
         res,
@@ -118,7 +118,7 @@ export class Comment {
         });
       }
 
-      if (![ERole.ADMIN, ERole.SUPER_ADMIN].includes(role) && comment.get().userId !== userId) {
+      if (![ERole.ADMIN, ERole.SUPER_ADMIN].includes(role) && comment?.get().userId !== userId) {
         return getResponse(res, UNAUTHORIZED, {
           code: COMMENT_NOT_OWNER,
           message: req.t('COMMENT_NOT_OWNER'),
@@ -126,7 +126,7 @@ export class Comment {
       }
 
       const result = await db.Comment.destroy({
-        where: { id, articleId: article.get().id },
+        where: { id, articleId: article?.get().id },
       });
 
       if (result > 0) {
@@ -177,7 +177,7 @@ export class Comment {
         });
       }
 
-      if (comment.get().userId !== userId) {
+      if (comment?.get().userId !== userId) {
         return getResponse(res, UNAUTHORIZED, {
           code: COMMENT_NOT_OWNER,
           message: req.t('COMMENT_NOT_OWNER'),
@@ -188,7 +188,7 @@ export class Comment {
         { body },
         {
           returning: true,
-          where: { id, articleId: article.get().id },
+          where: { id, articleId: article?.get().id },
         },
       );
 

@@ -47,7 +47,7 @@ export class AdminAuth {
         });
       }
 
-      const isPasswordValid = comparePassword(password, user.get().password);
+      const isPasswordValid = comparePassword(password, user?.get().password);
 
       if (!isPasswordValid) {
         return getResponse(res, FORBIDDEN, {
@@ -56,7 +56,7 @@ export class AdminAuth {
         });
       }
 
-      if (user.get().active === false) {
+      if (user?.get().active === false) {
         return getResponse(res, FORBIDDEN, {
           code: USER_BLOCKED,
           message: req.t('USER_BLOCKED'),
@@ -69,8 +69,8 @@ export class AdminAuth {
       );
 
       const token = generateToken(
-        user.get(),
-        user.get().role === ERole.ADMIN || user.get().role === ERole.SUPER_ADMIN,
+        user?.get(),
+        user?.get().role === ERole.ADMIN || user?.get().role === ERole.SUPER_ADMIN,
       );
       return getUserResponse(
         res,
