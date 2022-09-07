@@ -94,14 +94,14 @@ export class AdminVideo {
         categoryId,
       });
 
-      const getVideo = await getVideoById(res, newVideo.get().id as number, true);
+      const getVideo = await getVideoById(res, newVideo?.get().id as number, true);
 
       // TODO: should send email/notification to the video owner
       // TODO: send email/notification to all user in the app
 
       return contentResponse(
         res,
-        getVideo.get(),
+        getVideo?.get(),
         CREATED,
         req.t('VIDEO_CREATED_SUCCESS'),
         VIDEO_CREATED_SUCCESS,
@@ -162,7 +162,7 @@ export class AdminVideo {
           categoryId,
           slug: newSlug,
         },
-        { where: { id: video.get().id } },
+        { where: { id: video?.get().id } },
       );
 
       const getVideo = await getVideoBySlug(res, newSlug);
@@ -171,7 +171,7 @@ export class AdminVideo {
 
       return contentResponse(
         res,
-        getVideo.get(),
+        getVideo?.get(),
         OK,
         req.t('VIDEO_UPDATED_SUCCESS'),
         VIDEO_UPDATED_SUCCESS,
@@ -212,7 +212,7 @@ export class AdminVideo {
         });
       }
 
-      const isPasswordValid = comparePassword(password, admin.get().password);
+      const isPasswordValid = comparePassword(password, admin?.get().password);
 
       if (!isPasswordValid) {
         return getResponse(res, FORBIDDEN, {
@@ -230,7 +230,7 @@ export class AdminVideo {
         });
       }
 
-      if (video.get().active) {
+      if (video?.get().active) {
         return getResponse(res, CONFLICT, {
           code: VIDEO_ALREADY_ACTIVE,
           message: req.t('VIDEO_ALREADY_ACTIVE'),
@@ -241,7 +241,7 @@ export class AdminVideo {
         {
           active: true,
         },
-        { where: { id: video.get().id }, returning: true },
+        { where: { id: video?.get().id }, returning: true },
       );
 
       // TODO: should send email/notification to the video owner
@@ -288,7 +288,7 @@ export class AdminVideo {
         });
       }
 
-      const isPasswordValid = comparePassword(password, admin.get().password);
+      const isPasswordValid = comparePassword(password, admin?.get().password);
 
       if (!isPasswordValid) {
         return getResponse(res, FORBIDDEN, {
@@ -306,7 +306,7 @@ export class AdminVideo {
         });
       }
 
-      if (!video.get().active) {
+      if (!video?.get().active) {
         return getResponse(res, CONFLICT, {
           code: VIDEO_ALREADY_INACTIVE,
           message: req.t('VIDEO_ALREADY_INACTIVE'),
@@ -317,7 +317,7 @@ export class AdminVideo {
         {
           active: false,
         },
-        { where: { id: video.get().id }, returning: true },
+        { where: { id: video?.get().id }, returning: true },
       );
       // TODO: should send email/notification to the video owner
 
@@ -363,7 +363,7 @@ export class AdminVideo {
         });
       }
 
-      const isPasswordValid = comparePassword(password, admin.get().password);
+      const isPasswordValid = comparePassword(password, admin?.get().password);
 
       if (!isPasswordValid) {
         return getResponse(res, FORBIDDEN, {
@@ -380,7 +380,7 @@ export class AdminVideo {
         });
       }
 
-      await db.Video.destroy({ where: { id: video.get().id } });
+      await db.Video.destroy({ where: { id: video?.get().id } });
       // TODO: should send email/notification to the video owner
 
       return getResponse(res, OK, {
@@ -408,7 +408,7 @@ export class AdminVideo {
     const isCategoryValid = values.includes(String(category).toUpperCase() as unknown as ECategory);
 
     const cat = (await getCategoryByName(res, String(category).toUpperCase())) || null;
-    const whereCategory = isCategory && isCategoryValid ? { categoryId: cat.get().id } : undefined;
+    const whereCategory = isCategory && isCategoryValid ? { categoryId: cat?.get().id } : undefined;
 
     const whereStatus = isStatus
       ? {

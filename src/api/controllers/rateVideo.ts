@@ -73,7 +73,7 @@ export class RateVideo {
       const ratedVideo = await db.Rate.findOne({
         where: {
           userId,
-          videoId: video.get().id,
+          videoId: video?.get().id,
         },
       });
 
@@ -82,7 +82,7 @@ export class RateVideo {
           count,
         });
 
-        const updated = await this.updateVideo(res, video.get().id);
+        const updated = await this.updateVideo(res, video?.get().id);
         return contentResponse(
           res,
           updated,
@@ -95,10 +95,10 @@ export class RateVideo {
       await db.Rate.create({
         count,
         userId,
-        videoId: video.get().id,
+        videoId: video?.get().id,
       });
 
-      const created = await this.updateVideo(res, video.get().id);
+      const created = await this.updateVideo(res, video?.get().id);
       return contentResponse(
         res,
         created,
@@ -134,7 +134,7 @@ export class RateVideo {
       const data = await db.Rate.findAll({
         where: {
           userId,
-          videoId: video.get().id,
+          videoId: video?.get().id,
         },
       });
 

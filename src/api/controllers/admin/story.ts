@@ -176,7 +176,7 @@ export class AdminStory {
         });
       }
 
-      const endDate = dayjs(startDate).add(plan.get().duration, 'day').format();
+      const endDate = dayjs(startDate).add(plan?.get().duration, 'day').format();
 
       const slug = await generateSlug(title);
       const newStory = await db.Story.create({
@@ -317,7 +317,7 @@ export class AdminStory {
         });
       }
 
-      const isPasswordValid = comparePassword(password, admin.get().password);
+      const isPasswordValid = comparePassword(password, admin?.get().password);
 
       if (!isPasswordValid) {
         return getResponse(res, FORBIDDEN, {
@@ -339,7 +339,7 @@ export class AdminStory {
         });
       }
 
-      await db.Story.destroy({ where: { id: story.get().id } });
+      await db.Story.destroy({ where: { id: story?.get().id } });
       return getResponse(res, OK, {
         code: STORY_DELETED_SUCCESS,
         message: req.t('STORY_DELETED_SUCCESS'),
@@ -380,7 +380,7 @@ export class AdminStory {
         });
       }
 
-      const isPasswordValid = comparePassword(password, admin.get().password);
+      const isPasswordValid = comparePassword(password, admin?.get().password);
 
       if (!isPasswordValid) {
         return getResponse(res, FORBIDDEN, {
@@ -414,7 +414,7 @@ export class AdminStory {
           active: false,
         },
         {
-          where: { id: story.get().id },
+          where: { id: story?.get().id },
           returning: true,
         },
       );
@@ -462,7 +462,7 @@ export class AdminStory {
         });
       }
 
-      const isPasswordValid = comparePassword(password, admin.get().password);
+      const isPasswordValid = comparePassword(password, admin?.get().password);
 
       if (!isPasswordValid) {
         return getResponse(res, FORBIDDEN, {
@@ -499,7 +499,7 @@ export class AdminStory {
         });
       }
 
-      const endDate = dayjs(startDate).add(plan.get().duration, 'day').format();
+      const endDate = dayjs(startDate).add(plan?.get().duration, 'day').format();
       const updated = await db.Story.update(
         {
           endDate,
@@ -507,7 +507,7 @@ export class AdminStory {
           active: true,
         },
         {
-          where: { id: story.get().id },
+          where: { id: story?.get().id },
           returning: true,
         },
       );

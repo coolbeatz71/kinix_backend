@@ -35,7 +35,7 @@ export class LikeArticle {
       const like = await db.Like.findOne({
         where: {
           userId,
-          articleId: article.get().id,
+          articleId: article?.get().id,
         },
       });
 
@@ -48,7 +48,7 @@ export class LikeArticle {
 
       await db.Like.create({
         userId,
-        articleId: article.get().id,
+        articleId: article?.get().id,
       });
       // updated liked
       const update = await db.Article.update(
@@ -94,7 +94,7 @@ export class LikeArticle {
       const like = await db.Like.findOne({
         where: {
           userId,
-          articleId: article.get().id,
+          articleId: article?.get().id,
         },
       });
 
@@ -108,14 +108,14 @@ export class LikeArticle {
       await db.Like.destroy({
         where: {
           userId,
-          articleId: article.get().id,
+          articleId: article?.get().id,
         },
       });
       // updated liked
       const result = await getArticleBySlug(res, slug as string);
       const update = await db.Article.update(
         {
-          liked: result.get().like?.length > 0,
+          liked: result?.get().like?.length > 0,
         },
         {
           where: { slug },
@@ -173,7 +173,7 @@ export class LikeArticle {
       const data = await db.Like.findAll({
         where: {
           userId,
-          articleId: article.get().id,
+          articleId: article?.get().id,
         },
       });
 
@@ -201,7 +201,7 @@ export class LikeArticle {
           message: req.t('ARTICLE_NOT_FOUND'),
         });
       }
-      const likes = await getAllLikes(res, article.get().id);
+      const likes = await getAllLikes(res, article?.get().id);
       return contentResponse(res, likes, OK);
     } catch (error) {
       return getServerError(res, error.message);

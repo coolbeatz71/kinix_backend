@@ -53,11 +53,11 @@ export class ShareVideo {
       await db.Share.findOrCreate({
         where: {
           userId,
-          videoId: video.get().id,
+          videoId: video?.get().id,
         },
       });
 
-      const share = await this.updateVideo(res, video.get().id);
+      const share = await this.updateVideo(res, video?.get().id);
       return contentResponse(res, share, OK, req.t('VIDEO_SHARED_SUCCESS'), VIDEO_SHARED_SUCCESS);
     } catch (error) {
       return getServerError(res, error.message);

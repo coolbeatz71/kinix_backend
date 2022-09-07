@@ -95,13 +95,13 @@ export class Auth {
         password: hashPassword,
       });
 
-      const token = generateToken(newUser.get());
+      const token = generateToken(newUser?.get());
 
       // TODO: should send email here for email confirmation
 
       return getUserResponse(
         res,
-        newUser.get(),
+        newUser?.get(),
         token,
         CREATED,
         req.t('CREATED, ACCOUNT_CREATED_SUCCESS'),
@@ -138,7 +138,7 @@ export class Auth {
         });
       }
 
-      const isPasswordValid = comparePassword(password, user.get().password);
+      const isPasswordValid = comparePassword(password, user?.get().password);
 
       if (!isPasswordValid) {
         return getResponse(res, FORBIDDEN, {
@@ -148,7 +148,7 @@ export class Auth {
       }
 
       // handle non verified account
-      if (user.get().verified === false) {
+      if (user?.get().verified === false) {
         // TODO should resend email confirmation here
         return getResponse(res, BAD_REQUEST, {
           code: CHECK_CONFIRM_EMAIL,
@@ -156,7 +156,7 @@ export class Auth {
         });
       }
 
-      if (user.get().active === false) {
+      if (user?.get().active === false) {
         return getResponse(res, FORBIDDEN, {
           code: USER_BLOCKED,
           message: req.t('USER_BLOCKED'),
@@ -169,8 +169,8 @@ export class Auth {
       );
 
       const token = generateToken(
-        user.get(),
-        user.get().role === ERole.ADMIN || user.get().role === ERole.SUPER_ADMIN,
+        user?.get(),
+        user?.get().role === ERole.ADMIN || user?.get().role === ERole.SUPER_ADMIN,
       );
       return getUserResponse(
         res,
@@ -202,7 +202,7 @@ export class Auth {
         });
       }
 
-      if (user.get().active === false) {
+      if (user?.get().active === false) {
         return getResponse(res, FORBIDDEN, {
           code: USER_BLOCKED,
           message: req.t('USER_BLOCKED'),
@@ -301,7 +301,7 @@ export class Auth {
 
       return getUserResponse(
         res,
-        update[1][0].get(),
+        update[1][0]?.get(),
         '',
         OK,
         req.t('ACCOUNT_UPDATED_SUCCESS'),
@@ -339,8 +339,8 @@ export class Auth {
         });
       }
 
-      const isOldPasswordValid = comparePassword(oldPassword, user.get().password);
-      const isNewPasswordSameAsOld = comparePassword(newPassword, user.get().password);
+      const isOldPasswordValid = comparePassword(oldPassword, user?.get().password);
+      const isNewPasswordSameAsOld = comparePassword(newPassword, user?.get().password);
 
       if (!isOldPasswordValid) {
         return getResponse(res, BAD_REQUEST, {
@@ -366,7 +366,7 @@ export class Auth {
 
       return getUserResponse(
         res,
-        update[1][0].get(),
+        update[1][0]?.get(),
         '',
         OK,
         req.t('PASSWORD_CHANGED_SUCCESS'),
@@ -413,7 +413,7 @@ export class Auth {
 
       return getUserResponse(
         res,
-        update[1][0].get(),
+        update[1][0]?.get(),
         '',
         OK,
         req.t('AVATAR_UPDATED_SUCCESS'),
