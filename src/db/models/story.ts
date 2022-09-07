@@ -31,7 +31,7 @@ export default class Story extends Model<IStory> implements IStory {
      * story plan association
      */
     Story.belongsTo(models.StoryPlan, {
-      as: 'story-plan',
+      as: 'story_plan',
       foreignKey: 'planId',
       targetKey: 'id',
     });

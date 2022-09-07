@@ -22,6 +22,10 @@ import Video from '../db/models/video';
 import Article from '../db/models/article';
 import IOverview from '../interfaces/overview';
 import User from '../db/models/user';
+import Ads from '../db/models/ads';
+import Story from '../db/models/story';
+import AdsPlan from '../db/models/adsPlan';
+import StoryPlan from '../db/models/storyPlan';
 
 config();
 
@@ -66,7 +70,7 @@ export const getPagingData = (
   page: number,
   limit: number,
   data: {
-    rows: Video[] | Article[] | User[];
+    rows: Video[] | Article[] | User[] | Ads[] | Story[] | AdsPlan[] | StoryPlan[];
     count: number | any;
   },
 ): IUnknownObject => {

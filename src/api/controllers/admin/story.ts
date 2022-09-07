@@ -3,6 +3,8 @@ import dayjs from 'dayjs';
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import { CONFLICT, CREATED, FORBIDDEN, NOT_FOUND, OK, UNAUTHORIZED } from 'http-status';
+import { isEmpty, lowerCase } from 'lodash';
+import { Op } from 'sequelize';
 import {
   PASSWORD_INVALID,
   PASSWORD_REQUIRED,
@@ -26,13 +28,15 @@ import {
   comparePassword,
   contentResponse,
   generateSlug,
+  getPagination,
+  getPagingData,
   getResponse,
   getServerError,
   getValidationError,
 } from '../../../helpers/api';
 import { getStoryPlanById } from '../../../helpers/promotion';
 import { getUserById } from '../../../helpers/user';
-import { IJwtPayload } from '../../../interfaces/api';
+import { EnumStatus, IJwtPayload } from '../../../interfaces/api';
 import PromotionValidator from '../../../validator/promotion';
 
 export class AdminStory {
@@ -515,6 +519,69 @@ export class AdminStory {
         req.t('STORY_ACTIVATED_SUCCESS'),
         STORY_ACTIVATED_SUCCESS,
       );
+    } catch (error) {
+      return getServerError(res, error.message);
+    }
+  };
+
+  /**
+   * controller to get all ads or search ads by title
+   * @param req Request
+   * @param res Response
+   */
+  getAll = async (req: Request, res: Response): Promise<Response> => {
+    const { page = 1, limit = 20, search, status } = req.query;
+    const isStatus = !isEmpty(status);
+    const isActive = status === lowerCase(EnumStatus.ACTIVE);
+    const { limit: size, offset } = getPagination(Number(page), Number(limit));
+
+    const whereStatus = isStatus
+      ? {
+          active: isActive,
+        }
+      : undefined;
+    const whereSearch = search
+      ? {
+          [Op.or]: [
+            {
+              title: { [Op.iLike]: `%${search}%` },
+            },
+            {
+              body: { [Op.iLike]: `%${search}%` },
+            },
+            {
+              subTitle: { [Op.iLike]: `%${search}%` },
+            },
+            {
+              legend: { [Op.iLike]: `%${search}%` },
+            },
+          ],
+        }
+      : undefined;
+
+    try {
+      const data = await db.Story.findAndCountAll({
+        offset,
+        limit: size,
+        order: [['createdAt', 'DESC']],
+        where: { [Op.and]: [{ ...whereSearch, ...whereStatus }] },
+        include: [
+          {
+            as: 'user',
+            model: db.User,
+            attributes: ['id', 'userName', 'email', 'phoneNumber', 'image', 'role'],
+          },
+          {
+            as: 'story_plan',
+            model: db.StoryPlan,
+          },
+        ],
+      });
+      const result = getPagingData(Number(page), size, data);
+
+      return getResponse(res, OK, {
+        data: result,
+      });
     } catch (error) {
       return getServerError(res, error.message);
     }

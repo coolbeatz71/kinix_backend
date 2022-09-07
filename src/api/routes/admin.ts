@@ -102,4 +102,7 @@ router.put('/promotion/ads/disable/:id', superAdminCheck, adminAdsCtrl.disable);
 router.put('/promotion/story/enable/:id', superAdminCheck, adminStoryCtrl.enable);
 router.put('/promotion/story/disable/:id', superAdminCheck, adminStoryCtrl.disable);
 
+router.get('/promotion/ads', superAdminCheck, adminAdsCtrl.getAll);
+router.get('/promotion/story', superAdminCheck, adminStoryCtrl.getAll);
+
 export default router;

@@ -46,7 +46,7 @@ export const initAdsPlan = (sequelize: Sequelize) => {
     {
       sequelize,
       timestamps: true,
-      tableName: 'ads-plan',
+      tableName: 'ads_plan',
       modelName: 'AdsPlan',
     },
   );

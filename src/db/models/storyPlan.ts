@@ -46,7 +46,7 @@ export const initStoryPlan = (sequelize: Sequelize) => {
     {
       sequelize,
       timestamps: true,
-      tableName: 'story-plan',
+      tableName: 'story_plan',
       modelName: 'StoryPlan',
     },
   );
