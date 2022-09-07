@@ -7,7 +7,7 @@ enum ECategory {
   INTERVIEW = 'INTERVIEW',
   PODCAST = 'PODCAST',
   LEFOCUS = 'LEFOCUS',
-  FLEXBEATZ = 'FLEX&BEATZ',
+  FLEXBEATZ = 'FLEXBEATZ',
 }
 
 export enum EUserStatus {
