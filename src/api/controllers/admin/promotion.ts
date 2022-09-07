@@ -2,24 +2,30 @@
 import dayjs from 'dayjs';
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
-import { CONFLICT, CREATED, NOT_FOUND, OK } from 'http-status';
+import { CONFLICT, CREATED, FORBIDDEN, NOT_FOUND, OK, UNAUTHORIZED } from 'http-status';
 import {
   ADS_CREATED_SUCCESS,
+  ADS_DELETED_SUCCESS,
   ADS_NOT_FOUND,
   ADS_PLAN_CREATED_SUCCESS,
   ADS_PLAN_UPDATED_SUCCESS,
   ADS_UPDATED_SUCCESS,
+  PASSWORD_INVALID,
+  PASSWORD_REQUIRED,
   PLAN_NOT_FOUND,
   PLAN_TAKEN,
   STORY_CREATED_SUCCESS,
+  STORY_DELETED_SUCCESS,
   STORY_NOT_FOUND,
   STORY_PLAN_CREATED_SUCCESS,
   STORY_PLAN_UPDATED_SUCCESS,
   STORY_UPDATED_SUCCESS,
+  USERNAME_EMAIL_INVALID,
   USER_NOT_FOUND,
 } from '../../../constants/message';
 import db from '../../../db/models';
 import {
+  comparePassword,
   contentResponse,
   generateSlug,
   getResponse,
@@ -28,6 +34,7 @@ import {
 } from '../../../helpers/api';
 import { getAdsPlanById, getStoryPlanById } from '../../../helpers/promotion';
 import { getUserById } from '../../../helpers/user';
+import { IJwtPayload } from '../../../interfaces/api';
 import PromotionValidator from '../../../validator/promotion';
 
 export class AdminPromotion {
@@ -505,6 +512,132 @@ export class AdminPromotion {
         req.t('STORY_UPDATED_SUCCESS'),
         STORY_UPDATED_SUCCESS,
       );
+    } catch (error) {
+      return getServerError(res, error.message);
+    }
+  };
+
+  /**
+   * controller to delete an ads
+   * @param req Request
+   * @param res Response
+   */
+  deleteAds = async (req: Request, res: Response): Promise<Response> => {
+    const { id } = req.params;
+    const { password } = req.body;
+    const { email } = req.user as IJwtPayload;
+
+    if (!password) {
+      return getResponse(res, UNAUTHORIZED, {
+        code: PASSWORD_REQUIRED,
+        message: req.t('PASSWORD_REQUIRED'),
+      });
+    }
+
+    try {
+      const admin = await db.User.findOne({
+        where: {
+          email,
+        },
+      });
+
+      if (!admin) {
+        return getResponse(res, UNAUTHORIZED, {
+          code: USERNAME_EMAIL_INVALID,
+          message: req.t('USERNAME_EMAIL_INVALID'),
+        });
+      }
+
+      const isPasswordValid = comparePassword(password, admin.get().password);
+
+      if (!isPasswordValid) {
+        return getResponse(res, FORBIDDEN, {
+          code: PASSWORD_INVALID,
+          message: req.t('PASSWORD_INVALID'),
+        });
+      }
+
+      const ads = await db.Ads.findOne({
+        where: {
+          id,
+        },
+      });
+
+      if (!ads) {
+        return getResponse(res, NOT_FOUND, {
+          code: ADS_NOT_FOUND,
+          message: req.t('ADS_NOT_FOUND'),
+        });
+      }
+
+      await db.Ads.destroy({ where: { id: ads.get().id } });
+      return getResponse(res, OK, {
+        code: ADS_DELETED_SUCCESS,
+        message: req.t('ADS_DELETED_SUCCESS'),
+      });
+    } catch (error) {
+      return getServerError(res, error.message);
+    }
+  };
+
+  /**
+   * controller to delete a story
+   * @param req Request
+   * @param res Response
+   */
+  deleteStory = async (req: Request, res: Response): Promise<Response> => {
+    const { id } = req.params;
+    const { password } = req.body;
+    const { email } = req.user as IJwtPayload;
+
+    if (!password) {
+      return getResponse(res, UNAUTHORIZED, {
+        code: PASSWORD_REQUIRED,
+        message: req.t('PASSWORD_REQUIRED'),
+      });
+    }
+
+    try {
+      const admin = await db.User.findOne({
+        where: {
+          email,
+        },
+      });
+
+      if (!admin) {
+        return getResponse(res, UNAUTHORIZED, {
+          code: USERNAME_EMAIL_INVALID,
+          message: req.t('USERNAME_EMAIL_INVALID'),
+        });
+      }
+
+      const isPasswordValid = comparePassword(password, admin.get().password);
+
+      if (!isPasswordValid) {
+        return getResponse(res, FORBIDDEN, {
+          code: PASSWORD_INVALID,
+          message: req.t('PASSWORD_INVALID'),
+        });
+      }
+
+      const story = await db.Story.findOne({
+        where: {
+          id,
+        },
+      });
+
+      if (!story) {
+        return getResponse(res, NOT_FOUND, {
+          code: STORY_NOT_FOUND,
+          message: req.t('STORY_NOT_FOUND'),
+        });
+      }
+
+      await db.Story.destroy({ where: { id: story.get().id } });
+      return getResponse(res, OK, {
+        code: STORY_DELETED_SUCCESS,
+        message: req.t('STORY_DELETED_SUCCESS'),
+      });
     } catch (error) {
       return getServerError(res, error.message);
     }

@@ -85,6 +85,8 @@
   "STORY_CREATED_SUCCESS": "Story has been created successfully.",
   "ADS_UPDATED_SUCCESS": "Ads has been updated successfully.",
   "STORY_UPDATED_SUCCESS": "Story has been updated successfully.",
+  "ADS_DELETED_SUCCESS": "This ads has been successfully deleted.",
+  "STORY_DELETED_SUCCESS": "This story has been successfully deleted.",
 
   "DASHBOARD_OVERVIEW_SUCCESS": "The report has been loaded successfully.",
 
