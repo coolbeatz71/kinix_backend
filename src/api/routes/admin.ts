@@ -83,7 +83,7 @@ router.get('/admins', superAdminCheck, adminUserCtrl.getAllAdmins);
 */
 // subscription plan
 router.post('/promotions/plan/ads', superAdminCheck, adminAdsCtrl.createPlan);
-router.put('/promotion/plan/ads/:id', superAdminCheck, adminAdsCtrl.updatePlan);
+router.put('/promotions/plan/ads/:id', superAdminCheck, adminAdsCtrl.updatePlan);
 
 router.post('/promotions/plan/story', superAdminCheck, adminStoryCtrl.createPlan);
 router.put('/promotions/plan/story/:id', superAdminCheck, adminStoryCtrl.updatePlan);
@@ -100,7 +100,7 @@ router.put('/promotions/ads/enable/:id', superAdminCheck, adminAdsCtrl.enable);
 router.put('/promotions/ads/disable/:id', superAdminCheck, adminAdsCtrl.disable);
 
 router.put('/promotions/story/enable/:id', superAdminCheck, adminStoryCtrl.enable);
-router.put('/promotion/story/disable/:id', superAdminCheck, adminStoryCtrl.disable);
+router.put('/promotions/story/disable/:id', superAdminCheck, adminStoryCtrl.disable);
 
 router.get('/promotions/ads', superAdminCheck, adminAdsCtrl.getAll);
 router.get('/promotions/story', superAdminCheck, adminStoryCtrl.getAll);
