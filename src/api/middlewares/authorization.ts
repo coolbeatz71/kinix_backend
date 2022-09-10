@@ -65,8 +65,10 @@ export const verifyToken = async (
     req.user = jwtPayload;
     next();
   } catch (error) {
-    const message = TOKEN_INVALID_EXPIRED;
-    return getResponse(res, httpStatus.UNAUTHORIZED, { message });
+    return getResponse(res, httpStatus.UNAUTHORIZED, {
+      code: TOKEN_INVALID_EXPIRED,
+      message: req.t('TOKEN_INVALID_EXPIRED'),
+    });
   }
 };
 
