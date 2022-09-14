@@ -306,6 +306,86 @@ export class AdminDashboard {
       return getServerError(res, error.message);
     }
   };
+
+  /**
+   * controller to get story overview
+   * @param req Request
+   * @param res Response
+   */
+  getStoryOverview = async (req: Request, res: Response): Promise<Response> => {
+    const countFreeStory = await countYearlyPromotion(
+      res,
+      EPromotionType.STORY,
+      EPromotionPlan.FREE,
+    );
+    const countBasicStory = await countYearlyPromotion(
+      res,
+      EPromotionType.STORY,
+      EPromotionPlan.BASIC,
+    );
+    const countProfessionalStory = await countYearlyPromotion(
+      res,
+      EPromotionType.STORY,
+      EPromotionPlan.PROFESSIONAL,
+    );
+    const countPremiumStory = await countYearlyPromotion(
+      res,
+      EPromotionType.STORY,
+      EPromotionPlan.PREMIUM,
+    );
+
+    const freeStoryTotal = await getTotalAmountYearlyPromotion(
+      res,
+      EPromotionType.STORY,
+      EPromotionPlan.FREE,
+    );
+    const basicStoryTotal = await getTotalAmountYearlyPromotion(
+      res,
+      EPromotionType.STORY,
+      EPromotionPlan.BASIC,
+    );
+    const professionalStoryTotal = await getTotalAmountYearlyPromotion(
+      res,
+      EPromotionType.STORY,
+      EPromotionPlan.PROFESSIONAL,
+    );
+    const premiumStoryTotal = await getTotalAmountYearlyPromotion(
+      res,
+      EPromotionType.STORY,
+      EPromotionPlan.PREMIUM,
+    );
+
+    try {
+      const result = {
+        free: {
+          amount: freeStoryTotal || 0,
+          total: Number(countFreeStory),
+        },
+        basic: {
+          amount: basicStoryTotal || 0,
+          total: Number(countBasicStory),
+        },
+        professional: {
+          amount: professionalStoryTotal || 0,
+          total: Number(countProfessionalStory),
+        },
+        premium: {
+          amount: premiumStoryTotal || 0,
+          total: Number(countPremiumStory),
+        },
+      };
+
+      return contentResponse(
+        res,
+        result,
+        OK,
+        req.t('DASHBOARD_OVERVIEW_SUCCESS'),
+        DASHBOARD_OVERVIEW_SUCCESS,
+      );
+    } catch (error) {
+      return getServerError(res, error.message);
+    }
+  };
 }
 
 const adminDashboardCtrl = new AdminDashboard();
