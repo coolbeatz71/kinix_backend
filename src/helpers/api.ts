@@ -114,7 +114,8 @@ export const contentResponse = (
     | IAdsPlan
     | IStoryPlan
     | IAds
-    | IStory,
+    | IStory
+    | IUnknownObject,
   status: number,
   message?: string,
   code?: string,

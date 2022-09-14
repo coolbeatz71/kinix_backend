@@ -1,9 +1,11 @@
+import dayjs from 'dayjs';
 import { Response } from 'express';
+import { Op } from 'sequelize';
 import db from '../db/models';
 import AdsPlan from '../db/models/adsPlan';
 import StoryPlan from '../db/models/storyPlan';
 import { EPromotionStatus } from '../interfaces/category';
-import { EPromotionType } from '../interfaces/promotion';
+import EPromotionPlan, { EPromotionType } from '../interfaces/promotion';
 import { IUnknownObject } from '../interfaces/unknownObject';
 import { getServerError } from './api';
 
@@ -53,6 +55,56 @@ export const getAdsPlanById = async (res: Response, id: number) => {
 
 export const getStoryPlanById = async (res: Response, id: number) => {
   return plan(res, 'id', id, EPromotionType.STORY);
+};
+
+export const countYearlyPromotion = async (
+  res: Response,
+  type: EPromotionType,
+  planType: EPromotionPlan,
+): Promise<number | Response> => {
+  const currentYear = db.Sequelize.where(
+    db.Sequelize.fn('date_part', 'year', db.Sequelize.col('createdAt')),
+    dayjs().year().toString(),
+  );
+
+  try {
+    const result =
+      type === EPromotionType.ADS
+        ? await db.Ads.count({
+            where: { [Op.and]: [currentYear, { plan: planType }] },
+          })
+        : await db.Story.count({
+            where: { [Op.and]: [currentYear, { plan: planType }] },
+          });
+    return result;
+  } catch (err) {
+    return getServerError(res, err.message);
+  }
+};
+
+export const getTotalAmountYearlyPromotion = async (
+  res: Response,
+  type: EPromotionType,
+  planType: EPromotionPlan,
+): Promise<any> => {
+  const currentYear = db.Sequelize.where(
+    db.Sequelize.fn('date_part', 'year', db.Sequelize.col('createdAt')),
+    dayjs().year().toString(),
+  );
+
+  try {
+    const result =
+      type === EPromotionType.ADS
+        ? await db.Ads.sum('amount', {
+            where: { [Op.and]: [currentYear, { plan: planType }] },
+          })
+        : await db.Story.sum('amount', {
+            where: { [Op.and]: [currentYear, { plan: planType }] },
+          });
+    return result;
+  } catch (err) {
+    return getServerError(res, err.message);
+  }
 };
 
 export default countAllPromotions;

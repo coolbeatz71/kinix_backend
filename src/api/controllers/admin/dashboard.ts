@@ -13,7 +13,10 @@ import {
   countTopCommentedArticles,
   countTopLikedArticles,
 } from '../../../helpers/article';
-import countAllPromotions from '../../../helpers/promotion';
+import countAllPromotions, {
+  countYearlyPromotion,
+  getTotalAmountYearlyPromotion,
+} from '../../../helpers/promotion';
 import {
   countActiveUsers,
   countAdminUsers,
@@ -46,6 +49,7 @@ import ECategory, {
   EVideoStatus,
   EPromotionStatus,
 } from '../../../interfaces/category';
+import EPromotionPlan, { EPromotionType } from '../../../interfaces/promotion';
 
 export class AdminDashboard {
   /**
@@ -228,6 +232,78 @@ export class AdminDashboard {
       );
     } catch (err) {
       return getServerError(res, err.message);
+    }
+  };
+
+  /**
+   * controller to get ads overview
+   * @param req Request
+   * @param res Response
+   */
+  getAdsOverview = async (req: Request, res: Response): Promise<Response> => {
+    const countFreeAds = await countYearlyPromotion(res, EPromotionType.ADS, EPromotionPlan.FREE);
+    const countBasicAds = await countYearlyPromotion(res, EPromotionType.ADS, EPromotionPlan.BASIC);
+    const countProfessionalAds = await countYearlyPromotion(
+      res,
+      EPromotionType.ADS,
+      EPromotionPlan.PROFESSIONAL,
+    );
+    const countPremiumAds = await countYearlyPromotion(
+      res,
+      EPromotionType.ADS,
+      EPromotionPlan.PREMIUM,
+    );
+
+    const freeAdsTotal = await getTotalAmountYearlyPromotion(
+      res,
+      EPromotionType.ADS,
+      EPromotionPlan.FREE,
+    );
+    const basicAdsTotal = await getTotalAmountYearlyPromotion(
+      res,
+      EPromotionType.ADS,
+      EPromotionPlan.BASIC,
+    );
+    const professionalAdsTotal = await getTotalAmountYearlyPromotion(
+      res,
+      EPromotionType.ADS,
+      EPromotionPlan.PROFESSIONAL,
+    );
+    const premiumAdsTotal = await getTotalAmountYearlyPromotion(
+      res,
+      EPromotionType.ADS,
+      EPromotionPlan.PREMIUM,
+    );
+
+    try {
+      const result = {
+        free: {
+          amount: freeAdsTotal || 0,
+          total: Number(countFreeAds),
+        },
+        basic: {
+          amount: basicAdsTotal || 0,
+          total: Number(countBasicAds),
+        },
+        professional: {
+          amount: professionalAdsTotal || 0,
+          total: Number(countProfessionalAds),
+        },
+        premium: {
+          amount: premiumAdsTotal || 0,
+          total: Number(countPremiumAds),
+        },
+      };
+
+      return contentResponse(
+        res,
+        result,
+        OK,
+        req.t('DASHBOARD_OVERVIEW_SUCCESS'),
+        DASHBOARD_OVERVIEW_SUCCESS,
+      );
+    } catch (error) {
+      return getServerError(res, error.message);
     }
   };
 }

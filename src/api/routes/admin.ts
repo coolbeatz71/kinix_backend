@@ -105,4 +105,6 @@ router.put('/promotions/story/disable/:id', superAdminCheck, adminStoryCtrl.disa
 router.get('/promotions/ads', superAdminCheck, adminAdsCtrl.getAll);
 router.get('/promotions/story', superAdminCheck, adminStoryCtrl.getAll);
 
+router.get('/overview/ads', superAdminCheck, adminDashboardCtrl.getAdsOverview);
+
 export default router;
