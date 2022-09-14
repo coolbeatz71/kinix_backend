@@ -182,6 +182,8 @@ export class AdminAds {
         startDate,
         redirectUrl,
         active: true,
+        plan: plan?.get().name,
+        amount: plan?.get().price,
       });
 
       return contentResponse(
@@ -252,6 +254,8 @@ export class AdminAds {
           legend,
           subTitle,
           redirectUrl,
+          plan: plan?.get().name,
+          amount: plan?.get().price,
         },
         {
           where: {
