@@ -140,6 +140,8 @@ export interface IAds {
   readonly id?: number;
   userId: number | null;
   planId: number;
+  plan?: string;
+  amount?: number;
   slug: string;
   legend: string;
   title: string;
@@ -157,6 +159,8 @@ export interface IStory {
   readonly id?: number;
   userId: number | null;
   planId: number;
+  plan?: string;
+  amount?: number;
   slug: string;
   legend: string;
   title: string;

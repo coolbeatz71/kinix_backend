@@ -5,6 +5,8 @@ export default class Story extends Model<IStory> implements IStory {
   readonly id?: number;
   userId!: number | null;
   planId!: number;
+  plan?: string;
+  amount?: number;
   slug!: string;
   legend!: string;
   title!: string;
@@ -94,6 +96,14 @@ export const initStory = (sequelize: Sequelize) => {
       },
       planId: {
         type: DataTypes.INTEGER,
+      },
+      plan: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      amount: {
+        type: DataTypes.FLOAT,
+        allowNull: true,
       },
       active: {
         type: DataTypes.BOOLEAN,
