@@ -106,5 +106,6 @@ router.get('/promotions/ads', superAdminCheck, adminAdsCtrl.getAll);
 router.get('/promotions/story', superAdminCheck, adminStoryCtrl.getAll);
 
 router.get('/overview/ads', superAdminCheck, adminDashboardCtrl.getAdsOverview);
+router.get('/overview/story', superAdminCheck, adminDashboardCtrl.getStoryOverview);
 
 export default router;
