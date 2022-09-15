@@ -193,6 +193,8 @@ export class AdminStory {
         mediaType,
         redirectUrl,
         active: true,
+        plan: plan?.get().name,
+        amount: plan?.get().price,
       });
 
       return contentResponse(
@@ -265,6 +267,8 @@ export class AdminStory {
           subTitle,
           mediaType,
           redirectUrl,
+          plan: plan?.get().name,
+          amount: plan?.get().price,
         },
         {
           where: {
