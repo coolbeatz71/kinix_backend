@@ -24,10 +24,14 @@ import {
   ARTICLE_DISABLED_SUCCESS,
   ARTICLE_EXIST,
   ARTICLE_NOT_FOUND,
+  ARTICLE_FEATURED_SUCCESS,
   ARTICLE_UPDATED_SUCCESS,
   PASSWORD_INVALID,
   PASSWORD_REQUIRED,
   USERNAME_EMAIL_INVALID,
+  ARTICLE_ALREADY_FEATURED,
+  ARTICLE_UNFEATURED_SUCCESS,
+  ARTICLE_ALREADY_UNFEATURED,
 } from '../../../constants/message';
 import {
   getArticleById,
@@ -448,6 +452,154 @@ export class AdminArticle {
       }
 
       return contentResponse(res, article, OK);
+    } catch (error) {
+      return getServerError(res, error.message);
+    }
+  };
+
+  /**
+   * controller to feature an article
+   * @param req Request
+   * @param res Response
+   */
+  featured = async (req: Request, res: Response): Promise<Response> => {
+    const { slug } = req.params;
+    const { password } = req.body;
+    const { email } = req.user as IJwtPayload;
+
+    if (!password) {
+      return getResponse(res, UNAUTHORIZED, {
+        code: PASSWORD_REQUIRED,
+        message: req.t('PASSWORD_REQUIRED'),
+      });
+    }
+
+    try {
+      const admin = await db.User.findOne({
+        where: {
+          email,
+        },
+      });
+      if (!admin) {
+        return getResponse(res, UNAUTHORIZED, {
+          code: USERNAME_EMAIL_INVALID,
+          message: req.t('USERNAME_EMAIL_INVALID'),
+        });
+      }
+
+      const isPasswordValid = comparePassword(password, admin?.get().password);
+
+      if (!isPasswordValid) {
+        return getResponse(res, FORBIDDEN, {
+          code: PASSWORD_INVALID,
+          message: req.t('PASSWORD_INVALID'),
+        });
+      }
+
+      const article = await getArticleBySlug(res, slug, true);
+
+      if (!article) {
+        return getResponse(res, NOT_FOUND, {
+          code: ARTICLE_NOT_FOUND,
+          message: req.t('ARTICLE_NOT_FOUND'),
+        });
+      }
+
+      if (article?.get().featured) {
+        return getResponse(res, CONFLICT, {
+          code: ARTICLE_ALREADY_FEATURED,
+          message: req.t('ARTICLE_ALREADY_FEATURED'),
+        });
+      }
+
+      const update = await db.Article.update(
+        {
+          featured: true,
+        },
+        { where: { id: article?.get().id }, returning: true },
+      );
+
+      return contentResponse(
+        res,
+        update[1][0],
+        OK,
+        req.t('ARTICLE_FEATURED_SUCCESS'),
+        ARTICLE_FEATURED_SUCCESS,
+      );
+    } catch (error) {
+      return getServerError(res, error.message);
+    }
+  };
+
+  /**
+   * controller to unfeature an article
+   * @param req Request
+   * @param res Response
+   */
+  unfeatured = async (req: Request, res: Response): Promise<Response> => {
+    const { slug } = req.params;
+    const { password } = req.body;
+    const { email } = req.user as IJwtPayload;
+
+    if (!password) {
+      return getResponse(res, UNAUTHORIZED, {
+        code: PASSWORD_REQUIRED,
+        message: req.t('PASSWORD_REQUIRED'),
+      });
+    }
+
+    try {
+      const admin = await db.User.findOne({
+        where: {
+          email,
+        },
+      });
+      if (!admin) {
+        return getResponse(res, UNAUTHORIZED, {
+          code: USERNAME_EMAIL_INVALID,
+          message: req.t('USERNAME_EMAIL_INVALID'),
+        });
+      }
+
+      const isPasswordValid = comparePassword(password, admin?.get().password);
+
+      if (!isPasswordValid) {
+        return getResponse(res, FORBIDDEN, {
+          code: PASSWORD_INVALID,
+          message: req.t('PASSWORD_INVALID'),
+        });
+      }
+
+      const article = await getArticleBySlug(res, slug, true);
+
+      if (!article) {
+        return getResponse(res, NOT_FOUND, {
+          code: ARTICLE_NOT_FOUND,
+          message: req.t('ARTICLE_NOT_FOUND'),
+        });
+      }
+
+      if (!article?.get().featured) {
+        return getResponse(res, CONFLICT, {
+          code: ARTICLE_ALREADY_UNFEATURED,
+          message: req.t('ARTICLE_ALREADY_UNFEATURED'),
+        });
+      }
+
+      const update = await db.Article.update(
+        {
+          featured: false,
+        },
+        { where: { id: article?.get().id }, returning: true },
+      );
+
+      return contentResponse(
+        res,
+        update[1][0],
+        OK,
+        req.t('ARTICLE_UNFEATURED_SUCCESS'),
+        ARTICLE_UNFEATURED_SUCCESS,
+      );
     } catch (error) {
       return getServerError(res, error.message);
     }
