@@ -57,6 +57,9 @@
   "ARTICLE_DISABLED_SUCCESS": "Cet article a été désactivée avec succès.",
   "ARTICLE_DELETED_SUCCESS": "Cet article a été supprimée avec succès.",
   "ARTICLE_FEATURED_SUCCESS": "Cet article a été mis à la une avec succès.",
+  "ARTICLE_UNFEATURED_SUCCESS": "Cet article a été retiré de la une avec succès.",
+  "ARTICLE_ALREADY_FEATURED": "Oops! Cet article a déjà été mis à la une.",
+  "ARTICLE_ALREADY_UNFEATURED": "Oops! Cet article a déjà été retiré de la une.",
 
   "ARTICLE_LIKED_SUCCESS": "Réaction partagée. Merci d'avoir aimé l'article!",
   "ARTICLE_UNLIKED_SUCCESS": "Réaction partagée. Merci pour votre considération",
