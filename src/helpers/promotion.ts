@@ -1,8 +1,11 @@
 import dayjs from 'dayjs';
 import { Response } from 'express';
+import { shuffle } from 'lodash';
 import { Op } from 'sequelize';
 import db from '../db/models';
+import Ads from '../db/models/ads';
 import AdsPlan from '../db/models/adsPlan';
+import Story from '../db/models/story';
 import StoryPlan from '../db/models/storyPlan';
 import { EPromotionStatus } from '../interfaces/category';
 import EPromotionPlan, { EPromotionType } from '../interfaces/promotion';
@@ -44,6 +47,41 @@ const plan = async (
           });
 
     return result;
+  } catch (err) {
+    return getServerError(res, err.message);
+  }
+};
+
+const ads = async (
+  res: Response,
+  field: string,
+  value: EPromotionPlan,
+): Promise<Ads[] | Response> => {
+  try {
+    const data = await db.Ads.findAll({
+      order: [['createdAt', 'DESC']],
+      where: { [Op.and]: [{ [field]: value }, { active: true }] },
+    });
+
+    return shuffle(data);
+  } catch (err) {
+    return getServerError(res, err.message);
+  }
+};
+
+const story = async (
+  res: Response,
+  field: string,
+  value: EPromotionPlan,
+): Promise<Story[] | Response> => {
+  try {
+    const data = await db.Story.findAll({
+      limit: 10,
+      order: [['createdAt', 'DESC']],
+      where: { [Op.and]: [{ [field]: value }, { active: true }] },
+    });
+
+    return shuffle(data);
   } catch (err) {
     return getServerError(res, err.message);
   }
@@ -105,6 +143,34 @@ export const getTotalAmountYearlyPromotion = async (
   } catch (err) {
     return getServerError(res, err.message);
   }
+};
+
+// active ads
+export const getFreeAds = async (res: Response) => {
+  return ads(res, 'plan', EPromotionPlan.FREE);
+};
+export const getBasicAds = async (res: Response) => {
+  return ads(res, 'plan', EPromotionPlan.BASIC);
+};
+export const getProfessionalAds = async (res: Response) => {
+  return ads(res, 'plan', EPromotionPlan.PROFESSIONAL);
+};
+export const getPremiumAds = async (res: Response) => {
+  return ads(res, 'plan', EPromotionPlan.PREMIUM);
+};
+
+// active stories
+export const getFreeStory = async (res: Response) => {
+  return story(res, 'plan', EPromotionPlan.FREE);
+};
+export const getBasicStory = async (res: Response) => {
+  return story(res, 'plan', EPromotionPlan.BASIC);
+};
+export const getProfessionalStory = async (res: Response) => {
+  return story(res, 'plan', EPromotionPlan.PROFESSIONAL);
+};
+export const getPremiumStory = async (res: Response) => {
+  return story(res, 'plan', EPromotionPlan.PREMIUM);
 };
 
 export default countAllPromotions;
