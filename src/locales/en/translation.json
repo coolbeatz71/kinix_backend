@@ -56,6 +56,10 @@
   "ARTICLE_APPROVED_SUCCESS": "This article has been successfully approved.",
   "ARTICLE_DISABLED_SUCCESS": "This article has been successfully deactivated.",
   "ARTICLE_DELETED_SUCCESS": "This article has been successfully deleted.",
+  "ARTICLE_FEATURED_SUCCESS": "This article has been successfully featured.",
+  "ARTICLE_UNFEATURED_SUCCESS": "This article has been successfully removed from the front page.",
+  "ARTICLE_ALREADY_FEATURED": "Oops! This article has already been featured.",
+  "ARTICLE_ALREADY_UNFEATURED": "Oops! This article has already been removed from the front page.",
 
   "ARTICLE_LIKED_SUCCESS": "Feedback shared. Thanks for liking the article!",
   "ARTICLE_UNLIKED_SUCCESS": "Feedback shared. Thanks for your consideration!",

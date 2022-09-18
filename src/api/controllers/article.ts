@@ -131,7 +131,7 @@ export class Article {
   };
 
   /**
-   * TODO should add the query string for search (title, summary, body, etc.) and also search the keyword in the list of tags
+   * //TODO: should add the query string for search (title, summary, body, etc.) and also search the keyword in the list of tags
    * controller to search all articles by tags
    * @param req Request
    * @param res Response
@@ -176,6 +176,30 @@ export class Article {
 
       return getResponse(res, OK, {
         data: { count, articles },
+      });
+    } catch (error) {
+      return getServerError(res, error.message);
+    }
+  };
+
+  /**
+   * controller to get featured articles
+   * @param req Request
+   * @param res Response
+   */
+  getFeatured = async (req: Request, res: Response): Promise<Response> => {
+    const { limit = 5 } = req.query;
+    try {
+      const data = await db.Article.findAll({
+        limit: Number(limit),
+        order: [['updatedAt', 'DESC']],
+        where: {
+          featured: true,
+        },
+      });
+
+      return getResponse(res, OK, {
+        data,
       });
     } catch (error) {
       return getServerError(res, error.message);

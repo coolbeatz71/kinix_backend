@@ -49,6 +49,8 @@ router.put('/articles/:slug', adminsCheck, adminArticleCtrl.update);
 // super admin
 router.put('/articles/approve/:slug', superAdminCheck, adminArticleCtrl.approve);
 router.put('/articles/disable/:slug', superAdminCheck, adminArticleCtrl.disable);
+router.put('/articles/feature/:slug', superAdminCheck, adminArticleCtrl.featured);
+router.put('/articles/unfeature/:slug', superAdminCheck, adminArticleCtrl.unfeatured);
 router.delete('/articles/:slug', superAdminCheck, adminArticleCtrl.delete);
 
 /*

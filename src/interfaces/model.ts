@@ -54,6 +54,7 @@ export interface IArticle {
   reads: number;
   tags: string[] | null;
   active?: boolean;
+  featured?: boolean;
   liked?: boolean;
   userId: number;
   createdAt?: string;
