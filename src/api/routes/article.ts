@@ -8,5 +8,6 @@ router.get('/tags', articleCtrl.getAllTags);
 router.get('/search', articleCtrl.getByTags);
 router.get('/:slug', articleCtrl.get);
 router.get('/related/:slug', articleCtrl.getRelated);
+router.get('/featured', articleCtrl.getFeatured);
 
 export default router;
