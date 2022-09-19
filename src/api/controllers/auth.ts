@@ -46,6 +46,7 @@ import { IJwtPayload } from '../../interfaces/api';
 import ERole from '../../interfaces/role';
 import { getUserById } from '../../helpers/user';
 import { IUnknownObject } from '../../interfaces/unknownObject';
+import generateOTP from '../../helpers/otp';
 
 export class Auth {
   /**
@@ -87,11 +88,13 @@ export class Auth {
         });
       }
 
+      const otp = generateOTP(6);
       const hashPassword = getHashedPassword(password);
 
       const newUser = await db.User.create({
-        userName,
+        otp,
         email,
+        userName,
         password: hashPassword,
       });
 

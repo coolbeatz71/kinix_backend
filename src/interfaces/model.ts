@@ -40,6 +40,7 @@ export interface IUser {
   phoneISOCode?: string;
   phoneDialCode?: string;
   phonePartial?: string;
+  otp?: string;
   createdAt?: string;
   updatedAt?: string;
 }
