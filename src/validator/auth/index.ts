@@ -47,12 +47,12 @@ class AuthValidator {
   };
 
   confirmAccount = async (): Promise<void> => {
-    await validate.email(this.req, 'email');
+    await validate.empty(this.req, 'credential', this.req.t('LABEL_EMAIL_USERNAME'));
     await validate.empty(this.req, 'otp', this.req.t('LABEL_OTP_CODE'));
   };
 
   resendOTP = async (): Promise<void> => {
-    await validate.email(this.req, 'email');
+    await validate.empty(this.req, 'credential', this.req.t('LABEL_EMAIL_USERNAME'));
   };
 }
 

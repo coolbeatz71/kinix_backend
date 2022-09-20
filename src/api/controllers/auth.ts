@@ -48,7 +48,7 @@ import {
 } from '../../constants/message';
 import { IJwtPayload } from '../../interfaces/api';
 import ERole from '../../interfaces/role';
-import { getUserByEmail, getUserById } from '../../helpers/user';
+import { getUserById } from '../../helpers/user';
 import { IUnknownObject } from '../../interfaces/unknownObject';
 import generateOTP from '../../helpers/otp';
 
@@ -198,7 +198,7 @@ export class Auth {
    * @param res Response
    */
   confirmAccount = async (req: Request, res: Response): Promise<Response> => {
-    const { otp, email } = req.body;
+    const { otp, credential } = req.body;
 
     await new AuthValidator(req).confirmAccount();
     const errors = validationResult(req);
@@ -207,7 +207,7 @@ export class Auth {
     try {
       const user = await db.User.findOne({
         where: {
-          email,
+          [Op.or]: [{ userName: credential }, { email: credential }],
         },
       });
 
@@ -244,7 +244,7 @@ export class Auth {
           verified: true,
           isLoggedIn: true,
         },
-        { where: { email }, returning: true },
+        { where: { id: user.id }, returning: true },
       );
 
       const token = generateToken(
@@ -266,14 +266,18 @@ export class Auth {
   };
 
   resentOtpCode = async (req: Request, res: Response): Promise<Response> => {
-    const { email } = req.body;
+    const { credential } = req.body;
 
     await new AuthValidator(req).resendOTP();
     const errors = validationResult(req);
     if (!errors.isEmpty()) return getValidationError(res, errors);
 
     try {
-      const user = await getUserByEmail(res, email);
+      const user = await db.User.findOne({
+        where: {
+          [Op.or]: [{ userName: credential }, { email: credential }],
+        },
+      });
 
       if (!user) {
         return getResponse(res, NOT_FOUND, {
