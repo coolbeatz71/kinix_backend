@@ -12,4 +12,7 @@ router.get('/user', userCheck, authCtrl.getCurrentUser);
 router.put('/update/avatar', verifyToken, authCtrl.updateAvatar);
 router.put('/update/password', verifyToken, authCtrl.changePassword);
 
+router.post('/confirm', authCtrl.confirmAccount);
+router.post('/resend-otp', authCtrl.resentOtpCode);
+
 export default router;

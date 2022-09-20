@@ -213,6 +213,7 @@ export const getUserResponse = (
     message,
     data: {
       id: user.id,
+      otp: user.otp, // TODO: should be removed after email setup
       role: user.role,
       email: user.email,
       image: user.image,
