@@ -28,6 +28,10 @@
   "USER_BLOCKED_SUCCESS": "Ce compte a été désactivé avec succès.",
   "USER_UNBLOCKED_SUCCESS": "Ce compte a été réactivé avec succès.",
   "USER_DELETED_SUCCESS": "Ce compte a été supprimé avec succès.",
+  "OTP_VERIFIED_SUCCESS": "Le compte a été verifié avec succès.",
+  "OTP_INCORRECT": "Confirmation du compte échouée. Le code de vérification est incorrect.",
+  "OTP_ALREADY_VERIFIED": "Oops! Ce code de vérification a déjà été utilisé.",
+  "OTP_RESEND_SUCCESS": "Le code de vérification a été renvoyé avec succès.",
 
   "CATEGORY_NOT_FOUND": "Cette catégorie est introuvable. Veuillez vérifier vos informations.",
 
@@ -148,5 +152,6 @@
   "LABEL_ADS_IMAGE": "Le lien de la photo",
   "LABEL_PROMOTION_STARTDATE": "La date de début",
   "LABEL_STORY_MEDIA": "Media",
-  "LABEL_STORY_MEDIA_TYPE": "Type de media"
+  "LABEL_STORY_MEDIA_TYPE": "Type de media",
+  "LABEL_OTP_CODE": "Code de vérification"
 }

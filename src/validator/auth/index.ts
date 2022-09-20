@@ -45,6 +45,15 @@ class AuthValidator {
   changeAvatar = async (): Promise<void> => {
     await validate.url(this.req, 'avatar', this.req.t('LABEL_AVATAR_URL'));
   };
+
+  confirmAccount = async (): Promise<void> => {
+    await validate.email(this.req, 'email');
+    await validate.empty(this.req, 'otp', this.req.t('LABEL_OTP_CODE'));
+  };
+
+  resendOTP = async (): Promise<void> => {
+    await validate.email(this.req, 'email');
+  };
 }
 
 export default AuthValidator;

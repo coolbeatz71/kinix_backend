@@ -6,12 +6,13 @@ import { EUserStatus } from '../interfaces/category';
 import ERole from '../interfaces/role';
 import { getServerError } from './api';
 import EProvider from '../interfaces/provider';
+import User from '../db/models/user';
 
-const user = async (res: Response, field: string, value: any): Promise<any> => {
+const user = async (res: Response, field: string, value: any): Promise<User | null | Response> => {
   try {
     const result = await db.User.findOne({
       where: { [field]: value },
-      attributes: { exclude: ['password'] },
+      attributes: { exclude: ['password', 'otp'] },
     });
 
     return result;
@@ -22,6 +23,10 @@ const user = async (res: Response, field: string, value: any): Promise<any> => {
 
 export const getUserByName = async (res: Response, userName: string): Promise<any> => {
   return user(res, 'userName', userName);
+};
+
+export const getUserByEmail = async (res: Response, email: string): Promise<any> => {
+  return user(res, 'email', email);
 };
 
 export const getUserById = async (res: Response, id: number): Promise<any> => {
@@ -70,7 +75,7 @@ export const countUsersBy = async (
   try {
     const result = await db.User.count({
       where: { [field]: value },
-      attributes: { exclude: ['password'] },
+      attributes: { exclude: ['password', 'otp'] },
     });
 
     return result;

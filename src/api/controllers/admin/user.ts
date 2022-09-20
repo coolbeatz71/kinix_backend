@@ -192,10 +192,10 @@ export class AdminUser {
     try {
       const data = await db.User.findAndCountAll({
         where,
-        limit: size,
         offset,
+        limit: size,
         order: [['createdAt', 'DESC']],
-        attributes: { exclude: ['password', 'role'] },
+        attributes: { exclude: ['password', 'role', 'otp'] },
       });
       const result = getPagingData(Number(page), size, data);
 
@@ -251,10 +251,10 @@ export class AdminUser {
 
     try {
       const data = await db.User.findAndCountAll({
-        limit: size,
         offset,
+        limit: size,
         order: [['createdAt', 'DESC']],
-        attributes: { exclude: ['password'] },
+        attributes: { exclude: ['password', 'otp'] },
         where: { [Op.and]: [{ ...whereSearch, ...whereStatus, ...whereRole, ...where }] },
       });
       const result = getPagingData(Number(page), size, data);
@@ -306,10 +306,10 @@ export class AdminUser {
 
     try {
       const data = await db.User.findAndCountAll({
-        limit: size,
         offset,
+        limit: size,
         order: [['createdAt', 'DESC']],
-        attributes: { exclude: ['password'] },
+        attributes: { exclude: ['password', 'otp'] },
         where: { [Op.and]: [{ ...whereSearch, ...whereStatus, ...where }] },
       });
       const result = getPagingData(Number(page), size, data);

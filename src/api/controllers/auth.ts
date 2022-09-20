@@ -41,11 +41,16 @@ import {
   USER_BLOCKED,
   USER_LOGIN_SUCCESS,
   USER_NOT_FOUND,
+  OTP_ALREADY_VERIFIED,
+  OTP_INCORRECT,
+  OTP_VERIFIED_SUCCESS,
+  OTP_RESEND_SUCCESS,
 } from '../../constants/message';
 import { IJwtPayload } from '../../interfaces/api';
 import ERole from '../../interfaces/role';
-import { getUserById } from '../../helpers/user';
+import { getUserByEmail, getUserById } from '../../helpers/user';
 import { IUnknownObject } from '../../interfaces/unknownObject';
+import generateOTP from '../../helpers/otp';
 
 export class Auth {
   /**
@@ -87,11 +92,13 @@ export class Auth {
         });
       }
 
+      const otp = generateOTP(6);
       const hashPassword = getHashedPassword(password);
 
       const newUser = await db.User.create({
-        userName,
+        otp,
         email,
+        userName,
         password: hashPassword,
       });
 
@@ -104,7 +111,7 @@ export class Auth {
         newUser?.get(),
         token,
         CREATED,
-        req.t('CREATED, ACCOUNT_CREATED_SUCCESS'),
+        req.t('ACCOUNT_CREATED_SUCCESS'),
         ACCOUNT_CREATED_SUCCESS,
       );
     } catch (error) {
@@ -179,6 +186,130 @@ export class Auth {
         OK,
         req.t('USER_LOGIN_SUCCESS'),
         USER_LOGIN_SUCCESS,
+      );
+    } catch (error) {
+      return getServerError(res, error.message);
+    }
+  };
+
+  /**
+   * controller to verify user account
+   * @param req Request
+   * @param res Response
+   */
+  confirmAccount = async (req: Request, res: Response): Promise<Response> => {
+    const { otp, email } = req.body;
+
+    await new AuthValidator(req).confirmAccount();
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) return getValidationError(res, errors);
+
+    try {
+      const user = await db.User.findOne({
+        where: {
+          email,
+        },
+      });
+
+      if (!user) {
+        return getResponse(res, NOT_FOUND, {
+          code: USER_NOT_FOUND,
+          message: req.t('USER_NOT_FOUND'),
+        });
+      }
+
+      if (user?.get().active === false) {
+        return getResponse(res, FORBIDDEN, {
+          code: USER_BLOCKED,
+          message: req.t('USER_BLOCKED'),
+        });
+      }
+
+      if (user?.get().verified === true) {
+        return getResponse(res, CONFLICT, {
+          code: OTP_ALREADY_VERIFIED,
+          message: req.t('OTP_ALREADY_VERIFIED'),
+        });
+      }
+
+      if (user?.get().otp !== otp) {
+        return getResponse(res, BAD_REQUEST, {
+          code: OTP_INCORRECT,
+          message: req.t('OTP_INCORRECT'),
+        });
+      }
+
+      const update = await db.User.update(
+        {
+          verified: true,
+          isLoggedIn: true,
+        },
+        { where: { email }, returning: true },
+      );
+
+      const token = generateToken(
+        user?.get(),
+        user?.get().role === ERole.ADMIN || user?.get().role === ERole.SUPER_ADMIN,
+      );
+
+      return getUserResponse(
+        res,
+        update[1][0]?.get(),
+        token,
+        OK,
+        req.t('OTP_VERIFIED_SUCCESS'),
+        OTP_VERIFIED_SUCCESS,
+      );
+    } catch (error) {
+      return getServerError(res, error.message);
+    }
+  };
+
+  resentOtpCode = async (req: Request, res: Response): Promise<Response> => {
+    const { email } = req.body;
+
+    await new AuthValidator(req).resendOTP();
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) return getValidationError(res, errors);
+
+    try {
+      const user = await getUserByEmail(res, email);
+
+      if (!user) {
+        return getResponse(res, NOT_FOUND, {
+          code: USER_NOT_FOUND,
+          message: req.t('USER_NOT_FOUND'),
+        });
+      }
+
+      if (user?.get().active === false) {
+        return getResponse(res, FORBIDDEN, {
+          code: USER_BLOCKED,
+          message: req.t('USER_BLOCKED'),
+        });
+      }
+
+      if (user?.get().verified === true) {
+        return getResponse(res, CONFLICT, {
+          code: OTP_ALREADY_VERIFIED,
+          message: req.t('OTP_ALREADY_VERIFIED'),
+        });
+      }
+
+      const otp = generateOTP(6);
+      const update = await db.User.update({ otp }, { where: { id: user.id }, returning: true });
+
+      const token = generateToken(
+        user?.get(),
+        user?.get().role === ERole.ADMIN || user?.get().role === ERole.SUPER_ADMIN,
+      );
+      return getUserResponse(
+        res,
+        update[1][0],
+        token,
+        OK,
+        req.t('OTP_RESEND_SUCCESS'),
+        OTP_RESEND_SUCCESS,
       );
     } catch (error) {
       return getServerError(res, error.message);
