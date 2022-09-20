@@ -29,7 +29,7 @@
   "USER_UNBLOCKED_SUCCESS": "Ce compte a été réactivé avec succès.",
   "USER_DELETED_SUCCESS": "Ce compte a été supprimé avec succès.",
   "OTP_VERIFIED_SUCCESS": "Le compte a été verifié avec succès.",
-  "OTP_INCORRECT": "Confirmation du compte échouée. Le code de vérification est incorrect.",
+  "OTP_INCORRECT": "Oops! Le code de vérification est incorrect.",
   "OTP_ALREADY_VERIFIED": "Oops! Ce code de vérification a déjà été utilisé.",
   "OTP_RESEND_SUCCESS": "Le code de vérification a été renvoyé avec succès.",
 
