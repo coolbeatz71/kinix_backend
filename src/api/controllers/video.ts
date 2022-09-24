@@ -116,11 +116,11 @@ export class Video {
   getFeed = async (_req: Request, res: Response): Promise<Response> => {
     try {
       // get discovery by category
-      const musicVideoDiscovery = await getVideoDiscovery(res, ECategory.MUSIC_VIDEO);
       const podcastDiscovery = await getVideoDiscovery(res, ECategory.PODCAST);
+      const leFocusDiscovery = await getVideoDiscovery(res, ECategory.LEFOCUS);
       const interviewDiscovery = await getVideoDiscovery(res, ECategory.INTERVIEW);
       const flexBeatzDiscovery = await getVideoDiscovery(res, ECategory.FLEXBEATZ);
-      const leFocusDiscovery = await getVideoDiscovery(res, ECategory.LEFOCUS);
+      const musicVideoDiscovery = await getVideoDiscovery(res, ECategory.MUSIC_VIDEO);
 
       const discovery = [
         ...musicVideoDiscovery,
@@ -134,11 +134,11 @@ export class Video {
       const popular = await getVideoPopular(res);
 
       // get video per category
-      const musicVideo = await getVideoByCategory(res, ECategory.MUSIC_VIDEO);
       const podcast = await getVideoByCategory(res, ECategory.PODCAST);
+      const leFocus = await getVideoByCategory(res, ECategory.LEFOCUS);
       const interview = await getVideoByCategory(res, ECategory.INTERVIEW);
       const flexBeatz = await getVideoByCategory(res, ECategory.FLEXBEATZ);
-      const leFocus = await getVideoByCategory(res, ECategory.LEFOCUS);
+      const musicVideo = await getVideoByCategory(res, ECategory.MUSIC_VIDEO);
 
       const data = {
         discovery,
