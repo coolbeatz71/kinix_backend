@@ -57,6 +57,7 @@ const ads = async (
   field: string,
   value: EPromotionPlan,
 ): Promise<Ads[] | Response> => {
+  // TODO: should not only get ads by active=true, should also check startDate agains dayjs.now()
   try {
     const data = await db.Ads.findAll({
       order: [['createdAt', 'DESC']],
@@ -74,6 +75,7 @@ const story = async (
   field: string,
   value: EPromotionPlan,
 ): Promise<Story[] | Response> => {
+  // TODO: should not only get story by active=true, should also check startDate agains dayjs.now()
   try {
     const data = await db.Story.findAll({
       limit: 10,
