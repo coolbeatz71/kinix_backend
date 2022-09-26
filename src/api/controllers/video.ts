@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import { Op } from 'sequelize';
 import { NOT_FOUND, OK } from 'http-status';
 import { lowerCase } from 'lodash';
-import { contentResponse, getResponse, getServerError } from '../../helpers/api';
+import { contentResponse, getPagination, getResponse, getServerError } from '../../helpers/api';
 import { VIDEO_NOT_FOUND, VIDEO_TAGS_NOT_FOUND } from '../../constants/message';
 import {
   getAllVideo,
@@ -23,10 +23,11 @@ export class Video {
    * @param res Response
    */
   getAll = async (req: Request, res: Response): Promise<Response> => {
-    const { limit = 20, offset = 0 } = req.query;
+    const { limit = 20, page = 1 } = req.query;
+    const { limit: size, offset } = getPagination(Number(page), Number(limit));
 
     try {
-      const { count, rows: videos } = await getAllVideo(res, Number(limit), Number(offset));
+      const { count, rows: videos } = await getAllVideo(res, size, offset);
       return getResponse(res, OK, {
         data: { count, videos },
       });
