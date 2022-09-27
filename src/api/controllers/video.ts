@@ -1,12 +1,12 @@
 /* eslint-disable consistent-return */
 import { Request, Response } from 'express';
-import { Op } from 'sequelize';
+import { literal, Op } from 'sequelize';
 import { NOT_FOUND, OK } from 'http-status';
-import { lowerCase } from 'lodash';
+import { isEmpty, lowerCase } from 'lodash';
 import { contentResponse, getPagination, getResponse, getServerError } from '../../helpers/api';
 import { VIDEO_NOT_FOUND, VIDEO_TAGS_NOT_FOUND } from '../../constants/message';
 import {
-  getAllVideo,
+  getCategoryByName,
   getVideoByCategory,
   getVideoBySlug,
   getVideoDiscovery,
@@ -23,11 +23,69 @@ export class Video {
    * @param res Response
    */
   getAll = async (req: Request, res: Response): Promise<Response> => {
-    const { limit = 20, page = 1 } = req.query;
+    const { limit = 20, page = 1, search, tag, category } = req.query;
     const { limit: size, offset } = getPagination(Number(page), Number(limit));
 
+    const isTag = !isEmpty(tag);
+    const isSearch = !isEmpty(search);
+    const isCategory = !isEmpty(category);
+
+    const values = Object.values(ECategory);
+    const isCategoryValid = values.includes(String(category).toUpperCase() as unknown as ECategory);
+
+    const cat = (await getCategoryByName(res, String(category).toUpperCase())) || null;
+    const whereCategory = isCategory && isCategoryValid ? { categoryId: cat?.get().id } : undefined;
+    const whereSearch = isSearch ? { title: { [Op.iLike]: `%${search}%` } } : undefined;
+    const whereTag = isTag
+      ? {
+          tags: {
+            [Op.contains]: [lowerCase(String(tag))],
+          },
+        }
+      : undefined;
+
     try {
-      const { count, rows: videos } = await getAllVideo(res, size, offset);
+      const { count, rows: videos } = await db.Video.findAndCountAll({
+        offset,
+        limit: size,
+        order: [['createdAt', 'DESC']],
+        where: { [Op.and]: [{ ...whereSearch, ...whereTag, ...whereCategory }] },
+        attributes: {
+          include: [
+            [
+              literal('(SELECT COUNT(*) FROM "share" WHERE "share"."videoId" = "Video"."id")'),
+              'sharesCount',
+            ],
+            [
+              literal(
+                '(SELECT COUNT(*) FROM "playlist" WHERE "playlist"."videoId" = "Video"."id")',
+              ),
+              'playlistsCount',
+            ],
+          ],
+        },
+        include: [
+          {
+            as: 'category',
+            model: db.Category,
+            attributes: ['id', 'name'],
+          },
+          {
+            as: 'user',
+            model: db.User,
+            attributes: ['id', 'userName', 'email', 'phoneNumber', 'image', 'role'],
+          },
+          {
+            as: 'rate',
+            model: db.Rate,
+          },
+          {
+            as: 'share',
+            model: db.Share,
+          },
+        ],
+      });
+
       return getResponse(res, OK, {
         data: { count, videos },
       });
@@ -199,58 +257,6 @@ export class Video {
 
       return getResponse(res, OK, {
         data: [...set],
-      });
-    } catch (error) {
-      return getServerError(res, error.message);
-    }
-  };
-
-  /**
-   * controller to search all videos by tags
-   * @param req Request
-   * @param res Response
-   */
-  getByTags = async (req: Request, res: Response): Promise<Response> => {
-    const { limit = 20, offset = 0, tag } = req.query;
-    const formatted = lowerCase(String(tag));
-    const where = tag
-      ? {
-          tags: {
-            [Op.contains]: [formatted],
-          },
-        }
-      : {};
-    try {
-      const { count, rows: videos } = await db.Video.findAndCountAll({
-        where,
-        distinct: true,
-        limit: Number(limit),
-        offset: Number(offset),
-        order: [['createdAt', 'DESC']],
-        include: [
-          {
-            as: 'category',
-            model: db.Category,
-            attributes: ['id', 'name'],
-          },
-          {
-            as: 'user',
-            model: db.User,
-            attributes: ['id', 'userName', 'email', 'phoneNumber', 'image', 'role'],
-          },
-          {
-            as: 'rate',
-            model: db.Rate,
-          },
-          {
-            as: 'share',
-            model: db.Share,
-          },
-        ],
-      });
-
-      return getResponse(res, OK, {
-        data: { count, videos },
       });
     } catch (error) {
       return getServerError(res, error.message);
