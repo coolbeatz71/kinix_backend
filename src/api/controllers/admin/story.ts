@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import { CONFLICT, CREATED, FORBIDDEN, NOT_FOUND, OK, UNAUTHORIZED } from 'http-status';
-import { isEmpty, lowerCase } from 'lodash';
+import { isEmpty, toLower } from 'lodash';
 import { Op } from 'sequelize';
 import {
   PASSWORD_INVALID,
@@ -536,7 +536,7 @@ export class AdminStory {
   getAll = async (req: Request, res: Response): Promise<Response> => {
     const { page = 1, limit = 20, search, status } = req.query;
     const isStatus = !isEmpty(status);
-    const isActive = status === lowerCase(EnumStatus.ACTIVE);
+    const isActive = status === toLower(EnumStatus.ACTIVE);
     const { limit: size, offset } = getPagination(Number(page), Number(limit));
 
     const whereStatus = isStatus

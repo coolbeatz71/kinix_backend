@@ -2,7 +2,7 @@
 import { Request, Response } from 'express';
 import { literal, Op } from 'sequelize';
 import { NOT_FOUND, OK } from 'http-status';
-import { isEmpty, lowerCase } from 'lodash';
+import { isEmpty, toLower } from 'lodash';
 import { contentResponse, getPagination, getResponse, getServerError } from '../../helpers/api';
 import { VIDEO_NOT_FOUND, VIDEO_TAGS_NOT_FOUND } from '../../constants/message';
 import {
@@ -39,7 +39,7 @@ export class Video {
     const whereTag = isTag
       ? {
           tags: {
-            [Op.contains]: [lowerCase(String(tag))],
+            [Op.contains]: [toLower(String(tag))],
           },
         }
       : undefined;

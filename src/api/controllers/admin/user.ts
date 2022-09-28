@@ -2,7 +2,7 @@
 import { Request, Response } from 'express';
 import { validationResult } from 'express-validator';
 import { CONFLICT, CREATED, FORBIDDEN, NOT_FOUND, OK, UNAUTHORIZED } from 'http-status';
-import { isEmpty, lowerCase } from 'lodash';
+import { isEmpty, toLower } from 'lodash';
 import { Op } from 'sequelize';
 import {
   ACCOUNT_CREATED_SUCCESS,
@@ -216,7 +216,7 @@ export class AdminUser {
     const { search, page = 1, limit = 20, status, role } = req.query;
     const isRole = !isEmpty(role);
     const isStatus = !isEmpty(status);
-    const isActive = status === lowerCase(EnumStatus.ACTIVE);
+    const isActive = status === toLower(EnumStatus.ACTIVE);
     const { limit: size, offset } = getPagination(Number(page), Number(limit));
 
     const values = Object.values(ERoleClient);
@@ -275,7 +275,7 @@ export class AdminUser {
   getAllAdmins = async (req: Request, res: Response): Promise<Response> => {
     const { search, page = 1, limit = 20, status } = req.query;
     const isStatus = !isEmpty(status);
-    const isActive = status === lowerCase(EnumStatus.ACTIVE);
+    const isActive = status === toLower(EnumStatus.ACTIVE);
     const { limit: size, offset } = getPagination(Number(page), Number(limit));
     const onlyAdmins = [
       {

@@ -2,7 +2,7 @@
 import { Request, Response } from 'express';
 import { Op } from 'sequelize';
 import { NOT_FOUND, OK } from 'http-status';
-import { lowerCase } from 'lodash';
+import { toLower } from 'lodash';
 import { ARTICLE_NOT_FOUND, ARTICLE_TAGS_NOT_FOUND } from '../../constants/message';
 import db from '../../db/models';
 import { contentResponse, getResponse, getServerError } from '../../helpers/api';
@@ -138,7 +138,7 @@ export class Article {
    */
   getByTags = async (req: Request, res: Response): Promise<Response> => {
     const { limit = 20, offset = 0, tag } = req.query;
-    const formatted = lowerCase(String(tag));
+    const formatted = toLower(String(tag));
     const where = tag
       ? {
           tags: {
