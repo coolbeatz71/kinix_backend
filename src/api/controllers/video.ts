@@ -34,6 +34,8 @@ export class Video {
     const isCategoryValid = values.includes(String(category).toUpperCase() as unknown as ECategory);
 
     const cat = (await getCategoryByName(res, String(category).toUpperCase())) || null;
+
+    const whereActive = { active: true };
     const whereCategory = isCategory && isCategoryValid ? { categoryId: cat?.get().id } : undefined;
     const whereSearch = isSearch ? { title: { [Op.iLike]: `%${search}%` } } : undefined;
     const whereTag = isTag
@@ -49,7 +51,9 @@ export class Video {
         offset,
         limit: size,
         order: [['createdAt', 'DESC']],
-        where: { [Op.and]: [{ ...whereSearch, ...whereTag, ...whereCategory }] },
+        where: {
+          [Op.and]: [{ ...whereSearch, ...whereTag, ...whereCategory, ...whereActive }],
+        },
         attributes: {
           include: [
             [
