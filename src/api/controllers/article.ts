@@ -1,12 +1,12 @@
 /* eslint-disable consistent-return */
 import { Request, Response } from 'express';
-import { Op } from 'sequelize';
+import { literal, Op } from 'sequelize';
+import { isEmpty, toLower } from 'lodash';
 import { NOT_FOUND, OK } from 'http-status';
-import { toLower } from 'lodash';
 import { ARTICLE_NOT_FOUND, ARTICLE_TAGS_NOT_FOUND } from '../../constants/message';
 import db from '../../db/models';
-import { contentResponse, getResponse, getServerError } from '../../helpers/api';
-import { getAllArticle, getArticleBySlug } from '../../helpers/article';
+import { contentResponse, getPagination, getResponse, getServerError } from '../../helpers/api';
+import { getArticleBySlug } from '../../helpers/article';
 import { IUnknownObject } from '../../interfaces/unknownObject';
 
 export class Article {
@@ -16,9 +16,78 @@ export class Article {
    * @param res Response
    */
   getAll = async (req: Request, res: Response): Promise<Response> => {
-    const { limit = 20, offset = 0 } = req.query;
+    const { limit = 20, page = 1, search, tag } = req.query;
+    const { limit: size, offset } = getPagination(Number(page), Number(limit));
+
+    const isTag = !isEmpty(tag);
+    const isSearch = !isEmpty(search);
+
+    const whereActive = { active: true };
+    const whereSearch = isSearch
+      ? {
+          [Op.or]: [
+            { title: { [Op.iLike]: `%${search}%` } },
+            { summary: { [Op.iLike]: `%${search}%` } },
+            { body: { [Op.iLike]: `%${search}%` } },
+          ],
+        }
+      : undefined;
+    const whereTag = isTag
+      ? {
+          tags: {
+            [Op.contains]: [toLower(String(tag))],
+          },
+        }
+      : undefined;
+
     try {
-      const { count, rows: articles } = await getAllArticle(res, Number(limit), Number(offset));
+      const { count, rows: articles } = await db.Article.findAndCountAll({
+        offset,
+        limit: size,
+        order: [['createdAt', 'DESC']],
+        where: {
+          [Op.and]: [{ ...whereSearch, ...whereTag, ...whereActive }],
+        },
+        attributes: {
+          include: [
+            [
+              literal('(SELECT COUNT(*) FROM "like" WHERE "like"."articleId" = "Article"."id")'),
+              'likesCount',
+            ],
+            [
+              literal(
+                '(SELECT COUNT(*) FROM "comment" WHERE "comment"."articleId" = "Article"."id")',
+              ),
+              'commentsCount',
+            ],
+            [
+              literal(
+                '(SELECT COUNT(*) FROM "bookmark" WHERE "bookmark"."articleId" = "Article"."id")',
+              ),
+              'bookmarksCount',
+            ],
+          ],
+        },
+        include: [
+          {
+            as: 'user',
+            model: db.User,
+            attributes: ['id', 'userName', 'email', 'phoneNumber', 'image', 'role'],
+          },
+          {
+            as: 'like',
+            model: db.Like,
+          },
+          {
+            as: 'bookmark',
+            model: db.Bookmark,
+          },
+          {
+            as: 'comment',
+            model: db.Comment,
+          },
+        ],
+      });
       return getResponse(res, OK, {
         data: { count, articles },
       });
@@ -124,58 +193,6 @@ export class Article {
 
       return getResponse(res, OK, {
         data: [...set],
-      });
-    } catch (error) {
-      return getServerError(res, error.message);
-    }
-  };
-
-  /**
-   * //TODO: should add the query string for search (title, summary, body, etc.) and also search the keyword in the list of tags
-   * controller to search all articles by tags
-   * @param req Request
-   * @param res Response
-   */
-  getByTags = async (req: Request, res: Response): Promise<Response> => {
-    const { limit = 20, offset = 0, tag } = req.query;
-    const formatted = toLower(String(tag));
-    const where = tag
-      ? {
-          tags: {
-            [Op.contains]: [formatted],
-          },
-        }
-      : {};
-    try {
-      const { count, rows: articles } = await db.Article.findAndCountAll({
-        where,
-        distinct: true,
-        limit: Number(limit),
-        offset: Number(offset),
-        order: [['createdAt', 'DESC']],
-        include: [
-          {
-            as: 'user',
-            model: db.User,
-            attributes: ['id', 'userName', 'email', 'phoneNumber', 'image', 'role'],
-          },
-          {
-            as: 'like',
-            model: db.Like,
-          },
-          {
-            as: 'bookmark',
-            model: db.Bookmark,
-          },
-          {
-            as: 'comment',
-            model: db.Comment,
-          },
-        ],
-      });
-
-      return getResponse(res, OK, {
-        data: { count, articles },
       });
     } catch (error) {
       return getServerError(res, error.message);
