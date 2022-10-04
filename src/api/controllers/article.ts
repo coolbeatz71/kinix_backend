@@ -234,30 +234,20 @@ export class Article {
       const data = await db.Article.findAll({
         limit: Number(limit),
         where: { active: true },
-        attributes: [
-          'id',
-          'slug',
-          'title',
-          'summary',
-          'body',
-          'images',
-          'reads',
-          'tags',
-          'active',
-          'featured',
-          'liked',
-          'userId',
-          [
-            literal('(SELECT COUNT(*) FROM "like" WHERE "like"."articleId" = "Article"."id")'),
-            'likesCount',
+        attributes: {
+          include: [
+            [
+              literal('(SELECT COUNT(*) FROM "like" WHERE "like"."articleId" = "Article"."id")'),
+              'likesCount',
+            ],
+            [
+              literal(
+                '(SELECT COUNT(*) FROM "comment" WHERE "comment"."articleId" = "Article"."id")',
+              ),
+              'commentsCount',
+            ],
           ],
-          [
-            literal(
-              '(SELECT COUNT(*) FROM "comment" WHERE "comment"."articleId" = "Article"."id")',
-            ),
-            'commentsCount',
-          ],
-        ],
+        },
         order: [
           [literal('"likesCount"'), 'DESC'],
           [literal('"commentsCount"'), 'DESC'],
