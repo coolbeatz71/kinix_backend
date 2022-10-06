@@ -7,6 +7,7 @@ router.get('/', articleCtrl.getAll);
 router.get('/tags', articleCtrl.getAllTags);
 router.get('/popular', articleCtrl.getPopular);
 router.get('/featured', articleCtrl.getFeatured);
+
 router.get('/:slug', articleCtrl.get);
 router.get('/related/:slug', articleCtrl.getRelated);
 

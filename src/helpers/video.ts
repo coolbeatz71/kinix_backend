@@ -193,10 +193,10 @@ export const getVideoDiscovery = async (res: Response, categoryName: ECategory):
   }
 };
 
-export const getVideoPopular = async (res: Response): Promise<any> => {
+export const getVideoPopular = async (res: Response, limit = 15): Promise<any> => {
   try {
     const result = await db.Video.findAll({
-      limit: 15,
+      limit,
       where: { active: true },
       order: [
         ['avgRate', 'DESC'],
