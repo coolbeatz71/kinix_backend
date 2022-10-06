@@ -266,6 +266,24 @@ export class Video {
       return getServerError(res, error.message);
     }
   };
+
+  /**
+   * controller to get popular videos
+   * @param req Request
+   * @param res Response
+   */
+  getPopular = async (req: Request, res: Response): Promise<Response> => {
+    const { limit = 12 } = req.query;
+    try {
+      const data = await getVideoPopular(res, Number(limit));
+
+      return getResponse(res, OK, {
+        data,
+      });
+    } catch (error) {
+      return getServerError(res, error.message);
+    }
+  };
 }
 
 const videoCtrl = new Video();
