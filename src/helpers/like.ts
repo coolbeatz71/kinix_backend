@@ -24,6 +24,7 @@ export const getLikeByUserId = async (res: Response, userId: number): Promise<an
 const getAllLikes = async (res: Response, articleId: number): Promise<any> => {
   try {
     const result = await db.Like.findAndCountAll({
+      distinct: true,
       where: { articleId },
     });
     return result;

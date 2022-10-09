@@ -390,8 +390,9 @@ export class AdminArticle {
 
     try {
       const data = await db.Article.findAndCountAll({
-        limit: size,
         offset,
+        limit: size,
+        distinct: true,
         order: [['createdAt', 'DESC']],
         where: { [Op.and]: [{ ...whereSearch, ...whereStatus }] },
         attributes: {

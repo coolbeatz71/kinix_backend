@@ -567,6 +567,7 @@ export class AdminStory {
       const data = await db.Story.findAndCountAll({
         offset,
         limit: size,
+        distinct: true,
         order: [['createdAt', 'DESC']],
         where: { [Op.and]: [{ ...whereSearch, ...whereStatus }] },
         include: [

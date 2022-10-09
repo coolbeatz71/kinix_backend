@@ -194,6 +194,7 @@ export class AdminUser {
         where,
         offset,
         limit: size,
+        distinct: true,
         order: [['createdAt', 'DESC']],
         attributes: { exclude: ['password', 'role', 'otp'] },
       });
@@ -253,6 +254,7 @@ export class AdminUser {
       const data = await db.User.findAndCountAll({
         offset,
         limit: size,
+        distinct: true,
         order: [['createdAt', 'DESC']],
         attributes: { exclude: ['password', 'otp'] },
         where: { [Op.and]: [{ ...whereSearch, ...whereStatus, ...whereRole, ...where }] },
@@ -308,6 +310,7 @@ export class AdminUser {
       const data = await db.User.findAndCountAll({
         offset,
         limit: size,
+        distinct: true,
         order: [['createdAt', 'DESC']],
         attributes: { exclude: ['password', 'otp'] },
         where: { [Op.and]: [{ ...whereSearch, ...whereStatus, ...where }] },

@@ -64,6 +64,7 @@ export const getAllComment = async (
     const result = await db.Comment.findAndCountAll({
       limit,
       offset,
+      distinct: true,
       order: [['createdAt', 'DESC']],
       where: { articleId: article?.get().id, ...where },
       include: [

@@ -554,6 +554,7 @@ export class AdminAds {
       const data = await db.Ads.findAndCountAll({
         offset,
         limit: size,
+        distinct: true,
         order: [['createdAt', 'DESC']],
         where: { [Op.and]: [{ ...whereSearch, ...whereStatus }] },
         include: [

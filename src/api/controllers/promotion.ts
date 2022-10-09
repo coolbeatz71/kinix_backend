@@ -29,6 +29,7 @@ export class Promotion {
       const data = await db.AdsPlan.findAndCountAll({
         offset,
         limit: size,
+        distinct: true,
         order: [['createdAt', 'DESC']],
       });
 
@@ -55,6 +56,7 @@ export class Promotion {
       const data = await db.StoryPlan.findAndCountAll({
         offset,
         limit: size,
+        distinct: true,
         order: [['createdAt', 'DESC']],
       });
 
