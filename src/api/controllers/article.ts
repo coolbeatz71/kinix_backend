@@ -44,6 +44,7 @@ export class Article {
       const { count, rows: articles } = await db.Article.findAndCountAll({
         offset,
         limit: size,
+        distinct: true,
         order: [['createdAt', 'DESC']],
         where: {
           [Op.and]: [{ ...whereSearch, ...whereTag, ...whereActive }],

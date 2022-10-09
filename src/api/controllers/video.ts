@@ -50,6 +50,7 @@ export class Video {
       const { count, rows: videos } = await db.Video.findAndCountAll({
         offset,
         limit: size,
+        distinct: true,
         order: [['createdAt', 'DESC']],
         where: {
           [Op.and]: [{ ...whereSearch, ...whereTag, ...whereCategory, ...whereActive }],
