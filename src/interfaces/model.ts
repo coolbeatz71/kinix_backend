@@ -89,7 +89,7 @@ export interface IVideo {
 }
 
 export interface IBookmark {
-  readonly id: number;
+  readonly id?: number;
   userId: number;
   articleId: number;
   createdAt?: string;
@@ -97,7 +97,7 @@ export interface IBookmark {
 }
 
 export interface ICategory {
-  readonly id: number;
+  readonly id?: number;
   name: ECategory;
   createdAt?: string;
   updatedAt?: string;

@@ -70,6 +70,11 @@
   "ARTICLE_NOT_LIKED": "Impossible de terminer cette action! Veuillez vérifier vos informations.",
   "ARTICLE_ALREADY_LIKED": "Impossible de terminer cette action! Veuillez vérifier vos informations.",
 
+  "ARTICLE_ALREADY_BOOKMARKED": "Oops! Cet article a déjà été mis en favori",
+  "ARTICLE_BOOKMARKED_SUCCESS": "Article mis en favori avec succès.",
+  "ARTICLE_UNBOOKMARKED_SUCCESS": "Article supprimé de la liste des favoris avec succès.",
+  "ARTICLE_NOT_BOOKMARKED": "Oops! Cet article a déjà été supprimé de la liste des favoris.",
+
   "COMMENT_CREATED_SUCCESS": "Commentaire ajouté. Merci d'avoir partagé votre avis sur article!",
   "COMMENT_DELETED_SUCCESS": "Commentaire supprimé. Merci pour votre considération!",
   "COMMENT_UPDATED_SUCCESS": "Commentaire mis à jour. Merci d'avoir partagé votre avis sur l'article !",

@@ -21,7 +21,7 @@ export default class Like extends Model<ILike> implements ILike {
      */
     Like.belongsTo(models.User, {
       as: 'user',
-      foreignKey: 'articleId',
+      foreignKey: 'userId',
       targetKey: 'id',
     });
   }

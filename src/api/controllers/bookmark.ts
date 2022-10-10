@@ -1,21 +1,21 @@
 import { Request, Response } from 'express';
 import { CONFLICT, CREATED, NOT_FOUND, OK } from 'http-status';
 import {
-  ARTICLE_ALREADY_LIKED,
-  ARTICLE_LIKED_SUCCESS,
+  ARTICLE_ALREADY_BOOKMARKED,
+  ARTICLE_BOOKMARKED_SUCCESS,
+  ARTICLE_NOT_BOOKMARKED,
   ARTICLE_NOT_FOUND,
-  ARTICLE_NOT_LIKED,
-  ARTICLE_UNLIKED_SUCCESS,
+  ARTICLE_UNBOOKMARKED_SUCCESS,
 } from '../../constants/message';
 import db from '../../db/models';
 import { contentResponse, getResponse, getServerError } from '../../helpers/api';
 import { getArticleBySlug } from '../../helpers/article';
-import getAllLikes, { getLikeByUserId } from '../../helpers/like';
+import getAllBookmarks, { getBookmarkByUserId } from '../../helpers/bookmark';
 import { IJwtPayload } from '../../interfaces/api';
 
-export class LikeArticle {
+export class BookmarkArticle {
   /**
-   * controller to like an article
+   * controller to bookmark an article
    * @param req Request
    * @param res Response
    */
@@ -32,41 +32,33 @@ export class LikeArticle {
         });
       }
 
-      const like = await db.Like.findOne({
+      const bookmark = await db.Bookmark.findOne({
         where: {
           userId,
           articleId: article?.get().id,
         },
       });
 
-      if (like) {
+      if (bookmark) {
         return getResponse(res, CONFLICT, {
-          code: ARTICLE_ALREADY_LIKED,
-          message: req.t('ARTICLE_ALREADY_LIKED'),
+          code: ARTICLE_ALREADY_BOOKMARKED,
+          message: req.t('ARTICLE_ALREADY_BOOKMARKED'),
         });
       }
 
-      await db.Like.create({
+      await db.Bookmark.create({
         userId,
         articleId: article?.get().id,
       });
-      // updated liked
-      const update = await db.Article.update(
-        {
-          liked: true,
-        },
-        {
-          where: { slug },
-          returning: true,
-        },
-      );
+
+      const newArticle = await getArticleBySlug(res, slug);
 
       return contentResponse(
         res,
-        update[1][0],
+        newArticle,
         CREATED,
-        req.t('ARTICLE_LIKED_SUCCESS'),
-        ARTICLE_LIKED_SUCCESS,
+        req.t('ARTICLE_BOOKMARKED_SUCCESS'),
+        ARTICLE_BOOKMARKED_SUCCESS,
       );
     } catch (error) {
       return getServerError(res, error.message);
@@ -74,7 +66,7 @@ export class LikeArticle {
   };
 
   /**
-   * controller to unlike an article
+   * controller to unbookmark an article
    * @param req Request
    * @param res Response
    */
@@ -91,44 +83,34 @@ export class LikeArticle {
         });
       }
 
-      const like = await db.Like.findOne({
+      const bookmark = await db.Bookmark.findOne({
         where: {
           userId,
           articleId: article?.get().id,
         },
       });
 
-      if (!like) {
+      if (!bookmark) {
         return getResponse(res, CONFLICT, {
-          code: ARTICLE_NOT_LIKED,
-          message: req.t('ARTICLE_NOT_LIKED'),
+          code: ARTICLE_NOT_BOOKMARKED,
+          message: req.t('ARTICLE_NOT_BOOKMARKED'),
         });
       }
 
-      await db.Like.destroy({
+      await db.Bookmark.destroy({
         where: {
           userId,
           articleId: article?.get().id,
         },
       });
-      // updated liked
-      const result = await getArticleBySlug(res, slug as string);
-      const update = await db.Article.update(
-        {
-          liked: result?.get().like?.length > 0,
-        },
-        {
-          where: { slug },
-          returning: true,
-        },
-      );
 
+      const result = await getArticleBySlug(res, slug as string);
       return contentResponse(
         res,
-        update[1][0],
+        result,
         OK,
-        req.t('ARTICLE_UNLIKED_SUCCESS'),
-        ARTICLE_UNLIKED_SUCCESS,
+        req.t('ARTICLE_UNBOOKMARKED_SUCCESS'),
+        ARTICLE_UNBOOKMARKED_SUCCESS,
       );
     } catch (error) {
       return getServerError(res, error.message);
@@ -136,28 +118,28 @@ export class LikeArticle {
   };
 
   /**
-   * controller to get all articles that a user liked
+   * controller to get all articles that a user bookmarked
    * @param req Request
    * @param res Response
    */
-  getLikeByUserId = async (req: Request, res: Response): Promise<Response> => {
+  getBookmarkByUserId = async (req: Request, res: Response): Promise<Response> => {
     const { id: userId } = req.user as IJwtPayload;
 
     try {
-      const likes = await getLikeByUserId(res, userId);
-      return contentResponse(res, likes, OK);
+      const bookmarks = await getBookmarkByUserId(res, userId);
+      return contentResponse(res, bookmarks, OK);
     } catch (error) {
       return getServerError(res, error.message);
     }
   };
 
   /**
-   * controller to get article liked by a user.
+   * controller to get article bookmarked by a user.
    * @description to check if the user has already rated an article
    * @param req Request
    * @param res Response
    */
-  getSingleArticleUserLike = async (req: Request, res: Response): Promise<Response> => {
+  getSingleArticleUserBookmark = async (req: Request, res: Response): Promise<Response> => {
     const { slug } = req.params;
     const { id: userId } = req.user as IJwtPayload;
 
@@ -170,7 +152,7 @@ export class LikeArticle {
         });
       }
 
-      const data = await db.Like.findAll({
+      const data = await db.Bookmark.findAll({
         where: {
           userId,
           articleId: article?.get().id,
@@ -186,7 +168,7 @@ export class LikeArticle {
   };
 
   /**
-   * controller to get and count article likes
+   * controller to get and count article bookmarks
    * @param req Request
    * @param res Response
    */
@@ -201,13 +183,13 @@ export class LikeArticle {
           message: req.t('ARTICLE_NOT_FOUND'),
         });
       }
-      const likes = await getAllLikes(res, article?.get().id);
-      return contentResponse(res, likes, OK);
+      const bookmarks = await getAllBookmarks(res, article?.get().id);
+      return contentResponse(res, bookmarks, OK);
     } catch (error) {
       return getServerError(res, error.message);
     }
   };
 }
 
-const likeArticleCtrl = new LikeArticle();
-export default likeArticleCtrl;
+const bookmarkArticleCtrl = new BookmarkArticle();
+export default bookmarkArticleCtrl;
