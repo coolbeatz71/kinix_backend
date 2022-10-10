@@ -8,6 +8,7 @@ import videoRateRoutes from './routes/rate';
 import shareVideoRoutes from './routes/share';
 import likeArticleRoutes from './routes/like';
 import promotionRoutes from './routes/promotion';
+import bookmarkArticleRoutes from './routes/bookmark';
 
 const router: Router = Router();
 
@@ -20,5 +21,6 @@ router.use('/rates', videoRateRoutes);
 router.use('/shares', shareVideoRoutes);
 router.use('/likes', likeArticleRoutes);
 router.use('/promotions', promotionRoutes);
+router.use('/bookmarks', bookmarkArticleRoutes);
 
 export default router;
