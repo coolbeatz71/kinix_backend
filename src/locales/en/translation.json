@@ -70,6 +70,11 @@
   "ARTICLE_NOT_LIKED": "Unable to complete this action! Please verify your information.",
   "ARTICLE_ALREADY_LIKED": "Unable to complete this action! Please verify your information.",
 
+  "ARTICLE_ALREADY_BOOKMARKED": "Oops! This article has already been bookmarked.",
+  "ARTICLE_BOOKMARKED_SUCCESS": "Article successfully bookmarked.",
+  "ARTICLE_UNBOOKMARKED_SUCCESS": "Article successfully removed from the bookmark list.",
+  "ARTICLE_NOT_BOOKMARKED": "Oops! This article has already been removed from the bookmark list.",
+
   "COMMENT_CREATED_SUCCESS": "Comment added. Thanks for sharing your opinion on the article!",
   "COMMENT_DELETED_SUCCESS": "Comment removed. Thanks for your consideration!",
   "COMMENT_UPDATED_SUCCESS": "Comment updated. Thanks for sharing your opinion on the article!",

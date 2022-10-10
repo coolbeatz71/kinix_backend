@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get('/user', verifyToken, likeArticleCtrl.getLikeByUserId);
 router.get('/:slug', likeArticleCtrl.getAll);
-router.get('/user/:slug', verifyToken, likeArticleCtrl.getSingleVideoUserLike);
+router.get('/user/:slug', verifyToken, likeArticleCtrl.getSingleArticleUserLike);
 
 router.post('/:slug', verifyToken, likeArticleCtrl.create);
 router.delete('/:slug', verifyToken, likeArticleCtrl.delete);
