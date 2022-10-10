@@ -65,7 +65,7 @@ export const getAllComment = async (
       limit,
       offset,
       distinct: true,
-      order: [['createdAt', 'DESC']],
+      order: [['createdAt', 'ASC']],
       where: { articleId: article?.get().id, ...where },
       include: [
         { as: 'article', model: db.Article },
