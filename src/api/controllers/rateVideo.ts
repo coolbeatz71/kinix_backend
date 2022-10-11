@@ -17,6 +17,8 @@ import { IJwtPayload } from '../../interfaces/api';
 import RateVideoValidator from '../../validator/rate';
 import { calcVideoAVGRate, getVideoById, getVideoBySlug } from '../../helpers/video';
 import db from '../../db/models';
+import countRate from '../../helpers/rate';
+import IRateSummary from '../../interfaces/rates';
 
 export class RateVideo {
   /**
@@ -140,6 +142,49 @@ export class RateVideo {
 
       return getResponse(res, OK, {
         data,
+      });
+    } catch (error) {
+      return getServerError(res, error.message);
+    }
+  };
+
+  /**
+   * controller to get and count video rating summary for a single video
+   * @param req Request
+   * @param res Response
+   */
+  getSingleVideoRateSummary = async (req: Request, res: Response): Promise<Response> => {
+    const { slug } = req.params;
+
+    try {
+      const video = await getVideoBySlug(res, slug);
+
+      if (!video) {
+        return getResponse(res, NOT_FOUND, {
+          code: VIDEO_NOT_FOUND,
+          message: req.t('VIDEO_NOT_FOUND'),
+        });
+      }
+
+      const one = await countRate(res, 1);
+      const two = await countRate(res, 2);
+      const three = await countRate(res, 3);
+      const four = await countRate(res, 4);
+      const five = await countRate(res, 5);
+
+      return getResponse(res, OK, {
+        data: {
+          avgRate: video?.get().avgRate,
+          totalRaters: video?.get().totalRaters,
+          rated: [one, two, three, four, five].some((val) => val > 0),
+          summary: [
+            { value: 5, count: five },
+            { value: 4, count: four },
+            { value: 3, count: three },
+            { value: 2, count: two },
+            { value: 1, count: one },
+          ],
+        } as IRateSummary,
       });
     } catch (error) {
       return getServerError(res, error.message);
