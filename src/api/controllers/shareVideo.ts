@@ -63,6 +63,32 @@ export class ShareVideo {
       return getServerError(res, error.message);
     }
   };
+
+  /**
+   * controller to get and count video shares
+   * @param req Request
+   * @param res Response
+   */
+  getAll = async (req: Request, res: Response): Promise<Response> => {
+    const { slug } = req.params;
+
+    try {
+      const video = await getVideoBySlug(res, slug);
+      if (!video) {
+        return getResponse(res, NOT_FOUND, {
+          code: VIDEO_NOT_FOUND,
+          message: req.t('VIDEO_NOT_FOUND'),
+        });
+      }
+      const shares = await db.Share.findAndCountAll({
+        distinct: true,
+        where: { videoId: video.get().id },
+      });
+      return contentResponse(res, shares, OK);
+    } catch (error) {
+      return getServerError(res, error.message);
+    }
+  };
 }
 
 const shareVideoCtrl = new ShareVideo();
