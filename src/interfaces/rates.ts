@@ -1,7 +1,7 @@
 interface IRateSummary {
   rated: boolean;
   avgRate: number;
-  totalRaters: number;
+  total: number;
   summary: { value: number; count: number }[];
 }
 

@@ -172,11 +172,13 @@ export class RateVideo {
       const four = await countRate(res, 4);
       const five = await countRate(res, 5);
 
+      const ratesList = [one, two, three, four, five];
+
       return getResponse(res, OK, {
         data: {
           avgRate: video?.get().avgRate,
-          totalRaters: video?.get().totalRaters,
-          rated: [one, two, three, four, five].some((val) => val > 0),
+          rated: ratesList.some((val) => val > 0),
+          total: ratesList.reduce((a, b) => a + b, 0),
           summary: [
             { value: 5, count: five },
             { value: 4, count: four },
