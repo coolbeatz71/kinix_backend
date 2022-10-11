@@ -165,12 +165,13 @@ export class RateVideo {
           message: req.t('VIDEO_NOT_FOUND'),
         });
       }
+      const videoId = video?.get().id;
 
-      const one = await countRate(res, 1);
-      const two = await countRate(res, 2);
-      const three = await countRate(res, 3);
-      const four = await countRate(res, 4);
-      const five = await countRate(res, 5);
+      const one = await countRate(res, videoId, 1);
+      const two = await countRate(res, videoId, 2);
+      const four = await countRate(res, videoId, 4);
+      const five = await countRate(res, videoId, 5);
+      const three = await countRate(res, videoId, 3);
 
       const ratesList = [one, two, three, four, five];
 
