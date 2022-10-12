@@ -158,5 +158,14 @@
   "LABEL_PROMOTION_STARTDATE": "La date de début",
   "LABEL_STORY_MEDIA": "Media",
   "LABEL_STORY_MEDIA_TYPE": "Type de media",
-  "LABEL_OTP_CODE": "Code de vérification"
+  "LABEL_OTP_CODE": "Code de vérification",
+  "LABEL_PLAYLIST_TITLE": "Titre de playlist",
+  "LABEL_PLAYLIST_VIDEO": "L'identifiant de la video",
+
+  "PLAYLIST_CREATED_SUCCESS": "La playlist a été créée avec succès.",
+  "PLAYLIST_DELETED_SUCCESS": "La playlist a été supprimée avec succès.",
+  "PLAYLIST_UPDATED_SUCCESS": "La playlist a été mise à jour avec succès.",
+  "PLAYLIST_NOT_FOUND": "Cette playlist est introuvable. Veuillez vérifier vos informations.",
+  "VIDEO_ADDED_TO_PLAYLIST__SUCCESS": "La vidéo a été ajoutée à la playlist avec succès.",
+  "VIDEO_REMOVED_FROM_PLAYLIST__SUCCESS": "La vidéo a été supprimée de la playlist avec succès."
 }
