@@ -10,7 +10,7 @@ import {
   PLAYLIST_UPDATED_SUCCESS,
   VIDEO_ADDED_TO_PLAYLIST__SUCCESS,
   VIDEO_NOT_FOUND,
-  VIDEO_REMOVED_FROM_PLAYLIST__SUCCESS,
+  VIDEO_REMOVED_FROM_PLAYLIST_SUCCESS,
 } from '../../constants/message';
 import db from '../../db/models';
 import { generateSlug, getResponse, getServerError, getValidationError } from '../../helpers/api';
@@ -25,7 +25,7 @@ export class Playlist {
    * @param res Response
    */
   create = async (req: Request, res: Response): Promise<Response> => {
-    const { slug } = req.params;
+    const { slug } = req.query;
     const isSlug = !isEmpty(slug);
     const { title, videoId } = req.body;
     const { id: userId } = req.user as IJwtPayload;
@@ -35,7 +35,7 @@ export class Playlist {
     if (!errors.isEmpty()) return getValidationError(res, errors);
 
     try {
-      const video = getVideoById(res, videoId);
+      const video = await getVideoById(res, videoId);
 
       if (!video) {
         return getResponse(res, NOT_FOUND, {
@@ -90,11 +90,22 @@ export class Playlist {
         });
       }
 
+      const playlist = await db.Playlist.findOne({
+        where: { [Op.and]: [{ slug: `${slug}` }, { userId }] },
+      });
+
+      if (!playlist) {
+        return getResponse(res, NOT_FOUND, {
+          code: PLAYLIST_NOT_FOUND,
+          message: req.t('PLAYLIST_NOT_FOUND'),
+        });
+      }
+
       const created = await db.Playlist.create({
-        slug,
-        title,
         userId,
         videoId,
+        slug: playlist.get().slug,
+        title: playlist.get().title,
       });
 
       return getResponse(res, CREATED, {
@@ -122,7 +133,7 @@ export class Playlist {
     if (!errors.isEmpty()) return getValidationError(res, errors);
 
     try {
-      const video = getVideoById(res, videoId);
+      const video = await getVideoById(res, videoId);
       const isVideoExistInPlaylist = await db.Playlist.findOne({
         where: { [Op.and]: [{ slug }, { videoId }, { userId }] },
       });
@@ -143,8 +154,8 @@ export class Playlist {
       });
 
       return getResponse(res, OK, {
-        code: VIDEO_REMOVED_FROM_PLAYLIST__SUCCESS,
-        message: req.t('VIDEO_REMOVED_TO_PLAYLIST'),
+        code: VIDEO_REMOVED_FROM_PLAYLIST_SUCCESS,
+        message: req.t('VIDEO_REMOVED_FROM_PLAYLIST_SUCCESS'),
       });
     } catch (error) {
       return getServerError(res, error.message);
@@ -213,13 +224,6 @@ export class Playlist {
       const playlist = await db.Playlist.findAndCountAll({
         where: { [Op.and]: [{ userId }, { slug }] },
       });
-
-      if (!playlist) {
-        return getResponse(res, NOT_FOUND, {
-          code: PLAYLIST_NOT_FOUND,
-          message: req.t('PLAYLIST_NOT_FOUND'),
-        });
-      }
 
       return getResponse(res, OK, {
         data: playlist,

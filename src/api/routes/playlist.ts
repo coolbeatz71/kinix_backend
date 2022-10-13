@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get('/', verifyToken, playlistCtrl.getAll);
 router.get('/:slug', verifyToken, playlistCtrl.get);
-router.post('/:slug', verifyToken, playlistCtrl.create);
+router.post('/', verifyToken, playlistCtrl.create);
 
 router.delete('/:slug', verifyToken, playlistCtrl.delete);
 router.delete('/video/:slug', verifyToken, playlistCtrl.removeVideo);

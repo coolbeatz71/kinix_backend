@@ -167,5 +167,5 @@
   "PLAYLIST_UPDATED_SUCCESS": "La playlist a été mise à jour avec succès.",
   "PLAYLIST_NOT_FOUND": "Cette playlist est introuvable. Veuillez vérifier vos informations.",
   "VIDEO_ADDED_TO_PLAYLIST__SUCCESS": "La vidéo a été ajoutée à la playlist avec succès.",
-  "VIDEO_REMOVED_FROM_PLAYLIST__SUCCESS": "La vidéo a été supprimée de la playlist avec succès."
+  "VIDEO_REMOVED_FROM_PLAYLIST_SUCCESS": "La vidéo a été supprimée de la playlist avec succès."
 }

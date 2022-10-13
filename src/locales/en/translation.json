@@ -167,5 +167,5 @@
   "PLAYLIST_DELETED_SUCCESS": "Playlist has been deleted successfully.",
   "PLAYLIST_NOT_FOUND": "This playlist cannot be found. Please verify your information.",
   "VIDEO_ADDED_TO_PLAYLIST__SUCCESS": "Video has been successfully added to the playlist.",
-  "VIDEO_REMOVED_FROM_PLAYLIST__SUCCESS": "Video has been successfully removed from the playlist."
+  "VIDEO_REMOVED_FROM_PLAYLIST_SUCCESS": "Video has been successfully removed from the playlist."
 }
