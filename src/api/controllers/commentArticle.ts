@@ -29,9 +29,9 @@ export class Comment {
    * @param res Response
    */
   create = async (req: Request, res: Response): Promise<Response> => {
+    const { body } = req.body;
     const { slug } = req.params;
     const { id: userId } = req.user as IJwtPayload;
-    const { body } = req.body;
 
     await new CommentValidator(req).create();
     const errors = validationResult(req);

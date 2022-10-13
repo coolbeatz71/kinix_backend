@@ -158,5 +158,14 @@
   "LABEL_PROMOTION_STARTDATE": "Start date",
   "LABEL_STORY_MEDIA": "Media",
   "LABEL_STORY_MEDIA_TYPE": "Media type",
-  "LABEL_OTP_CODE": "Verification code"
+  "LABEL_OTP_CODE": "Verification code",
+  "LABEL_PLAYLIST_TITLE": "Playlist title",
+  "LABEL_PLAYLIST_VIDEO": "Video ID",
+
+  "PLAYLIST_UPDATED_SUCCESS": "Playlist has been updated successfully.",
+  "PLAYLIST_CREATED_SUCCESS": "Playlist has been created successfully.",
+  "PLAYLIST_DELETED_SUCCESS": "Playlist has been deleted successfully.",
+  "PLAYLIST_NOT_FOUND": "This playlist cannot be found. Please verify your information.",
+  "VIDEO_ADDED_TO_PLAYLIST__SUCCESS": "Video has been successfully added to the playlist.",
+  "VIDEO_REMOVED_FROM_PLAYLIST_SUCCESS": "Video has been successfully removed from the playlist."
 }
