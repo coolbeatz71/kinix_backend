@@ -17,7 +17,7 @@
   "AVATAR_UPDATED_SUCCESS": "La photo de profil a été mise à jour avec succès.",
 
   "AUTHORIZATION_MISSING": "Une authentification est requise pour accéder à cette ressource. Veuillez vous connecter ou créer un nouveau compte.",
-  "TOKEN_INVALID_EXPIRED": "Authentification échouée. Votre session a expiré ou n'est plus valide.",
+  "TOKEN_INVALID_EXPIRED": "Authentification requise. Vous devez vous connecter pour continuer.",
   "LOGIN_REQUIRED": "Veuillez vous connecter pour accéder à cette page.",
   "ADMIN_FORBIDDEN": "ACCÈS FORMELLEMENT INTERDIT. Réservé uniquement aux administrateurs.",
   "SUPER_ADMIN_FORBIDDEN": "ACCÈS FORMELLEMENT INTERDIT. Réservé uniquement aux super administrateurs.",
