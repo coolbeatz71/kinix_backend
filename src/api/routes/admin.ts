@@ -84,30 +84,30 @@ router.get('/admins', superAdminCheck, adminUserCtrl.getAllAdmins);
   | Content all promotions endpoints for super admin
 */
 // subscription plan
-router.post('/promotions/plan/ads', superAdminCheck, adminAdsCtrl.createPlan);
-router.put('/promotions/plan/ads/:id', superAdminCheck, adminAdsCtrl.updatePlan);
+router.post('/promotions/plan/pubs', superAdminCheck, adminAdsCtrl.createPlan);
+router.put('/promotions/plan/pubs/:id', superAdminCheck, adminAdsCtrl.updatePlan);
 
 router.post('/promotions/plan/story', superAdminCheck, adminStoryCtrl.createPlan);
 router.put('/promotions/plan/story/:id', superAdminCheck, adminStoryCtrl.updatePlan);
 // ads and story
-router.post('/promotions/ads', superAdminCheck, adminAdsCtrl.create);
-router.put('/promotions/ads/:id', superAdminCheck, adminAdsCtrl.update);
-router.delete('/promotions/ads/:id', superAdminCheck, adminAdsCtrl.delete);
+router.post('/promotions/pubs', superAdminCheck, adminAdsCtrl.create);
+router.put('/promotions/pubs/:id', superAdminCheck, adminAdsCtrl.update);
+router.delete('/promotions/pubs/:id', superAdminCheck, adminAdsCtrl.delete);
 
 router.post('/promotions/story', superAdminCheck, adminStoryCtrl.create);
 router.put('/promotions/story/:id', superAdminCheck, adminStoryCtrl.update);
 router.delete('/promotions/story/:id', superAdminCheck, adminStoryCtrl.delete);
 
-router.put('/promotions/ads/enable/:id', superAdminCheck, adminAdsCtrl.enable);
-router.put('/promotions/ads/disable/:id', superAdminCheck, adminAdsCtrl.disable);
+router.put('/promotions/pubs/enable/:id', superAdminCheck, adminAdsCtrl.enable);
+router.put('/promotions/pubs/disable/:id', superAdminCheck, adminAdsCtrl.disable);
 
 router.put('/promotions/story/enable/:id', superAdminCheck, adminStoryCtrl.enable);
 router.put('/promotions/story/disable/:id', superAdminCheck, adminStoryCtrl.disable);
 
-router.get('/promotions/ads', superAdminCheck, adminAdsCtrl.getAll);
+router.get('/promotions/pubs', superAdminCheck, adminAdsCtrl.getAll);
 router.get('/promotions/story', superAdminCheck, adminStoryCtrl.getAll);
 
-router.get('/overview/ads', superAdminCheck, adminDashboardCtrl.getAdsOverview);
+router.get('/overview/pubs', superAdminCheck, adminDashboardCtrl.getAdsOverview);
 router.get('/overview/story', superAdminCheck, adminDashboardCtrl.getStoryOverview);
 
 export default router;
