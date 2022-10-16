@@ -3,10 +3,10 @@ import promotionCtrl from '../controllers/promotion';
 
 const router = express.Router();
 
-router.get('/plan/ads', promotionCtrl.getAllAdsPlans);
+router.get('/plan/pubs', promotionCtrl.getAllAdsPlans);
 router.get('/plan/story', promotionCtrl.getAllStoryPlans);
 
-router.get('/ads', promotionCtrl.getAllAds);
+router.get('/pubs', promotionCtrl.getAllAds);
 router.get('/story', promotionCtrl.getAllStory);
 
 export default router;
