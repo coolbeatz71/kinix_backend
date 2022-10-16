@@ -150,9 +150,10 @@ export class AdminVideo {
         });
       }
 
-      const newSlug = await generateSlug(title);
+      const isTitleUpdated = title !== video?.get().title;
+      const newSlug = isTitleUpdated ? await generateSlug(title) : slug;
 
-      await db.Video.update(
+      const updated = await db.Video.update(
         {
           link,
           tags,
@@ -162,16 +163,14 @@ export class AdminVideo {
           categoryId,
           slug: newSlug,
         },
-        { where: { id: video?.get().id } },
+        { where: { id: video?.get().id }, returning: true },
       );
-
-      const getVideo = await getVideoBySlug(res, newSlug);
 
       // TODO: should send email/notification to the video owner
 
       return contentResponse(
         res,
-        getVideo?.get(),
+        updated[1][0],
         OK,
         req.t('VIDEO_UPDATED_SUCCESS'),
         VIDEO_UPDATED_SUCCESS,
