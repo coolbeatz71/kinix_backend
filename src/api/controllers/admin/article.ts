@@ -119,28 +119,27 @@ export class AdminArticle {
         });
       }
 
-      const newSlug = await generateSlug(title);
+      const isTitleUpdated = title !== article?.get().title;
+      const newSlug = isTitleUpdated ? await generateSlug(title) : slug;
       const reads = getReadTime(title, summary, body);
 
-      await db.Article.update(
+      const updated = await db.Article.update(
         {
-          slug: newSlug,
-          title,
-          summary,
           body,
-          images,
           tags,
-          userId,
           reads,
+          title,
+          images,
+          userId,
+          summary,
+          slug: newSlug,
         },
-        { where: { id: article?.get().id } },
+        { where: { id: article?.get().id }, returning: true },
       );
-
-      const getArticle = await getArticleBySlug(res, newSlug, true);
 
       return contentResponse(
         res,
-        getArticle?.get(),
+        updated[1][0],
         OK,
         req.t('ARTICLE_UPDATED_SUCCESS'),
         ARTICLE_UPDATED_SUCCESS,
