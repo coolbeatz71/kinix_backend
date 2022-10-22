@@ -17,7 +17,7 @@ import { IJwtPayload } from '../../interfaces/api';
 import RateVideoValidator from '../../validator/rate';
 import { calcVideoAVGRate, getVideoById, getVideoBySlug } from '../../helpers/video';
 import db from '../../db/models';
-import countRate from '../../helpers/rate';
+import countRate, { getRatesByUserId } from '../../helpers/rate';
 import IRateSummary from '../../interfaces/rates';
 
 export class RateVideo {
@@ -189,6 +189,22 @@ export class RateVideo {
           ],
         } as IRateSummary,
       });
+    } catch (error) {
+      return getServerError(res, error.message);
+    }
+  };
+
+  /**
+   * controller to get all videos rated by a user
+   * @param req Request
+   * @param res Response
+   */
+  getRateByUserId = async (req: Request, res: Response): Promise<Response> => {
+    const { id: userId } = req.user as IJwtPayload;
+
+    try {
+      const rates = await getRatesByUserId(res, userId);
+      return contentResponse(res, rates, OK);
     } catch (error) {
       return getServerError(res, error.message);
     }
