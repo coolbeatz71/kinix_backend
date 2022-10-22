@@ -6,6 +6,7 @@ import { VIDEO_NOT_FOUND, VIDEO_SHARED_SUCCESS } from '../../constants/message';
 import { IJwtPayload } from '../../interfaces/api';
 import { getVideoById, getVideoBySlug } from '../../helpers/video';
 import db from '../../db/models';
+import getSharesByUserId from '../../helpers/share';
 
 export class ShareVideo {
   /**
@@ -84,6 +85,22 @@ export class ShareVideo {
         distinct: true,
         where: { videoId: video.get().id },
       });
+      return contentResponse(res, shares, OK);
+    } catch (error) {
+      return getServerError(res, error.message);
+    }
+  };
+
+  /**
+   * controller to get all videos shared by a user
+   * @param req Request
+   * @param res Response
+   */
+  getShareByUserId = async (req: Request, res: Response): Promise<Response> => {
+    const { id: userId } = req.user as IJwtPayload;
+
+    try {
+      const shares = await getSharesByUserId(res, userId);
       return contentResponse(res, shares, OK);
     } catch (error) {
       return getServerError(res, error.message);

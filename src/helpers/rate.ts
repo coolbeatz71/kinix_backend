@@ -15,4 +15,22 @@ const countRate = async (res: Response, videoId: number, value: number): Promise
   }
 };
 
+// get all videos that a user rated
+export const getRatesByUserId = async (res: Response, userId: number): Promise<any> => {
+  try {
+    const result = await db.Rate.findAndCountAll({
+      where: { userId },
+      include: [
+        {
+          as: 'video',
+          model: db.Video,
+        },
+      ],
+    });
+    return result;
+  } catch (err) {
+    return getServerError(res, err.message);
+  }
+};
+
 export default countRate;
