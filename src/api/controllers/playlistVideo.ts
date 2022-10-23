@@ -260,10 +260,10 @@ export class Playlist {
    * @param res Response
    */
   getPlaylistsDetails = async (req: Request, res: Response): Promise<Response> => {
-    const { id: userId } = req.user as IJwtPayload;
+    const { id: _userId } = req.user as IJwtPayload;
     try {
       const playlists = await db.Playlist.findAll({
-        where: { userId },
+        where: { userId: _userId },
         include: [
           {
             as: 'video',
@@ -277,11 +277,16 @@ export class Playlist {
       const data = chain(playlists)
         .groupBy('slug')
         .map((lists: IPlaylist[]) => ({
+          id: lists[0].id,
           slug: lists[0].slug,
           title: lists[0].title,
+          userId: lists[0].userId,
           createdAt: lists[0].createdAt,
           updatedAt: lists[0].updatedAt,
-          videos: lists.map(({ slug, title, createdAt, updatedAt, ...rest }) => rest),
+          videos: lists.map(({ slug, title, createdAt, updatedAt, userId, id, ...rest }) => {
+            const { video } = rest;
+            return { ...video };
+          }),
         }))
         .value();
 
