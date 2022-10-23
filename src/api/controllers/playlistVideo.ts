@@ -222,7 +222,7 @@ export class Playlist {
     const { slug } = req.params;
     const { id: userId } = req.user as IJwtPayload;
     try {
-      const playlist = await db.Playlist.findAll({
+      const playlists = await db.Playlist.findAll({
         raw: true,
         nest: true,
         where: { [Op.and]: [{ userId }, { slug }] },
@@ -234,8 +234,15 @@ export class Playlist {
         ],
       });
 
-      const data = omit(playlist[0], ['video', 'videoId']);
-      const videos = playlist.map((dt: IPlaylist) => dt.video);
+      if (isEmpty(playlists)) {
+        return getResponse(res, NOT_FOUND, {
+          code: PLAYLIST_NOT_FOUND,
+          message: req.t('PLAYLIST_NOT_FOUND'),
+        });
+      }
+
+      const data = omit(playlists[0], ['video', 'videoId']);
+      const videos = playlists.map((dt: IPlaylist) => dt.video);
       return getResponse(res, OK, {
         data: {
           ...data,
