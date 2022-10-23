@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { Op } from 'sequelize';
-import { isEmpty } from 'lodash';
+import { chain, isEmpty, omit } from 'lodash';
 import { CREATED, NOT_FOUND, OK } from 'http-status';
 import { validationResult } from 'express-validator';
 import {
@@ -17,6 +17,7 @@ import { generateSlug, getResponse, getServerError, getValidationError } from '.
 import { getVideoById } from '../../helpers/video';
 import { IJwtPayload } from '../../interfaces/api';
 import PlaylistValidator from '../../validator/playlist';
+import { IPlaylist } from '../../interfaces/model';
 
 export class Playlist {
   /**
@@ -213,7 +214,7 @@ export class Playlist {
   };
 
   /**
-   * controller to get all playlists for a user
+   * controller to get a single playlist details
    * @param req Request
    * @param res Response
    */
@@ -221,12 +222,64 @@ export class Playlist {
     const { slug } = req.params;
     const { id: userId } = req.user as IJwtPayload;
     try {
-      const playlist = await db.Playlist.findAndCountAll({
+      const playlist = await db.Playlist.findAll({
+        raw: true,
+        nest: true,
         where: { [Op.and]: [{ userId }, { slug }] },
+        include: [
+          {
+            as: 'video',
+            model: db.Video,
+          },
+        ],
       });
 
+      const data = omit(playlist[0], ['video', 'videoId']);
+      const videos = playlist.map((dt: IPlaylist) => dt.video);
       return getResponse(res, OK, {
-        data: playlist,
+        data: {
+          ...data,
+          videos,
+        },
+      });
+    } catch (error) {
+      return getServerError(res, error.message);
+    }
+  };
+
+  /**
+   * controller to get all playlists details for a user
+   * @param req Request
+   * @param res Response
+   */
+  getPlaylistsDetails = async (req: Request, res: Response): Promise<Response> => {
+    const { id: userId } = req.user as IJwtPayload;
+    try {
+      const playlists = await db.Playlist.findAll({
+        where: { userId },
+        include: [
+          {
+            as: 'video',
+            model: db.Video,
+          },
+        ],
+        raw: true,
+        nest: true,
+      });
+
+      const data = chain(playlists)
+        .groupBy('slug')
+        .map((lists: IPlaylist[]) => ({
+          slug: lists[0].slug,
+          title: lists[0].title,
+          createdAt: lists[0].createdAt,
+          updatedAt: lists[0].updatedAt,
+          videos: lists.map(({ slug, title, createdAt, updatedAt, ...rest }) => rest),
+        }))
+        .value();
+
+      return getResponse(res, OK, {
+        data,
       });
     } catch (error) {
       return getServerError(res, error.message);
