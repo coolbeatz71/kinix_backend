@@ -116,6 +116,7 @@ export interface IPlaylist {
   slug: string;
   title: string;
   userId: number;
+  video?: IVideo;
   videoId: number;
   createdAt?: string;
   updatedAt?: string;
