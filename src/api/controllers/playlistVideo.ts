@@ -180,7 +180,7 @@ export class Playlist {
         });
       }
 
-      return getResponse(res, NOT_FOUND, {
+      return getResponse(res, OK, {
         code: PLAYLIST_DELETED_SUCCESS,
         message: req.t('PLAYLIST_DELETED_SUCCESS'),
       });
