@@ -147,11 +147,7 @@ export class Playlist {
       }
 
       await db.Playlist.destroy({
-        where: {
-          slug,
-          userId,
-          videoId,
-        },
+        where: { [Op.and]: [{ slug }, { videoId }, { userId }] },
       });
 
       return getResponse(res, OK, {
