@@ -8,7 +8,7 @@ export default class User extends Model<IUser> implements IUser {
   userName!: string;
   password!: string;
   email?: string | null;
-  phoneNumber?: string | null;
+  phoneNumber?: string;
   provider?: EProvider;
   isLoggedIn?: boolean;
   verified?: boolean;
@@ -112,7 +112,7 @@ export const initUser = (sequelize: Sequelize) => {
       },
       password: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
         validate: {
           min: 6,
         },

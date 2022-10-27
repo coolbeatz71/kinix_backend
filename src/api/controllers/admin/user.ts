@@ -355,7 +355,7 @@ export class AdminUser {
         });
       }
 
-      const isPasswordValid = comparePassword(password, admin?.get().password);
+      const isPasswordValid = comparePassword(password, admin?.get().password as string);
 
       if (!isPasswordValid) {
         return getResponse(res, FORBIDDEN, {
@@ -427,7 +427,7 @@ export class AdminUser {
         });
       }
 
-      const isPasswordValid = comparePassword(password, admin?.get().password);
+      const isPasswordValid = comparePassword(password, admin?.get().password as string);
 
       if (!isPasswordValid) {
         return getResponse(res, FORBIDDEN, {
@@ -499,7 +499,7 @@ export class AdminUser {
         });
       }
 
-      const isPasswordValid = comparePassword(password, admin?.get().password);
+      const isPasswordValid = comparePassword(password, admin?.get().password as string);
 
       if (!isPasswordValid) {
         return getResponse(res, FORBIDDEN, {

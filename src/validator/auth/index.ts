@@ -21,6 +21,12 @@ class AuthValidator {
     await validate.password(this.req, 'password');
   };
 
+  socialLogin = async (): Promise<void> => {
+    await validate.email(this.req, 'email');
+    await validate.url(this.req, 'avatar', this.req.t('LABEL_AVATAR_URL'));
+    await validate.names(this.req, 'userName', this.req.t('LABEL_USERNAME'));
+  };
+
   update = async (isPhonePartial: boolean, params: ICountryParams): Promise<void> => {
     await validate.email(this.req, 'email');
     await validate.names(this.req, 'userName', this.req.t('LABEL_USERNAME'));

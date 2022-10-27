@@ -1,9 +1,11 @@
 {
   "RESOURCE_NOT_FOUND": "Resource not found.",
 
+  "LOGIN_PROVIDER_INVALID": "Provider is invalid",
   "USERNAME_TAKEN": "This username is already taken by another account.",
   "EMAIL_TAKEN": "This email address is already in use by another account.",
   "PHONE_NUMBER_TAKEN": "This phone number is already used by another account.",
+  "LOCAL_ACCOUNT_EXIST": "Il semble que vous ayez déjà vérifié votre identité avec un e-mail. Veuillez vous connecter avec votre mot de passe",
   "USERNAME_EMAIL_INVALID": "The provided username or email address is invalid.",
   "PASSWORD_INVALID": "The password provided is incorrect.",
   "PASSWORD_REQUIRED": "The password is required.",
