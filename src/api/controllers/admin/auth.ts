@@ -47,7 +47,14 @@ export class AdminAuth {
         });
       }
 
-      const isPasswordValid = comparePassword(password, user?.get().password);
+      if (!user?.get().password) {
+        return getResponse(res, UNAUTHORIZED, {
+          code: USERNAME_EMAIL_INVALID,
+          message: req.t('USERNAME_EMAIL_INVALID'),
+        });
+      }
+
+      const isPasswordValid = comparePassword(password, user?.get().password as string);
 
       if (!isPasswordValid) {
         return getResponse(res, FORBIDDEN, {

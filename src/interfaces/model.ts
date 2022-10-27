@@ -25,7 +25,7 @@ export interface IModel {
 export interface IUser {
   readonly id?: number;
   userName: string;
-  password: string;
+  password?: string;
   email?: string | null;
   phoneNumber?: string | null;
   provider?: EProvider;

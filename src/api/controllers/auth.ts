@@ -45,12 +45,15 @@ import {
   OTP_INCORRECT,
   OTP_VERIFIED_SUCCESS,
   OTP_RESEND_SUCCESS,
+  LOCAL_ACCOUNT_EXIST,
+  LOGIN_PROVIDER_INVALID,
 } from '../../constants/message';
 import { IJwtPayload } from '../../interfaces/api';
 import ERole from '../../interfaces/role';
 import { getUserById } from '../../helpers/user';
 import { IUnknownObject } from '../../interfaces/unknownObject';
 import generateOTP from '../../helpers/otp';
+import EProvider from '../../interfaces/provider';
 
 export class Auth {
   /**
@@ -145,7 +148,14 @@ export class Auth {
         });
       }
 
-      const isPasswordValid = comparePassword(password, user?.get().password);
+      if (!user?.get().password) {
+        return getResponse(res, UNAUTHORIZED, {
+          code: USERNAME_EMAIL_INVALID,
+          message: req.t('USERNAME_EMAIL_INVALID'),
+        });
+      }
+
+      const isPasswordValid = comparePassword(password, user?.get().password as string);
 
       if (!isPasswordValid) {
         return getResponse(res, FORBIDDEN, {
@@ -182,6 +192,67 @@ export class Auth {
       return getUserResponse(
         res,
         update[1][0],
+        token,
+        OK,
+        req.t('USER_LOGIN_SUCCESS'),
+        USER_LOGIN_SUCCESS,
+      );
+    } catch (error) {
+      return getServerError(res, error.message);
+    }
+  };
+
+  /**
+   * controller for social login
+   * @param req Request
+   * @param res Response
+   */
+  socialLogin = async (req: Request, res: Response): Promise<Response> => {
+    const { userName, email, avatar, provider } = req.body;
+
+    await new AuthValidator(req).socialLogin();
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) return getValidationError(res, errors);
+
+    try {
+      if (![EProvider.GOOGLE, EProvider.FACEBOOK].includes(provider)) {
+        return getResponse(res, BAD_REQUEST, {
+          code: LOGIN_PROVIDER_INVALID,
+          message: req.t('LOGIN_PROVIDER_INVALID'),
+        });
+      }
+
+      const user = await db.User.findOne({
+        where: {
+          email,
+        },
+      });
+
+      if (user && user?.provider === EProvider.LOCAL) {
+        return getResponse(res, UNAUTHORIZED, {
+          code: LOCAL_ACCOUNT_EXIST,
+          message: req.t('LOCAL_ACCOUNT_EXIST'),
+        });
+      }
+
+      const newUser = await db.User.findOrCreate({
+        where: { email },
+        defaults: {
+          email,
+          userName,
+          provider,
+          image: avatar,
+          active: true,
+          verified: true,
+          isLoggedIn: true,
+        },
+      });
+
+      const token = generateToken(newUser[0]?.get());
+
+      return getUserResponse(
+        res,
+        newUser[0]?.get(),
         token,
         OK,
         req.t('USER_LOGIN_SUCCESS'),
@@ -474,8 +545,8 @@ export class Auth {
         });
       }
 
-      const isOldPasswordValid = comparePassword(oldPassword, user?.get().password);
-      const isNewPasswordSameAsOld = comparePassword(newPassword, user?.get().password);
+      const isOldPasswordValid = comparePassword(oldPassword, user?.get().password as string);
+      const isNewPasswordSameAsOld = comparePassword(newPassword, user?.get().password as string);
 
       if (!isOldPasswordValid) {
         return getResponse(res, BAD_REQUEST, {
