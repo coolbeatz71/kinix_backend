@@ -1,22 +1,22 @@
 /* eslint-disable consistent-return */
 import { Request, Response } from 'express';
-import { FORBIDDEN, OK, UNAUTHORIZED } from 'http-status';
 import { validationResult } from 'express-validator';
+import { FORBIDDEN, OK, UNAUTHORIZED } from 'http-status';
 import {
-  comparePassword,
   getResponse,
   getServerError,
   getUserResponse,
+  comparePassword,
   getValidationError,
 } from '../../../helpers/api';
+import db from '../../../db/models';
 import AuthValidator from '../../../validator/auth';
 import { generateToken } from '../../../helpers/jwt';
-import db from '../../../db/models';
 import {
-  PASSWORD_INVALID,
-  USERNAME_EMAIL_INVALID,
   USER_BLOCKED,
+  PASSWORD_INVALID,
   USER_LOGIN_SUCCESS,
+  USERNAME_EMAIL_INVALID,
 } from '../../../constants/message';
 import ERole from '../../../interfaces/role';
 
