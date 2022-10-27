@@ -235,24 +235,24 @@ export class Auth {
         });
       }
 
-      const newUser = await db.User.findOrCreate({
-        where: { email },
-        defaults: {
+      const updated = await db.User.update(
+        {
           email,
           userName,
           provider,
-          image: avatar,
           active: true,
+          image: avatar,
           verified: true,
           isLoggedIn: true,
         },
-      });
+        { where: { email }, returning: true },
+      );
 
-      const token = generateToken(newUser[0]?.get());
+      const token = generateToken(updated[1][0]?.get());
 
       return getUserResponse(
         res,
-        newUser[0]?.get(),
+        updated[1][0]?.get(),
         token,
         OK,
         req.t('USER_LOGIN_SUCCESS'),
