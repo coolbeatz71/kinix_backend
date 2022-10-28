@@ -33,6 +33,7 @@
   "OTP_VERIFIED_SUCCESS": "Le compte a été verifié avec succès.",
   "OTP_INCORRECT": "Oops! Le code de vérification est incorrect.",
   "OTP_ALREADY_VERIFIED": "Oops! Ce code de vérification a déjà été utilisé.",
+  "OTP_SEND_SUCCESS": "Le code de vérification a été envoyé avec succès.",
   "OTP_RESEND_SUCCESS": "Le code de vérification a été renvoyé avec succès.",
 
   "CATEGORY_NOT_FOUND": "Cette catégorie est introuvable. Veuillez vérifier vos informations.",
