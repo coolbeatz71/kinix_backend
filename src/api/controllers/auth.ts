@@ -47,6 +47,7 @@ import {
   OTP_RESEND_SUCCESS,
   LOCAL_ACCOUNT_EXIST,
   LOGIN_PROVIDER_INVALID,
+  OTP_SEND_SUCCESS,
 } from '../../constants/message';
 import { IJwtPayload } from '../../interfaces/api';
 import ERole from '../../interfaces/role';
@@ -336,6 +337,11 @@ export class Auth {
     }
   };
 
+  /**
+   * controller to resend otp code
+   * @param req Request
+   * @param res Response
+   */
   resentOtpCode = async (req: Request, res: Response): Promise<Response> => {
     const { credential } = req.body;
 
@@ -422,7 +428,7 @@ export class Auth {
   };
 
   /**
-   * The controller to update user account info
+   * controller to update user account info
    * @param req Request
    * @param res Response
    */
@@ -519,7 +525,7 @@ export class Auth {
   };
 
   /**
-   * The controller to change password
+   * controller to change password
    * @param req Request
    * @param res Response
    */
@@ -584,7 +590,7 @@ export class Auth {
   };
 
   /**
-   * The controller to update user avatar
+   * controller to update user avatar
    * @param req Request
    * @param res Response
    */
@@ -631,7 +637,7 @@ export class Auth {
   };
 
   /**
-   * The controller for signing out
+   * controller for signing out
    * @param req Request
    * @param res Response
    */
@@ -644,6 +650,54 @@ export class Auth {
         code: SIGNOUT_SUCCESS,
         message: req.t('SIGNOUT_SUCCESS'),
       });
+    } catch (error) {
+      return getServerError(res, error.message);
+    }
+  };
+
+  /**
+   * controller for signing out
+   * @param req Request
+   * @param res Response
+   */
+  forgotPassword = async (req: Request, res: Response): Promise<Response> => {
+    const { email } = req.body;
+
+    await new AuthValidator(req).forgotPassword();
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) return getValidationError(res, errors);
+
+    try {
+      const user = await db.User.findOne({
+        where: { email },
+      });
+
+      if (!user) {
+        return getResponse(res, NOT_FOUND, {
+          code: USER_NOT_FOUND,
+          message: req.t('USER_NOT_FOUND'),
+        });
+      }
+
+      if (user?.get().active === false) {
+        return getResponse(res, FORBIDDEN, {
+          code: USER_BLOCKED,
+          message: req.t('USER_BLOCKED'),
+        });
+      }
+
+      const otp = generateOTP(6);
+      const update = await db.User.update({ otp }, { where: { id: user.id }, returning: true });
+      const token = generateToken(user?.get());
+
+      return getUserResponse(
+        res,
+        update[1][0]?.get(),
+        token,
+        OK,
+        req.t('OTP_SEND_SUCCESS'),
+        OTP_SEND_SUCCESS,
+      );
     } catch (error) {
       return getServerError(res, error.message);
     }
