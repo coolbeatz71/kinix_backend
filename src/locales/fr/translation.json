@@ -16,6 +16,7 @@
   "ACCOUNT_UPDATED_SUCCESS": "Les informations du compte ont été mises à jour avec succès.",
   "SIGNOUT_SUCCESS": "Vous avez été déconnecté avec succès.",
   "PASSWORD_CHANGED_SUCCESS": "Le mot de passe a été mis à jour avec succès.",
+  "PASSWORD_RESET_SUCCESS": "Le mot de passe a été réinitialisé avec succès. Veuillez vous connecter avec votre nouveau mot de passe.",
   "AVATAR_UPDATED_SUCCESS": "La photo de profil a été mise à jour avec succès.",
 
   "AUTHORIZATION_MISSING": "Une authentification est requise pour accéder à cette ressource. Veuillez vous connecter ou créer un nouveau compte.",
