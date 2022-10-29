@@ -48,6 +48,7 @@ import {
   LOCAL_ACCOUNT_EXIST,
   LOGIN_PROVIDER_INVALID,
   OTP_SEND_SUCCESS,
+  PASSWORD_RESET_SUCCESS,
 } from '../../constants/message';
 import { IJwtPayload } from '../../interfaces/api';
 import ERole from '../../interfaces/role';
@@ -656,7 +657,7 @@ export class Auth {
   };
 
   /**
-   * controller for signing out
+   * controller to send a forgot password request
    * @param req Request
    * @param res Response
    */
@@ -697,6 +698,65 @@ export class Auth {
         OK,
         req.t('OTP_SEND_SUCCESS'),
         OTP_SEND_SUCCESS,
+      );
+    } catch (error) {
+      return getServerError(res, error.message);
+    }
+  };
+
+  /**
+   * controller to reset password
+   * @param req Request
+   * @param res Response
+   */
+  resetPassword = async (req: Request, res: Response): Promise<Response> => {
+    const { email, otp, newPassword } = req.body;
+
+    await new AuthValidator(req).resetPassword();
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) return getValidationError(res, errors);
+
+    try {
+      const user = await db.User.findOne({
+        where: { email },
+      });
+
+      if (!user) {
+        return getResponse(res, NOT_FOUND, {
+          code: USER_NOT_FOUND,
+          message: req.t('USER_NOT_FOUND'),
+        });
+      }
+
+      if (user?.get().active === false) {
+        return getResponse(res, FORBIDDEN, {
+          code: USER_BLOCKED,
+          message: req.t('USER_BLOCKED'),
+        });
+      }
+
+      if (user?.get().otp !== otp) {
+        return getResponse(res, BAD_REQUEST, {
+          code: OTP_INCORRECT,
+          message: req.t('OTP_INCORRECT'),
+        });
+      }
+
+      const hashPassword = getHashedPassword(newPassword);
+      const updated = await db.User.update(
+        {
+          password: hashPassword,
+        },
+        { where: { email }, returning: true },
+      );
+
+      return getUserResponse(
+        res,
+        updated[1][0]?.get(),
+        '',
+        OK,
+        req.t('PASSWORD_RESET_SUCCESS'),
+        PASSWORD_RESET_SUCCESS,
       );
     } catch (error) {
       return getServerError(res, error.message);

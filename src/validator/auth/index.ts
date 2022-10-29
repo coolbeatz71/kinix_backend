@@ -12,13 +12,13 @@ class AuthValidator {
 
   signup = async (): Promise<void> => {
     await validate.email(this.req, 'email');
-    await validate.names(this.req, 'userName', this.req.t('LABEL_USERNAME'));
     await validate.password(this.req, 'password');
+    await validate.names(this.req, 'userName', this.req.t('LABEL_USERNAME'));
   };
 
   login = async (): Promise<void> => {
-    await validate.empty(this.req, 'credential', this.req.t('LABEL_EMAIL_USERNAME'));
     await validate.password(this.req, 'password');
+    await validate.empty(this.req, 'credential', this.req.t('LABEL_EMAIL_USERNAME'));
   };
 
   socialLogin = async (): Promise<void> => {
@@ -43,8 +43,8 @@ class AuthValidator {
   };
 
   changePassword = async (): Promise<void> => {
-    await validate.empty(this.req, 'oldPassword', this.req.t('LABEL_OLD_PASSWORD'));
     await validate.password(this.req, 'newPassword');
+    await validate.empty(this.req, 'oldPassword', this.req.t('LABEL_OLD_PASSWORD'));
   };
 
   changeAvatar = async (): Promise<void> => {
@@ -52,8 +52,8 @@ class AuthValidator {
   };
 
   confirmAccount = async (): Promise<void> => {
-    await validate.empty(this.req, 'credential', this.req.t('LABEL_EMAIL_USERNAME'));
     await validate.empty(this.req, 'otp', this.req.t('LABEL_OTP_CODE'));
+    await validate.empty(this.req, 'credential', this.req.t('LABEL_EMAIL_USERNAME'));
   };
 
   resendOTP = async (): Promise<void> => {
@@ -62,6 +62,12 @@ class AuthValidator {
 
   forgotPassword = async (): Promise<void> => {
     await validate.email(this.req, 'email');
+  };
+
+  resetPassword = async (): Promise<void> => {
+    await validate.email(this.req, 'email');
+    await validate.password(this.req, 'newPassword');
+    await validate.empty(this.req, 'otp', this.req.t('LABEL_OTP_CODE'));
   };
 }
 

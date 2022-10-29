@@ -16,7 +16,8 @@
   "ACCOUNT_UPDATED_SUCCESS": "The account information has been updated successfully.",
   "SIGNOUT_SUCCESS": "You have been successfully logged out.",
   "PASSWORD_CHANGED_SUCCESS": "The password has been updated successfully.",
-  "AVATAR_UPDATED_SUCCESS": "The profile picture has been successfully updated.",
+  "PASSWORD_RESET_SUCCESS": "The password has been reset successfully. Please login with your new password.",
+  "AVATAR_UPDATED_SUCCESS": "The profile picture has been updated successfully.",
 
   "AUTHORIZATION_MISSING": "Authentication is required to access this resource. Please sign in or create a new account.",
   "TOKEN_INVALID_EXPIRED": "Authentication is required. You need to sign in to continue.",

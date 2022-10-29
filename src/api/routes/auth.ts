@@ -16,5 +16,6 @@ router.post('/confirm', authCtrl.confirmAccount);
 router.post('/resend-otp', authCtrl.resentOtpCode);
 router.post('/social-login', authCtrl.socialLogin);
 router.post('/forgot-password', authCtrl.forgotPassword);
+router.post('/reset-password', authCtrl.resetPassword);
 
 export default router;
