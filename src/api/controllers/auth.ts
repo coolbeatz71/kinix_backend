@@ -237,8 +237,8 @@ export class Auth {
         });
       }
 
-      const updated = await db.User.update(
-        {
+      const newUser = await db.User.findOrCreate({
+        defaults: {
           email,
           userName,
           provider,
@@ -247,14 +247,15 @@ export class Auth {
           verified: true,
           isLoggedIn: true,
         },
-        { where: { email }, returning: true },
-      );
+        where: { email },
+        returning: true,
+      });
 
-      const token = generateToken(updated[1][0]?.get());
+      const token = generateToken(newUser[0]?.get());
 
       return getUserResponse(
         res,
-        updated[1][0]?.get(),
+        newUser[0]?.get(),
         token,
         OK,
         req.t('USER_LOGIN_SUCCESS'),
