@@ -127,7 +127,7 @@
   "VALIDATOR_PARTIAL_TELEPHONE": "Partial telephone has an invalid format",
   "VALIDATOR_PHONE_DIAL_CODE": "Phone dial code has an invalid format",
   "VALIDATOR_TELEPHONE_BROKEN": "Telephone has missing information",
-  "VALIDATOR_TELEPHONE_FORMAT": "Telephone has an invalid format",
+  "VALIDATOR_TELEPHONE_FORMAT": "Telephone is invalid for the chosen region",
   "VALIDATOR_PRICE": "Price must be a number. Negative values are not allowed",
   "VALIDATOR_DURATION": "Duration must be a number. Negative values are not allowed",
   "VALIDATOR_DATE": "{{ label }} must be a valid date",
