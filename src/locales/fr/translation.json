@@ -3,7 +3,7 @@
 
   "LOGIN_PROVIDER_INVALID": "Le provider est incorrect",
   "USERNAME_TAKEN": "Ce pseudo est déjà pris par un autre compte.",
-  "LOCAL_ACCOUNT_EXIST": "It appears you have already verified your identity with an email. Please sign in with your password",
+  "LOCAL_ACCOUNT_EXIST": "Il semble que vous ayez déjà vérifié votre identité avec un e-mail. Veuillez vous connecter avec votre mot de passe",
   "EMAIL_TAKEN": "Cette adresse e-mail est déjà utilisée par un autre compte.",
   "PHONE_NUMBER_TAKEN": "Ce numéro de téléphone est déjà utilisé par un autre compte.",
   "USERNAME_EMAIL_INVALID": "Le pseudo ou l'addresse e-mail fourni n'est pas valide.",
